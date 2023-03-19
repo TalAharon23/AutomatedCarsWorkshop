@@ -33,9 +33,27 @@ def Find_Lines(frame, matrix, frameSize):
     for points in lines:
         # Extracted points nested in the list
         x1, y1, x2, y2 = points[0]
-        for iter_x in range(x2 - x1):
-            for iter_y in range(y2 - y1):
-                matrix[x1 + iter_x, y1 + iter_y] = 1 # Does not handle the cases that y2<y1 and x2<x1
+
+        big_X = x2
+        small_x = x1
+        big_y = y2
+        small_y = y1
+        if x1 > x2:
+            big_X = x1
+            small_x = x2
+        if y1 > y2:
+            big_y = y1
+            small_y = y2
+        while small_y <= big_y and small_x <= big_X:
+            matrix[small_x, small_y] = 1
+            if small_x <= big_X:
+                small_x += 1
+            if small_y <= big_y:
+                small_y += 1
+
+        # for iter_x in range(big_X - small_x):
+        #    for iter_y in range(big_y - small_y):
+        #        matrix[small_x + iter_x, small_y + iter_y] = 1
         # Draw the lines joing the points
         # On the original image
         cv2.line(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
