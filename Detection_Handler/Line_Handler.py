@@ -1,6 +1,7 @@
+"""
 import cv2
 import numpy as np
-"""
+
 def Find_Lines(frame, matrix, frameSize):
     # Load the image
     # Reading the required image in
@@ -72,7 +73,7 @@ def Find_Lines(frame, matrix, frameSize):
 import cv2
 import numpy as np
 
-def Find_Lines(frame, matrix, frameSize, mask):
+def Find_Lines(frame, matrix, frameSize, mask, val_dict):
     # Load the image
     # Reading the required image in
     # which operations are to be done.
@@ -134,7 +135,8 @@ def Find_Lines(frame, matrix, frameSize, mask):
                 big_y = y1
                 small_y = y2
             while small_y <= big_y and small_x <= big_X:
-                matrix[small_x, small_y] = 1
+                if matrix[small_x, small_y] != val_dict['Line']:
+                    matrix[small_x, small_y] = val_dict[mask]
                 if small_x <= big_X:
                     small_x += 1
                 if small_y <= big_y:

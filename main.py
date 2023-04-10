@@ -9,6 +9,12 @@ import Detection_Handler.Parking_Handler
 import Detection_Handler.Boundaries_Handler as bd_h
 
 frameSize = (700, 500)
+val_dict = {
+    "Border": 1,
+    "Line": 2,
+    "Parking_slot": 3,
+    "Robot": 4
+}
 
 def main():
     ## Use this line for saved video:
@@ -29,12 +35,15 @@ def main():
         if (type(frame) == type(None)):
             pass
         else:
-            frame = cv2.resize(frame, frameSize, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
-            processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_line)[1]
-            # processed_frame = ln_h.Find_Car(frame, matrix, frameSize)[1]             # Sholmait
-            # processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border)[1]      # Shriki
-            # processed_frame = ln_h.Find_Parking_Lots(frame, matrix, frameSize)[1]    # Jacob
-            # Display the resulting frame
+            template_data = bd_h.Create_Template(frame, matrix, frameSize, val_dict)
+            if template_data[0] == True:
+                matrix = template_data[1]
+                frame = cv2.resize(frame, frameSize, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
+                processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_line, val_dict)[1]
+                # processed_frame = ln_h.Find_Car(frame, matrix, frameSize)[1]             # Sholmait
+                # processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border, val_dict)[1]      # Shriki
+                # processed_frame = ln_h.Find_Parking_Lots(frame, matrix, frameSize)[1]    # Jacob
+                # Display the resulting frame
             cv2.imshow('Frame', processed_frame)
 
             # Press Q on keyboard to exit
