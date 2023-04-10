@@ -12,7 +12,7 @@ def Create_Template(frame, matrix, frameSize, val_dict):
     res = False
     Create_Template.counter += 1
     Create_Template.data[Create_Template.counter] = ln_h.Find_Lines(frame, matrix, frameSize,
-                                                                    'Line', val_dict)[0]
+                                                                    'Path', val_dict)[0]
 
     if Create_Template.counter >= num_of_frames:
         for index in range(Create_Template.counter):
