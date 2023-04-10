@@ -2,8 +2,7 @@ import cv2
 import numpy as np
 
 
-
-def Find_Lines(frame, matrix, frameSize, mask):
+def Find_Lines(frame, matrix, frameSize, mask, val_dict):
     # Load the image
     # Reading the required image in
     # which operations are to be done.
@@ -18,7 +17,6 @@ def Find_Lines(frame, matrix, frameSize, mask):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
     # Define the lower and upper ranges for the color red
-    # If the mask is Line (the path the car travels on).
     # If the mask is Line.
     if mask == 'Path':
         lower_red = np.array([0, 50, 50])
@@ -67,7 +65,9 @@ def Find_Lines(frame, matrix, frameSize, mask):
                 big_y = y1
                 small_y = y2
             while small_y <= big_y and small_x <= big_X:
-                matrix[small_x, small_y] = 1
+                if matrix[small_x, small_y] != 1:
+                    print(mask)
+                    matrix[small_x, small_y] = 1
                 if small_x <= big_X:
                     small_x += 1
                 if small_y <= big_y:
@@ -84,87 +84,5 @@ def Find_Lines(frame, matrix, frameSize, mask):
 
     # Save the result image
     return matrix, image
-
-
-
-
-"""
-import cv2
-import numpy as np
-
-def Find_Parking(frame, matrix, frameSize):
-    # Convert the image to HSV color space
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-    # Define the lower and upper bounds of the green color
-    lower_green = np.array([36, 25, 25])
-    upper_green = np.array([86, 255, 255])
-
-    # Threshold the image to get only the green color
-    mask = cv2.inRange(hsv, lower_green, upper_green)
-
-    # Find contours in the binary image
-    contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    # Find the bounding rectangles of all the contours
-    rects = [cv2.boundingRect(cnt) for cnt in contours]
-
-    # Draw a rectangle around each bounding rectangle
-    for rect in rects:
-        x, y, w, h = rect
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-    # Return the processed frame and the matrix
-    return frame, matrix
-
-----------------------------------
-this is part is detecting only 1 rectangle
-import cv2
-import numpy as np
-
-
-def Find_Parking(frame, matrix, frameSize):
-    # Convert the image to HSV color space
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-    # Define the lower and upper bounds of the green color
-    lower_green = np.array([36, 25, 25])
-    upper_green = np.array([86, 255, 255])
-
-    # Threshold the image to get only the green color
-    mask = cv2.inRange(hsv, lower_green, upper_green)
-
-    # Find contours in the binary image
-    contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
-    # Loop through the contours and find the rectangle with the largest area
-    max_area = 0
-    max_rect = None
-    for cnt in contours:
-        # Approximate the contour as a polygon
-        epsilon = 0.01 * cv2.arcLength(cnt, True)
-        approx = cv2.approxPolyDP(cnt, epsilon, True)
-
-        # Find the bounding rectangle of the polygon
-        x, y, w, h = cv2.boundingRect(approx)
-
-        # Calculate the area of the rectangle
-        area = w * h
-
-        # If the area is larger than the current maximum, update the maximum rectangle
-        if area > max_area:
-            max_area = area
-            max_rect = (x, y, w, h)
-
-    # Draw a rectangle around the maximum rectangle
-    if max_rect is not None:
-        x, y, w, h = max_rect
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-    # Return the processed frame and the matrix
-    return frame, matrix
-
-"""
-
 
 
