@@ -10,6 +10,7 @@ import Detection_Handler.Boundaries_Handler as bd_h
 
 frameSize = (700, 500)
 
+
 def main():
     ## Use this line for saved video:
     # src_video = cv2.VideoCapture('Resources/Amir_Test/sample.mp4')
@@ -19,7 +20,6 @@ def main():
     matrix = np.zeros(frameSize)
     mask_line = 'Line'
     mask_border = 'Border'
-
 
     # Processed video from our models (output video in the end of the app)
     out_video = cv2.VideoWriter('Resources/Amir_Test/output_video.avi', cv2.VideoWriter_fourcc(*'DIVX'), 24, frameSize)
@@ -32,7 +32,9 @@ def main():
             frame = cv2.resize(frame, frameSize, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
             processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_line)[1]
             # processed_frame = car_h.Find_Car(frame, matrix, frameSize)[1]             # Sholmait
-            processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border)[1]      # Shriki
+            processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border)[1]  # Shriki
+            # processed_frame = ln_h.Find_Car(frame, matrix, frameSize)[1]             # Sholmait
+            # processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border)[1]      # Shriki
             # processed_frame = ln_h.Find_Parking_Lots(frame, matrix, frameSize)[1]    # Jacob
             # Display the resulting frame
             cv2.imshow('Frame', processed_frame)
@@ -43,7 +45,7 @@ def main():
             out_video.write(processed_frame)
 
         # Assuming it failed to read only the last frame - video end
-        if ret == False:
+        if not ret:
             break
 
     out_video.release()
@@ -54,7 +56,5 @@ def main():
     cv2.destroyAllWindows()
 
 
-
 if __name__ == '__main__':
     main()
-

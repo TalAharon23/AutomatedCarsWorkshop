@@ -9,6 +9,10 @@
 #include "img_converters.h"
 #include "camera_index.h"
 #include "Arduino.h"
+#include <cstdio>
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 extern int gpLb;
 extern int gpLf;
@@ -18,6 +22,7 @@ extern int gpLed;
 extern String WiFiAddr;
 
 void WheelAct(int nLf, int nLb, int nRf, int nRb);
+void save_port_to_file(int port);
 
 typedef struct {
         size_t size; //number of values used for filtering
@@ -322,7 +327,6 @@ static esp_err_t index_handler(httpd_req_t *req){
  
     return httpd_resp_send(req, &page[0], strlen(&page[0]));
 }
-//前进按钮
 static esp_err_t go_handler(httpd_req_t *req){
     WheelAct(HIGH, LOW, HIGH, LOW);
     Serial.println("Go");
@@ -458,7 +462,8 @@ void startCameraServer(){
 
 
     ra_filter_init(&ra_filter, 20);
-    Serial.printf("Starting web server on port: '%d'", config.server_port);
+    Serial.printf("Starting web server on port: '%d'\n", config.server_port);
+    save_port_to_file(config.server_port);
     if (httpd_start(&camera_httpd, &config) == ESP_OK) {
         httpd_register_uri_handler(camera_httpd, &index_uri);
         httpd_register_uri_handler(camera_httpd, &go_uri); 
@@ -476,6 +481,18 @@ void startCameraServer(){
     if (httpd_start(&stream_httpd, &config) == ESP_OK) {
         httpd_register_uri_handler(stream_httpd, &stream_uri);
     }
+}
+void save_port_to_file(int port) // TODO: not working saving file.
+{
+    ofstream PortFile("port.txt");
+
+    // Write to the file
+    PortFile << port;
+
+    // Close the file
+    PortFile.close();
+
+    printf("Port number saved to port.txt file\n");
 }
 
 void WheelAct(int nLf, int nLb, int nRf, int nRb)
