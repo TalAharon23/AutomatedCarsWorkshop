@@ -12,7 +12,7 @@ frameSize = (700, 500)
 
 
 def main():
-    ## Use this line for saved video:
+    # Use this line for saved video:
     # src_video = cv2.VideoCapture('Resources/Amir_Test/sample.mp4')
 
     # Real time video from the upper camera

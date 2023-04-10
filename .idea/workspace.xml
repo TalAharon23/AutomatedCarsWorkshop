@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fdfacf44-b467-4a56-9cdb-0385b7b5bd11" name="Changes" comment="Connect to phone cam">
+    <list default="true" id="fdfacf44-b467-4a56-9cdb-0385b7b5bd11" name="Changes" comment="Connect to phone cam in main and interval loop">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Resources/Amir_Test/output_video.avi" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/Amir_Test/output_video.avi" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
@@ -68,7 +68,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681134025130</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Connect to phone cam in main and interval loop">
+      <created>1681135911980</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1681135911980</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -85,6 +92,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add git ignore" />
     <MESSAGE value="Connect to phone cam" />
-    <option name="LAST_COMMIT_MESSAGE" value="Connect to phone cam" />
+    <MESSAGE value="Connect to phone cam in main and interval loop" />
+    <option name="LAST_COMMIT_MESSAGE" value="Connect to phone cam in main and interval loop" />
   </component>
 </project>
