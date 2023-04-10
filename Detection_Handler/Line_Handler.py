@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 """
-def Find_Lines(frame, matrix, frameSize):
+def Find_Lines(fame, matrix, frameSize):
     # Load the image
     # Reading the required image in
     # which operations are to be done.
@@ -81,12 +81,12 @@ def Find_Lines(frame, matrix, frameSize, mask):
     # Read image
     # image = cv2.imread('Resources/Amir_Test/lines.jpg')
     image = frame
-
+    line_color = (0, 255, 0)
     # Convert image to HSV
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
     # Define the lower and upper ranges for the color red
-    # If the mask is Line.
+    # If the mask is Line (the path the car travels on).
     if mask == 'Line':
         lower_red = np.array([0, 50, 50])
         upper_red = np.array([10, 255, 255])
@@ -100,6 +100,7 @@ def Find_Lines(frame, matrix, frameSize, mask):
         lower_blue = np.array([90, 50, 50])
         upper_blue = np.array([130, 255, 255])
         mask = cv2.inRange(hsv, lower_blue, upper_blue)
+        line_color = (255, 255, 0) #Print different color for border lines.
 
 
     # Use canny edge detection
@@ -113,8 +114,8 @@ def Find_Lines(frame, matrix, frameSize, mask):
         1,  # Distance resolution in pixels
         np.pi / 180,  # Angle resolution in radians
         threshold=80,  # Min number of votes for valid line
-        minLineLength=10,  # Min allowed length of line
-        maxLineGap=10  # Max allowed gap between line for joining them
+        minLineLength=0,  # Min allowed length of line
+        maxLineGap=4 # Max allowed gap between line for joining them
     )
 
     # Iterate over points
@@ -145,7 +146,8 @@ def Find_Lines(frame, matrix, frameSize, mask):
             #        matrix[small_x + iter_x, small_y + iter_y] = 1
             # Draw the lines joing the points
             # On the original image
-            cv2.line(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
+            cv2.line(image, (x1, y1), (x2, y2), line_color, 2)
             # Maintain a simples lookup list for points
             lines_list.append([(x1, y1), (x2, y2)])
 

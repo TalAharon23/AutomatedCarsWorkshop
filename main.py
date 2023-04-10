@@ -4,7 +4,7 @@ import os
 import numpy as np
 
 import Detection_Handler.Line_Handler as ln_h
-import Detection_Handler.Car_Handler
+import Detection_Handler.Car_Handler as car_h
 import Detection_Handler.Parking_Handler
 import Detection_Handler.Boundaries_Handler as bd_h
 
@@ -31,8 +31,8 @@ def main():
         else:
             frame = cv2.resize(frame, frameSize, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
             processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_line)[1]
-            # processed_frame = ln_h.Find_Car(frame, matrix, frameSize)[1]             # Sholmait
-            #processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border)[1]      # Shriki
+            # processed_frame = car_h.Find_Car(frame, matrix, frameSize)[1]             # Sholmait
+            processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border)[1]      # Shriki
             # processed_frame = ln_h.Find_Parking_Lots(frame, matrix, frameSize)[1]    # Jacob
             # Display the resulting frame
             cv2.imshow('Frame', processed_frame)
