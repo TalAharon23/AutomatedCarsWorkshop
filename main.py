@@ -6,7 +6,7 @@ import numpy as np
 import Detection_Handler.Line_Handler as ln_h
 import Detection_Handler.Car_Handler
 import Detection_Handler.Parking_Handler
-import Detection_Handler.Boundaries_Handler
+import Detection_Handler.Boundaries_Handler as bd_h
 
 frameSize = (700, 500)
 
@@ -17,6 +17,9 @@ def main():
     # Real time video from the upper camera
     src_video = cv2.VideoCapture(0)
     matrix = np.zeros(frameSize)
+    mask_line = 'Line'
+    mask_border = 'Border'
+
 
     # Processed video from our models (output video in the end of the app)
     out_video = cv2.VideoWriter('Resources/Amir_Test/output_video.avi', cv2.VideoWriter_fourcc(*'DIVX'), 24, frameSize)
@@ -27,9 +30,9 @@ def main():
             pass
         else:
             frame = cv2.resize(frame, frameSize, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
-            processed_frame = ln_h.Find_Lines(frame, matrix, frameSize)[1]
+            processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_line)[1]
             # processed_frame = ln_h.Find_Car(frame, matrix, frameSize)[1]             # Sholmait
-            # processed_frame = ln_h.Find_Boundaries(frame, matrix, frameSize)[1]      # Shriki
+            #processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border)[1]      # Shriki
             # processed_frame = ln_h.Find_Parking_Lots(frame, matrix, frameSize)[1]    # Jacob
             # Display the resulting frame
             cv2.imshow('Frame', processed_frame)
