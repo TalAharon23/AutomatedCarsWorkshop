@@ -66,7 +66,7 @@ def Find_Lines(frame, matrix, frameSize, mask, val_dict):
                 small_y = y2
             while small_y <= big_y and small_x <= big_X:
                 if matrix[small_x, small_y] != 1:
-                    print(mask)
+                    # print(mask)
                     matrix[small_x, small_y] = 1
                 if small_x <= big_X:
                     small_x += 1

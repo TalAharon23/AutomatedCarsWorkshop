@@ -22,7 +22,7 @@ def main():
     # src_video = cv2.VideoCapture('Resources/Amir_Test/sample.mp4')
 
     # Real time video from the phone camera
-    url = "http://192.168.1.110:8080/video"
+    url = "http://192.168.1.215:8080/video"
     src_video = cv2.VideoCapture(url)
     matrix = np.zeros(frameSize)
     mask_line = 'Path'
