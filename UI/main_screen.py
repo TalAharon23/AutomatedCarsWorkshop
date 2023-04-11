@@ -3,26 +3,29 @@ import cv2
 from PIL import Image, ImageTk
 
 root = tk.Tk()
-root.geometry("1300x600")
+root.geometry("1300x500")
 
 
-def button_click():
-    print("Button clicked")
+def parkingButton_click():
+    print("Parking Button clicked")
+
+def stopButton_click():
+    print("Stop Button clicked")
 
 
-parkingButton = tk.Button(root, text="Parking", command=button_click, height=5, width=15, bg="blue", fg="white",
-                          font=("Arial", 30))
+parkingButton = tk.Button(root, text="Parking", command=parkingButton_click, height=4, width=10, bg="blue", fg="white", font=("Arial", 30))
 parkingButton.pack(pady=10)
 
-stopButton = tk.Button(root, text="Stop", command=button_click, height=5, width=15, bg="blue", fg="white",
-                       font=("Arial", 30))
+stopButton = tk.Button(root, text="Stop", command=stopButton_click, height=4, width=10, bg="blue", fg="white", font=("Arial", 30))
 stopButton.pack(pady=10)
 
 canvas1 = tk.Canvas(root, width=320, height=240)
-canvas1.pack(side=tk.LEFT)
+canvas1.place(x=0, y=0, anchor="nw")
+canvas1.config(width=500, height=457)
 
 canvas2 = tk.Canvas(root, width=320, height=240)
-canvas2.pack(side=tk.RIGHT)
+canvas2.place(x=0, y=0, anchor="ne")
+canvas2.config(width=500, height=457)
 
 cap1 = cv2.VideoCapture(0)
 cap2 = cv2.VideoCapture(1)  # use different capture devices for each canvas
