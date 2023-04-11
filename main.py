@@ -3,15 +3,12 @@ import glob
 import os
 import numpy as np
 
-import Detection_Handler.Line_Handler as ln_h
-import Detection_Handler.Car_Handler as car_h
-import Detection_Handler.Parking_Handler as park_h
-import Detection_Handler.Boundaries_Handler as bd_h
-import Detection_Handler.Detection_controller
+import Detection_Handler.Detection_controller as logic
 
 
 def main():
-    image_logic = Detection_controller()
+    image_logic = logic.Detection_controller()
+    image_logic.scan_video()
 
 
 if __name__ == '__main__':

@@ -7,20 +7,20 @@ res_index = 0
 threshold = 0.7
 
 
-def Create_Template(frame, matrix, frameSize, counter, fram_array):
+def Create_Template(frame_array):
     # make averege
+    """
     res = False
     counter += 1
     fram_array[Create_Template.counter] = ln_h.Find_Lines(frame, matrix, frameSize, 'Path')[0]
-
     if counter >= num_of_frames:
         for index in range(Create_Template.counter):
             fram_array[res_index] += fram_array[index]
         get_final_matrix(matrix, counter)
         counter = 0
-        res = True
+        res = True"""
 
-    return res, matrix
+    return # res, matrix
 
 
 def get_final_matrix(matrix, counter):
