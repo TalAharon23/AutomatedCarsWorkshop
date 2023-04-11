@@ -78,12 +78,15 @@ class Detection_controller(metaclass=Singleton):
 
     def scan_frame(self, frame):
         frame = cv2.resize(frame, frameSize, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
+        origin_frame = frame.copy()
         processed_frame = ln_h.Find_Lines(frame, self.matrix, frameSize, mask_line, val_dict)[1]  # Find lines
         processed_frame = ln_h.Find_Lines(frame, self.matrix, frameSize, mask_border, val_dict)[1]  # Find borders
         processed_frame, matrix = park_h.Find_Parking(frame, self.matrix, frameSize)  # Find parking spot
         # processed_frame = car_h.Find_Car(frame, matrix, frameSize)[1]
 
         # Display the resulting frame
-        cv2.imshow('Frame', processed_frame)
+        h_concat = np.hstack((origin_frame, processed_frame))
 
+        # Display the concatenated frame
+        cv2.imshow('Autonomous Car', h_concat)
         return processed_frame, matrix
