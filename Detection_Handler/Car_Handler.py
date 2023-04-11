@@ -2,37 +2,30 @@ import cv2
 import numpy as np
 
 def Find_Car(frame, matrix, frameSize):
-    # Convert the image to HSV
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    # Convert the frame to grayscale
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    # Threshold the image to isolate the yellow color
-    lower_yellow = np.array([20, 100, 100])
-    upper_yellow = np.array([30, 255, 255])
-    mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
-    # cv2.imshow('Image', mask)
+    # Threshold the grayscale image to create a binary image
+    _, thresh = cv2.threshold(gray, 230, 255, cv2.THRESH_BINARY)
 
-    # Apply morphological operations to the thresholded image
-    kernel = np.ones((5, 5), np.uint8)
-    mask = cv2.erode(mask, kernel)
-    mask = cv2.dilate(mask, kernel)
+    # Dilate the binary image to fill in any gaps
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+    dilated = cv2.dilate(thresh, kernel, iterations=2)
 
-    # Detect circles in the thresholded image
-    circles = cv2.HoughCircles(mask, cv2.HOUGH_GRADIENT, 1, 200)
+    # Find contours in the dilated image
+    contours, hierarchy = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # Draw circles around the detected yellow circles
-    if circles is not None:
-        circles = np.round(circles[0, :]).astype("int")
-        for (x, y, r) in circles:
-            cv2.circle(mask, (x, y), r, (0, 255, 0), 2)
+    # Filter the contours to find the white plus
+    for contour in contours:
+        x, y, w, h = cv2.boundingRect(contour)
+        aspect_ratio = w / h
+        if aspect_ratio > 0.8 and aspect_ratio < 1.2 and w > 20 and h > 20:
+            # Draw a green rectangle around the white plus
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            break
 
-    # Display the image with the detection results
-    cv2.imshow('Image', mask)
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
-
-    return matrix, frame
-
-
+    # Return the frame with the green rectangle drawn around the white plus
+    return frame, matrix
 
 
 
