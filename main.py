@@ -22,8 +22,9 @@ def main():
     # src_video = cv2.VideoCapture('Resources/Amir_Test/sample.mp4')
 
     # Real time video from the phone camera
-    url = "http://192.168.1.215:8080/video"
-    src_video = cv2.VideoCapture(url)
+    url_aharon = "http://192.168.1.215:8080/video"
+    url_kirshen = "http://192.168.1.250:8080/video"
+    src_video = cv2.VideoCapture(url_kirshen)
     matrix = np.zeros(frameSize)
     mask_line = 'Path'
     mask_border = 'Border'
@@ -42,12 +43,18 @@ def main():
                 matrix = template_data[1]
 
             frame = cv2.resize(frame, frameSize, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
-            processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_line, val_dict)[1]  # Find lines
-            processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border, val_dict)[1]  # Find borders
-            processed_frame, matrix = park_h.Find_Parking(frame, matrix, frameSize)  # Find parking spot
-                # processed_frame = car_h.Find_Car(frame, matrix, frameSize)[1]             # Sholmait
+            frame_original = frame.copy()
+            #processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_line, val_dict)[1]  # Find lines
+            #processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border, val_dict)[1]  # Find borders
+            #processed_frame, matrix = park_h.Find_Parking(frame, matrix, frameSize)  # Find parking spot
+            processed_frame, matrix= car_h.Find_Car(frame, matrix, frameSize)
                 # Display the resulting frame
-            cv2.imshow('Frame', processed_frame)
+
+            # Display the original video in a separate window
+            cv2.imshow('Original', frame_original)
+
+            # Display the resulting frame with added lines and rectangles
+            cv2.imshow('Processed', processed_frame)
 
             # Press Q on keyboard to exit
             if cv2.waitKey(25) & 0xFF == ord('q'):
