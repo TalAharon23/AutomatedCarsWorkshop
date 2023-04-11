@@ -90,3 +90,9 @@ class Detection_controller(metaclass=Singleton):
         # Display the concatenated frame
         cv2.imshow('Autonomous Car', h_concat)
         return processed_frame, matrix
+    
+    def get_matrix(self):
+        return self.matrix
+
+    def get_matrix_size(self):
+        return frameSize
