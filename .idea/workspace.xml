@@ -19,17 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c7fc4bf-2243-4286-8af2-983ca6738ab5" name="Changes" comment="Change the line handler">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/AutomatedCarsWorkshop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AutomatedCarsWorkshop.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Detection_Handler/Boundaries_Handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Detection_Handler/Boundaries_Handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Detection_Handler/Car_Handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Detection_Handler/Car_Handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Detection_Handler/Line_Handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Detection_Handler/Line_Handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Detection_Handler/Parking_Handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Detection_Handler/Parking_Handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Amir_Test/output_video.avi" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/Amir_Test/output_video.avi" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    <list default="true" id="d07a0aac-d5ae-452d-8ee2-af039fa8ca01" name="Changes" comment="Change the line handler">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UI/main_screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/UI/main_screen.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,24 +49,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/main.py" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "last_opened_file_path": "C:/CarProject/AutomatedCarsWorkshop/UI/main_screen.py"
+  }
+}]]></component>
   <component name="RunManager">
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+    <configuration name="main_screen" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="AutomatedCarsWorkshop" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\amirk\anaconda3\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="SDK_HOME" value="C:\Users\ronishulman\AppData\Local\Programs\Python\Python39\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/UI" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/UI/main_screen.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -104,65 +97,11 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="380" y="161" key="#Notifications" timestamp="1681139642583">
-      <screen x="0" y="0" width="1280" height="672" />
-    </state>
-    <state x="380" y="161" key="#Notifications/0.0.1280.672@0.0.1280.672" timestamp="1681139642583" />
-    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1681140550823">
-      <screen x="0" y="0" width="1280" height="672" />
-    </state>
-    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.672@0.0.1280.672" timestamp="1681140550823" />
-    <state x="326" y="91" key="FileChooserDialogImpl" timestamp="1681140548734">
-      <screen x="0" y="0" width="1280" height="672" />
-    </state>
-    <state x="326" y="91" key="FileChooserDialogImpl/0.0.1280.672@0.0.1280.672" timestamp="1681140548734" />
-    <state width="1259" height="201" key="GridCell.Tab.0.bottom" timestamp="1681140920986">
-      <screen x="0" y="0" width="1280" height="672" />
-    </state>
-    <state width="1259" height="201" key="GridCell.Tab.0.bottom/0.0.1280.672@0.0.1280.672" timestamp="1681140920986" />
-    <state width="1259" height="201" key="GridCell.Tab.0.center" timestamp="1681140920986">
-      <screen x="0" y="0" width="1280" height="672" />
-    </state>
-    <state width="1259" height="201" key="GridCell.Tab.0.center/0.0.1280.672@0.0.1280.672" timestamp="1681140920986" />
-    <state width="1259" height="201" key="GridCell.Tab.0.left" timestamp="1681140920986">
-      <screen x="0" y="0" width="1280" height="672" />
-    </state>
-    <state width="1259" height="201" key="GridCell.Tab.0.left/0.0.1280.672@0.0.1280.672" timestamp="1681140920986" />
-    <state width="1259" height="201" key="GridCell.Tab.0.right" timestamp="1681140920986">
-      <screen x="0" y="0" width="1280" height="672" />
-    </state>
-    <state width="1259" height="201" key="GridCell.Tab.0.right/0.0.1280.672@0.0.1280.672" timestamp="1681140920986" />
-    <state width="1259" height="201" key="GridCell.Tab.1.bottom" timestamp="1681140920986">
-      <screen x="0" y="0" width="1280" height="672" />
-    </state>
-    <state width="1259" height="201" key="GridCell.Tab.1.bottom/0.0.1280.672@0.0.1280.672" timestamp="1681140920986" />
-    <state width="1259" height="201" key="GridCell.Tab.1.center" timestamp="1681140920986">
-      <screen x="0" y="0" width="1280" height="672" />
-    </state>
-    <state width="1259" height="201" key="GridCell.Tab.1.center/0.0.1280.672@0.0.1280.672" timestamp="1681140920986" />
-    <state width="1259" height="201" key="GridCell.Tab.1.left" timestamp="1681140920986">
-      <screen x="0" y="0" width="1280" height="672" />
-    </state>
-    <state width="1259" height="201" key="GridCell.Tab.1.left/0.0.1280.672@0.0.1280.672" timestamp="1681140920986" />
-    <state width="1259" height="201" key="GridCell.Tab.1.right" timestamp="1681140920986">
-      <screen x="0" y="0" width="1280" height="672" />
-    </state>
-    <state width="1259" height="201" key="GridCell.Tab.1.right/0.0.1280.672@0.0.1280.672" timestamp="1681140920986" />
-    <state x="121" y="50" key="MergeDialog" timestamp="1681140190461">
-      <screen x="0" y="0" width="1280" height="672" />
-    </state>
-    <state x="121" y="50" key="MergeDialog/0.0.1280.672@0.0.1280.672" timestamp="1681140190461" />
-    <state x="280" y="98" key="MultipleFileMergeDialog" timestamp="1681140201686">
-      <screen x="0" y="0" width="1280" height="672" />
-    </state>
-    <state x="280" y="98" key="MultipleFileMergeDialog/0.0.1280.672@0.0.1280.672" timestamp="1681140201686" />
-    <state x="303" y="0" width="672" height="678" key="search.everywhere.popup" timestamp="1681139575995">
-      <screen x="0" y="0" width="1280" height="672" />
-    </state>
-    <state x="303" y="0" width="672" height="678" key="search.everywhere.popup/0.0.1280.672@0.0.1280.672" timestamp="1681139575995" />
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="UI - main_screen" />
+    <MESSAGE value="Merge with main" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge with main" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
