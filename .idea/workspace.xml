@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -19,17 +22,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c7fc4bf-2243-4286-8af2-983ca6738ab5" name="Changes" comment="Change the line handler">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/AutomatedCarsWorkshop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AutomatedCarsWorkshop.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Detection_Handler/Boundaries_Handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Detection_Handler/Boundaries_Handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Detection_Handler/Car_Handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Detection_Handler/Car_Handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Detection_Handler/Line_Handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Detection_Handler/Line_Handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Detection_Handler/Parking_Handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Detection_Handler/Parking_Handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Amir_Test/output_video.avi" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/Amir_Test/output_video.avi" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    <list default="true" id="2c7fc4bf-2243-4286-8af2-983ca6738ab5" name="Changes" comment="add API">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ESP32CAM_Car/ESP32CAM_Car.ino" beforeDir="false" afterPath="$PROJECT_DIR$/ESP32CAM_Car/ESP32CAM_Car.ino" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +44,9 @@
       </set>
     </option>
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="2OEy0HwpAR99i95FGKU3J79DA9G" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -57,10 +55,12 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/main.py" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true"
+  }
+}]]></component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="AutomatedCarsWorkshop" />
@@ -87,6 +87,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
+      <changelist id="2c7fc4bf-2243-4286-8af2-983ca6738ab5" name="Changes" comment="add API" />
       <created>1681139814507</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -104,7 +105,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="380" y="161" key="#Notifications" timestamp="1681139642583">
@@ -167,11 +167,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>33</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Detection_Handler/Boundaries_Handler.py</url>
           <line>11</line>
