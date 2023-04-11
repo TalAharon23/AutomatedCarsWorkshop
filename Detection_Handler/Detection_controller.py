@@ -17,11 +17,12 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://192.168.1.250:8080/video"
+url = "http://192.168.1.215:8080/video"
 
 
 class Singleton(type):
     _instances = {}
+
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
@@ -44,7 +45,7 @@ class Detection_controller(metaclass=Singleton):
         self.counter = 0
         self.src_video = cv2.VideoCapture(url)
         self.out_video = cv2.VideoWriter('Resources/Amir_Test/output_video.avi', cv2.VideoWriter_fourcc(*'DIVX'), 24,
-                                    frameSize)
+                                         frameSize)
         self.matrix = np.zeros(frameSize)
         self.frame_array = []
 
