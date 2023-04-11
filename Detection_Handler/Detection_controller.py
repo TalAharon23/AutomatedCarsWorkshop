@@ -10,6 +10,7 @@ import Detection_Handler.Boundaries_Handler as bd_h
 
 frameSize = (700, 500)
 val_dict = {
+    "Empty": 0,
     "Border": 1,
     "Path": 2,
     "Parking_slot": 3,
@@ -96,3 +97,6 @@ class Detection_controller(metaclass=Singleton):
 
     def get_matrix_size(self):
         return frameSize
+
+    def get_defind_dic(self):
+        return val_dict
