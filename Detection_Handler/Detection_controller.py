@@ -2,13 +2,14 @@ import cv2
 import glob
 import os
 import numpy as np
+import tkinter as tk
 
 import Detection_Handler.Line_Handler as ln_h
 import Detection_Handler.Car_Handler as car_h
 import Detection_Handler.Parking_Handler as park_h
 import Detection_Handler.Boundaries_Handler as bd_h
 
-frameSize = (700, 500)
+frameSize = (600, 500)
 val_dict = {
     "Border": 1,
     "Path": 2,
@@ -42,7 +43,7 @@ class Detection_controller(metaclass=Singleton):
     def __init__(self):
         self.num_of_frame_for_stabiliztion = 0
         self.counter = 0
-        self.src_video = cv2.VideoCapture(url)
+        self.src_video = cv2.VideoCapture(0)
         self.out_video = cv2.VideoWriter('Resources/Amir_Test/output_video.avi', cv2.VideoWriter_fourcc(*'DIVX'), 24,
                                     frameSize)
         self.matrix = np.zeros(frameSize)
@@ -90,3 +91,26 @@ class Detection_controller(metaclass=Singleton):
         # Display the concatenated frame
         cv2.imshow('Autonomous Car', h_concat)
         return processed_frame, matrix
+
+    def create_buttons(self):
+        def on_button1_click():
+            print("Button 1 clicked!")
+
+        def on_button2_click():
+            print("Button 2 clicked!")
+
+        root = tk.Tk()
+        root.geometry("30x500+83+103")
+        root.wm_attributes("-topmost", 1)
+
+        # Create Button 1 with text "Button 1" and bind it to the on_button1_click() function
+        button1 = tk.Button(root, text="Parking", command=on_button1_click, width=45, height=3, bg="green", font=("Arial", 16))
+        button1.pack()
+
+        # Create Button 2 with text "Button 2" and bind it to the on_button2_click() function
+        button2 = tk.Button(root, text="Stop", command=on_button2_click, width=45, height=3, bg="red", font=("Arial", 16))
+        button2.pack()
+
+        # Start the tkinter event loop
+        root.mainloop()
+
