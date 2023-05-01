@@ -17,7 +17,7 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://192.168.1.215:8080/video"
+url = "http://192.168.1.250:8080/video"
 
 
 class Singleton(type):
@@ -91,3 +91,9 @@ class Detection_controller(metaclass=Singleton):
         # Display the concatenated frame
         cv2.imshow('Autonomous Car', h_concat)
         return processed_frame, matrix
+
+    def get_matrix(self):
+        return self.matrix
+
+    def get_matrix_size(self):
+        return frameSize
