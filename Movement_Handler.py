@@ -69,3 +69,20 @@ def car_movement(matrix):
         new_matrix[car.position[0]][car.position[1]] = VAL_DICT["Robot"]
 
     return new_matrix
+
+
+def update_car_direction(car, prev_car_position):
+    """
+    Update the car's direction based on the current and previous positions.
+
+    :param car: Car object
+    :param prev_car_position: Tuple of previous car position in matrix
+    """
+    if car.position[0] == prev_car_position[0] and car.position[1] > prev_car_position[1]:
+        car.direction = DIRECTIONS.Right
+    elif car.position[0] == prev_car_position[0] and car.position[1] < prev_car_position[1]:
+        car.direction = DIRECTIONS.Left
+    elif car.position[0] > prev_car_position[0] and car.position[1] == prev_car_position[1]:
+        car.direction = DIRECTIONS.Down
+    elif car.position[0] < prev_car_position[0] and car.position[1] == prev_car_position[1]:
+        car.direction = DIRECTIONS.Up
