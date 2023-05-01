@@ -93,7 +93,6 @@ class Detection_controller(metaclass=Singleton):
         cv2.imshow('Autonomous Car', h_concat)
         return processed_frame, matrix
 
-
     def get_matrix(self):
         return self.matrix
 
@@ -112,13 +111,14 @@ class Detection_controller(metaclass=Singleton):
         root.wm_attributes("-topmost", 1)
 
         # Create Button 1 with text "Button 1" and bind it to the on_button1_click() function
-        button1 = tk.Button(root, text="Parking", command=on_button1_click, width=45, height=3, bg="green", font=("Arial", 16))
+        button1 = tk.Button(root, text="Parking", command=on_button1_click, width=45, height=3, bg="green",
+                            font=("Arial", 16))
         button1.pack()
 
         # Create Button 2 with text "Button 2" and bind it to the on_button2_click() function
-        button2 = tk.Button(root, text="Stop", command=on_button2_click, width=45, height=3, bg="red", font=("Arial", 16))
+        button2 = tk.Button(root, text="Stop", command=on_button2_click, width=45, height=3, bg="red",
+                            font=("Arial", 16))
         button2.pack()
 
         # Start the tkinter event loop
         root.mainloop()
-
