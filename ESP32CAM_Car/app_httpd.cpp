@@ -38,6 +38,7 @@ typedef struct {
 } jpg_chunking_t;
 
 #define PART_BOUNDARY "123456789000000000000987654321"
+#define SLEEP_TIME 50000
 static const char* _STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
 static const char* _STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
 static const char* _STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %u\r\n\r\n";
@@ -327,37 +328,46 @@ static esp_err_t index_handler(httpd_req_t *req){
  
     return httpd_resp_send(req, &page[0], strlen(&page[0]));
 }
-static esp_err_t go_handler(httpd_req_t *req){
+static esp_err_t go_handler(httpd_req_t* req) {
     WheelAct(HIGH, LOW, HIGH, LOW);
+    after_movement();
     Serial.println("Go");
     httpd_resp_set_type(req, "text/html");
     return httpd_resp_send(req, "OK", 2);
 }
-static esp_err_t back_handler(httpd_req_t *req){
+static esp_err_t back_handler(httpd_req_t* req) {
     WheelAct(LOW, HIGH, LOW, HIGH);
+    after_movement();
     Serial.println("Back");
     httpd_resp_set_type(req, "text/html");
     return httpd_resp_send(req, "OK", 2);
 }
 
-static esp_err_t left_handler(httpd_req_t *req){
+static esp_err_t left_handler(httpd_req_t* req) {
     WheelAct(HIGH, LOW, LOW, HIGH);
+    after_movement();
     Serial.println("Left");
     httpd_resp_set_type(req, "text/html");
     return httpd_resp_send(req, "OK", 2);
 }
-static esp_err_t right_handler(httpd_req_t *req){
+static esp_err_t right_handler(httpd_req_t* req) {
     WheelAct(LOW, HIGH, HIGH, LOW);
+    after_movement();
     Serial.println("Right");
     httpd_resp_set_type(req, "text/html");
     return httpd_resp_send(req, "OK", 2);
 }
 
-static esp_err_t stop_handler(httpd_req_t *req){
+static esp_err_t stop_handler(httpd_req_t* req) {
     WheelAct(LOW, LOW, LOW, LOW);
     Serial.println("Stop");
     httpd_resp_set_type(req, "text/html");
     return httpd_resp_send(req, "OK", 2);
+}
+
+static void after_movement() {
+    usleep(SLEEP_TIME);
+    WheelAct(LOW, LOW, LOW, LOW);
 }
 
 static esp_err_t ledon_handler(httpd_req_t *req){
