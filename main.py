@@ -4,7 +4,6 @@ import os
 import numpy as np
 import threading
 
-
 from ESP32CAM_Car.MovementAPI import move
 import Detection_Handler.Detection_controller as logic
 
@@ -17,7 +16,6 @@ def main():
     # Create a thread for the GUI
     gui_thread = threading.Thread(target=image_logic.create_buttons)
     gui_thread.start()
-
 
 
 if __name__ == '__main__':

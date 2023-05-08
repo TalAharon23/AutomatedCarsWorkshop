@@ -215,7 +215,7 @@ print_mem_stats (j_common_ptr cinfo, int pool_id)
 
 LOCAL(void)
 out_of_memory (j_common_ptr cinfo, int which)
-/* Report an out-of-memory error and stop execution */
+/* Report an out-of-memory error and parking execution */
 /* If we compiled MEM_STATS support, report alloc requests before dying */
 {
 #ifdef MEM_STATS

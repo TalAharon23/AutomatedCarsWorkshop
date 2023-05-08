@@ -1,7 +1,15 @@
 import requests
 import time
 
-ESP32_ADDR = '192.168.1.249'
+ESP32_ADDR = '172.20.10.3'
+
+
+class MOVE_COMMANDS:
+    Forward = "go"
+    Left = "left"
+    Right = "right"
+    Back = "back"
+
 
 # ESP32_ADDR = ''
 
@@ -27,6 +35,7 @@ def move(direction: str):
     else:
         print(f'Failed to move the car {direction}.')
 
+
 # EXAMPLE:
 # def movement():
 #     # Move forward for 2 seconds
@@ -34,7 +43,7 @@ def move(direction: str):
 #     time.sleep(0.1)
 #
 #     # Turn right
-#     move("stop")
+#     move("parking")
 #     time.sleep(0.3)  # Adjust this time as needed
 #
 #     # Move forward for 2 seconds
@@ -49,8 +58,8 @@ def move(direction: str):
 #     move("right")
 #     time.sleep(0.3)
 #
-#     # Stop the car
-#     move("stop")
+#     # parking the car
+#     move("parking")
 
 
 # def main():

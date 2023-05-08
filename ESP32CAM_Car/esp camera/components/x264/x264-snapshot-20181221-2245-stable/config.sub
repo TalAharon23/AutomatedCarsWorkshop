@@ -92,7 +92,7 @@ while test $# -gt 0 ; do
        echo "$version" ; exit ;;
     --help | --h* | -h )
        echo "$usage"; exit ;;
-    -- )     # Stop option processing
+    -- )     # parking option processing
        shift; break ;;
     - )	# Use stdin as input.
        break ;;
@@ -903,9 +903,9 @@ case $basic_machine in
 		basic_machine=i960-intel
 		os=-mon960
 		;;
-	nonstopux)
+	nonparkingux)
 		basic_machine=mips-compaq
-		os=-nonstopux
+		os=-nonparkingux
 		;;
 	np1)
 		basic_machine=np1-gould
@@ -1374,7 +1374,7 @@ case $os in
 	      | -linux-newlib* | -linux-musl* | -linux-uclibc* \
 	      | -uxpv* | -beos* | -mpeix* | -udk* \
 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
-	      | -openstep* | -oskit* | -conix* | -pw32* | -nonstopux* \
+	      | -openstep* | -oskit* | -conix* | -pw32* | -nonparkingux* \
 	      | -storm-chaos* | -tops10* | -tenex* | -tops20* | -its* \
 	      | -os2* | -vos* | -palmos* | -uclinux* | -nucleus* \
 	      | -morphos* | -superux* | -rtmk* | -rtmk-nova* | -windiss* \

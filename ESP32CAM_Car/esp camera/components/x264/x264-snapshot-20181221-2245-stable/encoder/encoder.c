@@ -3246,7 +3246,7 @@ int     x264_encoder_encode( x264_t *h,
     {
         if( h->lookahead->b_exit_thread )
         {
-            x264_log( h, X264_LOG_ERROR, "lookahead thread is already stopped\n" );
+            x264_log( h, X264_LOG_ERROR, "lookahead thread is already parkingped\n" );
             return -1;
         }
 
