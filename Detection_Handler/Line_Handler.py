@@ -12,7 +12,7 @@ def Find_Lines(frame, matrix, frameSize, mask, val_dict):
     # image = cv2.imread('Resources/Amir_Test/lines.jpg')
     image = frame
     line_color = (0, 255, 0)
-
+    matrix_value = 0
     # Convert image to HSV
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
@@ -26,12 +26,14 @@ def Find_Lines(frame, matrix, frameSize, mask, val_dict):
         mask1 = cv2.inRange(hsv, lower_red, upper_red)
         mask2 = cv2.inRange(hsv, lower_red2, upper_red2)
         mask = mask1 + mask2
+        matrix_value = 2
 
     elif mask == 'Border':
         lower_blue = np.array([90, 50, 50])
         upper_blue = np.array([130, 255, 255])
         mask = cv2.inRange(hsv, lower_blue, upper_blue)
         line_color = (255, 255, 0)  # Print different color for border lines.
+        matrix_value = 1
 
     # Use canny edge detection
     edges = cv2.Canny(mask, 50, 150, apertureSize=3)
@@ -45,37 +47,20 @@ def Find_Lines(frame, matrix, frameSize, mask, val_dict):
         np.pi / 180,  # Angle resolution in radians
         threshold=80,  # Min number of votes for valid line
         minLineLength=0,  # Min allowed length of line
-        maxLineGap=4  # Max allowed gap between line for joining them
+        maxLineGap=60  # Max allowed gap between line for joining them
     )
 
-    # Iterate over points
     if lines is not None:
-        for points in lines:
-            # Extracted points nested in the list
-            x1, y1, x2, y2 = points[0]
+        for line in lines:
+            x1, y1, x2, y2 = line[0]
 
-            big_X = x2
-            small_x = x1
-            big_y = y2
-            small_y = y1
-            if x1 > x2:
-                big_X = x1
-                small_x = x2
-            if y1 > y2:
-                big_y = y1
-                small_y = y2
-            while small_y <= big_y and small_x <= big_X:
-                if matrix[small_x, small_y] != 1:
-                    # print(mask)
-                    matrix[small_x, small_y] = 1
-                if small_x <= big_X:
-                    small_x += 1
-                if small_y <= big_y:
-                    small_y += 1
+            # Draw the line on the matrix
+            cv2.line(matrix, (x1, y1), (x2, y2), (255), 1)
 
             # for iter_x in range(big_X - small_x):
             #    for iter_y in range(big_y - small_y):
             #        matrix[small_x + iter_x, small_y + iter_y] = 1
+
             # Draw the lines joing the points
             # On the original image
             cv2.line(image, (x1, y1), (x2, y2), line_color, 2)
@@ -84,5 +69,3 @@ def Find_Lines(frame, matrix, frameSize, mask, val_dict):
 
     # Save the result image
     return matrix, image
-
-

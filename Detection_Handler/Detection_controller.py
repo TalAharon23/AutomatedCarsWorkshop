@@ -3,13 +3,14 @@ import glob
 import os
 import numpy as np
 import tkinter as tk
+import matplotlib.pyplot as plt
 
 import Detection_Handler.Line_Handler as ln_h
 import Detection_Handler.Car_Handler as car_h
 import Detection_Handler.Parking_Handler as park_h
 import Detection_Handler.Boundaries_Handler as bd_h
 
-frameSize = (600, 500)
+frameSize = (900, 900)
 val_dict = {
     "Border": 1,
     "Path": 2,
@@ -18,7 +19,7 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://192.168.253.90:8080/video"
+url = "http://192.168.253.74:8080/video"
 
 
 class Singleton(type):
@@ -49,6 +50,8 @@ class Detection_controller(metaclass=Singleton):
                                          frameSize)
         self.matrix = np.zeros(frameSize)
         self.frame_array = []
+        self.flag = True
+        self.framenum = 0
 
     def scan_video(self):
         while (self.src_video.isOpened()):
@@ -78,20 +81,36 @@ class Detection_controller(metaclass=Singleton):
         # Closes all the windows currently opened.
         cv2.destroyAllWindows()
 
+    def print_matrix(self, matrix):
+        """for rows in range(matrix.shape[0]):
+            for cols in range(matrix.shape[1]):
+                print(str(matrix[rows][cols]) + " ")
+            print()"""
+        np.set_printoptions(threshold=np.inf)
+
+        # print the matrix
+        # print(matrix)
+        matrix_scaled = cv2.normalize(matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
+        cv2.imwrite("matrix_image" + str(self.framenum) + ".jpg", matrix_scaled)
+
     def scan_frame(self, frame):
         frame = cv2.resize(frame, frameSize, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
         origin_frame = frame.copy()
-        processed_frame = ln_h.Find_Lines(frame, self.matrix, frameSize, mask_line, val_dict)[1]  # Find lines
+        # processed_frame = ln_h.Find_Lines(frame, self.matrix, frameSize, mask_line, val_dict)[1q]  # Find path
         processed_frame = ln_h.Find_Lines(frame, self.matrix, frameSize, mask_border, val_dict)[1]  # Find borders
-        processed_frame, matrix = park_h.Find_Parking(frame, self.matrix, frameSize)  # Find parking spot
-        # processed_frame = car_h.Find_Car(frame, matrix, frameSize)[1]
+        # processed_frame, matrix = park_h.Find_Parking(frame, self.matrix, frameSize, val_dict)  # Find parking spot
+        processed_frame = car_h.Find_Car(frame, self.matrix, frameSize)[1]
 
+        matrix_scaled = cv2.normalize(self.matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
+        cv2.imwrite('color_img.jpg', matrix_scaled)
+        cv2.rotate(matrix_scaled, cv2.ROTATE_90_CLOCKWISE)
+        cv2.imshow('Color image', matrix_scaled)
         # Display the resulting frame
         h_concat = np.hstack((origin_frame, processed_frame))
 
         # Display the concatenated frame
         cv2.imshow('Autonomous Car', h_concat)
-        return processed_frame, matrix
+        return processed_frame, self.matrix
 
     def get_matrix(self):
         return self.matrix
