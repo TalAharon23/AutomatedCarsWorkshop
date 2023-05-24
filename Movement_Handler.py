@@ -1,4 +1,6 @@
 from ESP32CAM_Car.Movement import move
+from .Detection_Handler.Detection_controller import Detection_controller as DC
+
 
 VAL_DICT = {
     "Empty": 0,
@@ -27,6 +29,7 @@ class Car:
     def __init__(self, position, direction):
         self.position = position
         self.direction = direction
+        self.image_handler = DC()
 
     def get_position(self):
         return self.position
