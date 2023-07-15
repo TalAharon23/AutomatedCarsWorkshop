@@ -10,7 +10,8 @@ import Detection_Handler.Car_Handler as car_h
 import Detection_Handler.Parking_Handler as park_h
 import Detection_Handler.Boundaries_Handler as bd_h
 
-frameSize = (650, 650)
+frameSize = (900, 900)
+# frameSize = (650, 650) # For using laptop only
 val_dict = {
     "Border": 1,
     "Path": 2,
