@@ -15,8 +15,8 @@ def main():
     video_thread = threading.Thread(target=image_logic.scan_video)
     video_thread.start()
     # Create a thread for the GUI
-    gui_thread = threading.Thread(target=image_logic.create_buttons)
-    gui_thread.start()
+    # gui_thread = threading.Thread(target=image_logic.create_buttons)
+    # gui_thread.start()
 
 
 
