@@ -5,6 +5,7 @@ import numpy as np
 import tkinter as tk
 import matplotlib.pyplot as plt
 
+import Data_Structures
 import Detection_Handler.Line_Handler as ln_h
 import Detection_Handler.Car_Handler as car_h
 import Detection_Handler.Parking_Handler as park_h
@@ -54,7 +55,7 @@ class Detection_controller(metaclass=Singleton):
         self.flag = True
         self.framenum = 0
 
-    def scan_video(self):
+    def scan_video(self, car):
         while (self.src_video.isOpened()):
             # Capture frame-by-frame
             ret, frame = self.src_video.read()
@@ -66,9 +67,9 @@ class Detection_controller(metaclass=Singleton):
                 # self.matrix = bd_h.Create_Template(self.frame_array)
                 pass
             elif self.counter < 6:
-                self.frame_array.append(self.scan_frame(frame))
+                self.frame_array.append(self.scan_frame(frame, car))
             elif self.counter % 3 == 0:
-                processed_frame = self.scan_frame(frame)[0]
+                processed_frame = self.scan_frame(frame, car)[0]
                 self.out_video.write(processed_frame)
 
             self.counter += 1
@@ -94,13 +95,13 @@ class Detection_controller(metaclass=Singleton):
         matrix_scaled = cv2.normalize(matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
         cv2.imwrite("matrix_image" + str(self.framenum) + ".jpg", matrix_scaled)
 
-    def scan_frame(self, frame):
+    def scan_frame(self, frame, car):
         frame = cv2.resize(frame, frameSize, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
         origin_frame = frame.copy()
         # processed_frame = ln_h.Find_Lines(frame, self.matrix, frameSize, mask_line, val_dict)[1q]  # Find path
         processed_frame = ln_h.Find_Lines(frame, self.matrix, frameSize, mask_border, val_dict)[1]  # Find borders
         # processed_frame, matrix = park_h.Find_Parking(frame, self.matrix, frameSize, val_dict)  # Find parking spot
-        processed_frame = car_h.Find_Car(frame, self.matrix, frameSize)[1]
+        processed_frame = car_h.Find_Car(frame, self.matrix, frameSize, car)[1]
 
         matrix_scaled = cv2.normalize(self.matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
         cv2.imwrite('color_img.jpg', matrix_scaled)

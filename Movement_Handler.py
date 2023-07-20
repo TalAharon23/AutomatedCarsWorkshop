@@ -1,15 +1,6 @@
 from ESP32CAM_Car.Movement import move
 from .Detection_Handler.Detection_controller import Detection_controller as DC
-
-
-VAL_DICT = {
-    "Empty": 0,
-    "Border": 1,
-    "Path": 2,
-    "Parking_slot": 3,
-    "Robot": 4
-}
-
+import Data_Structures
 
 class MOVE_COMMANDS:
     Forward = "go"
@@ -25,18 +16,6 @@ class DIRECTIONS:
     Down = "Down"
 
 
-class Car:
-    def __init__(self, position, direction):
-        self.position = position
-        self.direction = direction
-        self.image_handler = DC()
-
-    def get_position(self):
-        return self.position
-
-    def get_direction(self):
-        return self.direction
-
 
 def get_car_position_in_matrix(matrix):
     for i in range(len(matrix)):
@@ -47,7 +26,7 @@ def get_car_position_in_matrix(matrix):
 
 
 def car_movement(matrix):
-    car = Car(get_car_position_in_matrix(matrix), DIRECTIONS.Right)
+    car = Car()
     new_matrix = duplicate_matrix(matrix)
 
     while matrix[car.position[0]][car.position[1]] == VAL_DICT["Path"]:

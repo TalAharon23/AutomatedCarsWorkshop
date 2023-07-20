@@ -1,31 +1,16 @@
 import cv2
 import numpy as np
 from scipy.spatial import distance
+import Data_Structures
 
-class contour_data:
-    def __init__(self, width, length, color_name, rice):
-        self.width = width
-        self.length = length
-        self.color_name = color_name
-        self.rice = rice
+upside_left_corner = (0, 0)
 
-def Find_Car(frame, matrix, frameSize):
+def Find_Car(frame, matrix, frameSize, car):
     # Convert the frame to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     cv2.rectangle(gray, (150, 400), (150 + 70, 400 + 10), (255), 2)
-
-
-    # # Threshold the grayscale image to create a binary image
-    # _, thresh = cv2.threshold(gray, 20, 255, cv2.THRESH_BINARY)
-    #
-    # # Dilate the binary image to fill in any gaps
-    # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
-    # dilated = cv2.dilate(thresh, kernel, iterations=2)
-
-
-    output_adapthresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 51, 0)
-
-    kernel = np.ones((3, 3), np.uint8)
+    # output_adapthresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 51, 0)
+    # kernel = np.ones((3, 3), np.uint8)
     # output_erosion = cv2.erode(output_adapthresh, kernel, iterations = 12)
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
@@ -87,23 +72,22 @@ def Find_Car(frame, matrix, frameSize):
                                   'top_right': top_right, 'contour' : contour})
                 elif avg_intensity > 110 and avg_intensity < 160:
                     red_rices.append({'class': 'class2', 'box': rice, 'color': (0, 0, 255), 'width': width, 'color_name': 'red',
-                                  'top_right': top_right, 'contour' : contour})
+                                  'top_right': top_right, 'contour': contour})
                 else:
                     black_rices.append({'class': 'class3', 'box': rice, 'color': (0, 0, 0), 'width': width, 'color_name': 'black',
-                                  'top_right': top_right, 'contour' : contour})
+                                  'top_right': top_right, 'contour': contour})
 
     find_pairs(paired_rices=paired_rices, rices=red_rices)
     find_pairs(paired_rices=paired_rices, rices=black_rices)
-    # robot_rice = find_robot(paired_rices)
 
     for paired_rice in paired_rices:
         cv2.drawContours(frame, paired_rice[0]['box'], -1, paired_rice[0]['color'], 1)
-        cv2.drawContours(matrix, paired_rice[0]['box'], -1, (255), 1)
+        # cv2.drawContours(matrix, paired_rice[0]['box'], -1, (255), 1)
         cv2.putText(frame, "{:}".format(paired_rice[0]['color_name']),
                     (paired_rice[0]['top_right'][0] - 10, paired_rice[0]['top_right'][1] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
                     (255, 255, 255), 1)
         cv2.drawContours(frame, paired_rice[1]['box'], -1, paired_rice[0]['color'], 1)
-        cv2.drawContours(matrix, paired_rice[1]['box'], -1, (255), 1)
+        # cv2.drawContours(matrix, paired_rice[1]['box'], -1, (255), 1)
         cv2.putText(frame, "{:}".format(paired_rice[1]['color_name']),
                     (paired_rice[1]['top_right'][0] - 10, paired_rice[1]['top_right'][1] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
                     (255, 255, 255), 1)
@@ -111,10 +95,22 @@ def Find_Car(frame, matrix, frameSize):
     find_robot(robot_rices, paired_rices)
     for robot_rice in robot_rices:
         boundries = get_bounding_box(robot_rice[0][0]['box'])
+        # Draws a rectangle on the front of the robot
         cv2.rectangle(frame, boundries[0], boundries[1], (0, 255, 0), 2)
-        cv2.rectangle(matrix, boundries[0], boundries[1], (255), 2)
-        # cv2.drawContours(frame, paired_rice[0]['box'], -1, paired_rice[0]['color'], 1)
-        # cv2.drawContours(matrix, paired_rice[0]['box'], -1, (255), 1)
+        cv2.drawContours(matrix, robot_rice[0][0]['box'], -1, (255), 1)
+        moment = cv2.moments(robot_rice[0][0]['contour'])
+        centroid_x = int(moment["m10"] / moment["m00"])
+        centroid_y = int(moment["m01"] / moment["m00"])
+        contour_centroid = (centroid_x, centroid_y)
+        dx = upside_left_corner[0] - contour_centroid[0]
+        dy = upside_left_corner[1] - contour_centroid[1]
+        angle_radians = np.arctan2(dy, dx)
+        angle_degrees = np.degrees(angle_radians)
+        if angle_degrees < 0:
+            angle_degrees += 360
+        car.set_position(boundries[0])
+        car.set_direction(int(round(angle_degrees)))
+        print(int(round(angle_degrees)))
         cv2.putText(frame, "{:}".format('Front'),
                     (boundries[0][0] - 10, boundries[2][0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
                     (255, 255, 255), 1)
@@ -181,3 +177,10 @@ def get_bounding_box(pairs):
 
     bounding_box = [[min_x, min_y], [max_x, max_y], [max_x, min_y], [min_x, max_y]]
     return bounding_box
+
+def find_center(point1, point2):
+    x1, y1 = point1
+    x2, y2 = point2
+    center_x = (x1 + x2) / 2
+    center_y = (y1 + y2) / 2
+    return (center_x, center_y)

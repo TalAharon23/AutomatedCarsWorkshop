@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 
+import Data_Structures
+
 
 def Find_Lines(frame, matrix, frameSize, mask, val_dict):
     # Load the image

@@ -1,16 +1,7 @@
 import sys
 import queue
 
-
-class Cell:
-    def __init__(self, x, y, dist, prev):
-        self.x = x
-        self.y = y
-        self.dist = dist;  # distance to start
-        self.prev = prev;  # parent cell in the path
-
-    def __str__(self):
-        return "(" + str(self.x) + "," + str(self.y) + ")"
+import Data_Structures
 
 
 class ShortestPathBetweenCellsBFS:
