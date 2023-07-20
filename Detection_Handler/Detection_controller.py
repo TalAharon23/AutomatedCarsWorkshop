@@ -11,6 +11,7 @@ import Detection_Handler.Parking_Handler as park_h
 import Detection_Handler.Boundaries_Handler as bd_h
 
 frameSize = (900, 900)
+# frameSize = (650, 650) # For using laptop only
 val_dict = {
     "Border": 1,
     "Path": 2,
@@ -19,7 +20,7 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://192.168.253.74:8080/video"
+url = "http://192.168.212.147:8080/video"
 
 
 class Singleton(type):
