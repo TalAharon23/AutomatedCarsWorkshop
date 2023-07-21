@@ -6,11 +6,18 @@ VAL_DICT = {
     "Robot": 4
 }
 
+class Singleton(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
 
 class Car:
     def __init__(self, position=None, direction=None):
-        self.position = position
-        self.direction = direction
+        self.position       = position
+        self.direction      = direction
 
     def get_position(self):
         return self.position
@@ -23,6 +30,23 @@ class Car:
 
     def set_direction(self, new_direction):
         self.direction = new_direction
+
+
+class Parking_Slots(metaclass=Singleton):
+    def __init__(self, position=None, direction=None):
+        self.parking_slots = []
+
+    def get_parking_solts(self):
+        return self.parking_slots
+
+    def clean_parking_solts(self):
+        self.parking_slots.clear()
+
+    def remove_slot(self, slot):
+        self.parking_slots.remove(slot)
+
+    def save_slot(self, slot):
+        self.parking_slots.append(slot)
 
 
 class Cell:
