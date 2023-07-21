@@ -4,17 +4,14 @@ import queue
 import Data_Structures
 
 
-class ShortestPathBetweenCellsBFS:
+class BFS:
     # BFS, Time O(n^2), Space O(n^2)
     def shortestPath(self, matrix, start, end):
         sx = start[0]
         sy = start[1]
         dx = end[0]
         dy = end[1]
-        # if start or end value is 0, return
-        if matrix[sx][sy] == 0 or matrix[dx][dy] == 0:
-            print("There is no path.")
-            return
+
         # initialize the cells
         m = len(matrix)
         n = len(matrix[0])
@@ -22,7 +19,7 @@ class ShortestPathBetweenCellsBFS:
         for i in range(0, m):
             row = []
             for j in range(0, n):
-                if matrix[i][j] != 0:
+                if matrix[i][j] == 0:
                     row.append(Cell(i, j, sys.maxsize, None))
                 else:
                     row.append(None)
@@ -61,8 +58,7 @@ class ShortestPathBetweenCellsBFS:
             while p != None:
                 path.insert(0, p)
                 p = p.prev
-            for i in path:
-                print(i)
+            return path
 
     # function to update cell visiting status, Time O(1), Space O(1)
     def visit(self, cells, queue, x, y, parent):
