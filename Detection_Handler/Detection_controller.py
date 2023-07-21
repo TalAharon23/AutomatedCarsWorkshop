@@ -1,9 +1,5 @@
 import cv2
-import glob
-import os
 import numpy as np
-import tkinter as tk
-import matplotlib.pyplot as plt
 
 import Data_Structures
 import Detection_Handler.Line_Handler as ln_h
@@ -68,9 +64,9 @@ class Detection_controller(metaclass=Singleton):
             if q == ord("q"):
                 break
 
-        out_video.release()
+        self.out_video.release()
         # release the src_video capture object
-        src_video.release()
+        self.src_video.release()
         # Closes all the windows currently opened.
         cv2.destroyAllWindows()
 
