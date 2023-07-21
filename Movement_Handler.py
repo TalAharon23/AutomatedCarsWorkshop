@@ -26,6 +26,7 @@ class Movement_Handler():
         self.car_arrived_to_destination         = False
         self.parking_slot_dest                  = None
         self.parking_slots                      = Parking_Slots()
+        self.in_process                         = False
 
     def get_car_position(self):
         return self.car.get_position()
@@ -37,8 +38,14 @@ class Movement_Handler():
                     return i, j
         raise ValueError("Matrix does not contain the car.")
 
+    def get_in_process(self):
+        return self.in_process
+
+    def set_in_process(self, value):
+        self.in_process = value
+
     def make_one_step(self):
-        while
+        pass
 
     def set_parking_slot_destination(self):
         chosen_slot = self.parking_slots[0]

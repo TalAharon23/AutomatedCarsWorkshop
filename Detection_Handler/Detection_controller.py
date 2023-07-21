@@ -35,14 +35,6 @@ class Singleton(type):
 
 # main class
 class Detection_controller(metaclass=Singleton):
-    # Use this line for saved video:
-    # src_video = cv2.VideoCapture('Resources/Amir_Test/sample.mp4')
-    # Real time video from the phone camera
-    # src_video = None
-    # matrix = None
-    # num_of_frame_for_stabiliztion = 0
-    # Processed video from our models (output video in the end of the app)
-    # out_video = None
 
     def __init__(self):
         self.num_of_frame_for_stabiliztion          = 0
@@ -55,6 +47,7 @@ class Detection_controller(metaclass=Singleton):
         self.flag                                   = True
         self.framenum                               = 0
 
+
     def scan_video(self, car):
         while (self.src_video.isOpened()):
             # Capture frame-by-frame
@@ -62,7 +55,6 @@ class Detection_controller(metaclass=Singleton):
             # Assuming it failed to read only the last frame - video end
             if not ret:
                 break
-
             if self.counter == 6:
                 # self.matrix = bd_h.Create_Template(self.frame_array)
                 pass
@@ -71,13 +63,12 @@ class Detection_controller(metaclass=Singleton):
             elif self.counter % 3 == 0:
                 processed_frame = self.scan_frame(frame, car)[0]
                 self.out_video.write(processed_frame)
-
             self.counter += 1
             q = cv2.waitKey(1)
             if q == ord("q"):
                 break
-        out_video.release()
 
+        out_video.release()
         # release the src_video capture object
         src_video.release()
         # Closes all the windows currently opened.
