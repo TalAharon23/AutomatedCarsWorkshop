@@ -3,6 +3,8 @@ from .Detection_Handler.Detection_controller import Detection_controller
 import Data_Structures
 import BFS_Logic
 
+RIGHT_LEFT_DEGREE = 5
+
 class MOVE_COMMANDS:
     Forward = "go"
     Left = "left"
@@ -44,50 +46,48 @@ class Movement_Handler():
     def set_in_process(self, value):
         self.in_process = value
 
-    def make_one_step(self):
-        pass
-
     def set_parking_slot_destination(self):
         chosen_slot = self.parking_slots[0]
         nearest_parking_slot_path = None
         dist_nearest_parking_slot = len(nearest_parking_slot_path)
         for slot in self.parking_slots:
-            nearest_parking_slot_path = self.BFS_Logic.shortestPath(get_matrix, self.car.get_position(), self.slot)
+            nearest_parking_slot_path = self.BFS_Logic.shortestPath(Detection_controller.get_matrix(), self.car.get_position(), self.slot)
             if len(nearest_parking_slot_path) < dist_nearest_parking_slot:
                 dist_nearest_parking_slot = len(nearest_parking_slot_path)
                 chosen_slot = slot
 
         self.parking_slot_dest = chosen_slot
 
-    # def car_movement(matrix):
-    #     car = Car()
-    #     new_matrix = duplicate_matrix(matrix)
-    #
-    #     while matrix[car.position[0]][car.position[1]] == VAL_DICT["Path"]:
-    #         move(MOVE_COMMANDS.Forward)
-    #
-    #         # Check if the car went out of line or hit an empty cell
-    #         if not car.in_bounds(new_matrix) or new_matrix[car.position[0]][car.position[1]] == VAL_DICT["Empty"]:
-    #             path_positions = find_positions(new_matrix, VAL_DICT["Path"])
-    #             path_positions.remove(car.position)
-    #
-    #             # Try to turn right
-    #             right_pos = car.right()
-    #             if right_pos in path_positions:
-    #                 move(MOVE_COMMANDS.Right)
-    #             else:
-    #                 # Try to turn left
-    #                 left_pos = car.left()
-    #                 if left_pos in path_positions:
-    #                     move(MOVE_COMMANDS.Left)
-    #
-    #         # Update the car position in the new matrix
-    #         new_matrix[car.position[0]][car.position[1]] = VAL_DICT["Robot"]
-    #
-    #     return new_matrix
+
+    def car_movement(self, matrix):
+        path = self.BFS_Logic.shortestPath(Detection_controller.get_matrix(), self.car.get_position(),
+                                           self.parking_slot_dest)
+        # understand the next cell
+        # update car angle commands needed
+        # move to the right angle
+        # move forward for the next cell (maybe we will decide that can move few steps forward)
 
 
-    def update_car_direction(car, prev_car_position):
+
+    def update_car_angle(self, car, next_direction):
+        """
+        :param car: object car for getting current angle of car
+        :param next_direction: next direction in degrees (if right needed, it would be 180)
+        :return: move command value (left/right) and num of steps that need to be done
+        """
+        num_of_degrees = abs(car.direction - next_direction)
+        direction = None
+        if num_of_degrees > 180:
+            num_of_steps = (int)((360 - num_of_degrees)/RIGHT_LEFT_DEGREE)
+            direction = MOVE_COMMANDS.Left
+        else:
+            num_of_steps = (int)((num_of_degrees)/RIGHT_LEFT_DEGREE)
+            direction = MOVE_COMMANDS.Right
+
+        return num_of_steps, direction
+
+
+    def update_car_next_step(self ,car, prev_car_position):
         """
         Update the car's direction based on the current and previous positions.
 
@@ -95,10 +95,10 @@ class Movement_Handler():
         :param prev_car_position: Tuple of previous car position in matrix
         """
         if car.position[0] == prev_car_position[0] and car.position[1] > prev_car_position[1]:
-            car.direction = DIRECTIONS.Right
+            car.next_step = DIRECTIONS.Right
         elif car.position[0] == prev_car_position[0] and car.position[1] < prev_car_position[1]:
-            car.direction = DIRECTIONS.Left
+            car.next_step = DIRECTIONS.Left
         elif car.position[0] > prev_car_position[0] and car.position[1] == prev_car_position[1]:
-            car.direction = DIRECTIONS.Down
+            car.next_step = DIRECTIONS.Down
         elif car.position[0] < prev_car_position[0] and car.position[1] == prev_car_position[1]:
-            car.direction = DIRECTIONS.Up
+            car.next_step = DIRECTIONS.Up

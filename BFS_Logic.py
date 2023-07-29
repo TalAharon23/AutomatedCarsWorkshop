@@ -1,7 +1,7 @@
 import sys
 import queue
 
-import Data_Structures
+from .Data_Structures import *
 
 
 class BFS:
@@ -19,7 +19,7 @@ class BFS:
         for i in range(0, m):
             row = []
             for j in range(0, n):
-                if matrix[i][j] == 0:
+                if matrix[i][j] == Val_dict.EMPTY:
                     row.append(Cell(i, j, sys.maxsize, None))
                 else:
                     row.append(None)

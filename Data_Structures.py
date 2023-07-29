@@ -1,10 +1,28 @@
-VAL_DICT = {
-    "Empty": 0,
-    "Border": 1,
-    "Path": 2,
-    "Parking_slot": 3,
-    "Robot": 4
+# VAL_DICT = {
+#     "Empty": 0,
+#     "Border": 1,
+#     "Path": 2,
+#     "Parking_slot": 3,
+#     "Robot": 4
+# }
+
+DIRECTION_DICT = {
+    "NORTH": 0,
+    "NORTH_EAST": 1,
+    "EAST": 2,
+    "EAST_SOUTH": 3,
+    "SOUTH": 4,
+    "SOUTH_WEST": 5,
+    "WEST": 6,
+    "WEST_NORTH": 7
 }
+
+class Val_dict:
+    EMPTY           = 0
+    BORDER          = 1
+    PARKING_SLOT    = 2
+    Car             = 3
+
 
 class Singleton(type):
     _instances = {}
@@ -15,9 +33,10 @@ class Singleton(type):
         return cls._instances[cls]
 
 class Car:
-    def __init__(self, position=None, direction=None):
-        self.position       = position
-        self.direction      = direction
+    def __init__(self, position=None, direction=None, next_Step=None):
+        self.position               = position
+        self.direction              = direction
+        self.next_step              = next_Step
 
     def get_position(self):
         return self.position
