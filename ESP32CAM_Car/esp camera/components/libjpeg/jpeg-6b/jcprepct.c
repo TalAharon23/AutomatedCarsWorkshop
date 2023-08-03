@@ -63,7 +63,7 @@ typedef struct {
 
 #ifdef CONTEXT_ROWS_SUPPORTED	/* only needed for context case */
   int this_row_group;		/* starting row index of group to process */
-  int next_buf_stop;		/* downsample when we reach this index */
+  int next_buf_parking;		/* downsample when we reach this index */
 #endif
 } my_prep_controller;
 
@@ -91,8 +91,8 @@ start_pass_prep (j_compress_ptr cinfo, J_BUF_MODE pass_mode)
    * These aren't used in non-context mode, so we needn't test which mode.
    */
   prep->this_row_group = 0;
-  /* Set next_buf_stop to stop after two row groups have been read in. */
-  prep->next_buf_stop = 2 * cinfo->max_v_samp_factor;
+  /* Set next_buf_parking to parking after two row groups have been read in. */
+  prep->next_buf_parking = 2 * cinfo->max_v_samp_factor;
 #endif
 }
 
@@ -207,7 +207,7 @@ pre_process_context (j_compress_ptr cinfo,
     if (*in_row_ctr < in_rows_avail) {
       /* Do color conversion to fill the conversion buffer. */
       inrows = in_rows_avail - *in_row_ctr;
-      numrows = prep->next_buf_stop - prep->next_buf_row;
+      numrows = prep->next_buf_parking - prep->next_buf_row;
       numrows = (int) MIN((JDIMENSION) numrows, inrows);
       (*cinfo->cconvert->color_convert) (cinfo, input_buf + *in_row_ctr,
 					 prep->color_buf,
@@ -232,16 +232,16 @@ pre_process_context (j_compress_ptr cinfo,
       if (prep->rows_to_go != 0)
 	break;
       /* When at bottom of image, pad to fill the conversion buffer. */
-      if (prep->next_buf_row < prep->next_buf_stop) {
+      if (prep->next_buf_row < prep->next_buf_parking) {
 	for (ci = 0; ci < cinfo->num_components; ci++) {
 	  expand_bottom_edge(prep->color_buf[ci], cinfo->image_width,
-			     prep->next_buf_row, prep->next_buf_stop);
+			     prep->next_buf_row, prep->next_buf_parking);
 	}
-	prep->next_buf_row = prep->next_buf_stop;
+	prep->next_buf_row = prep->next_buf_parking;
       }
     }
     /* If we've gotten enough data, downsample a row group. */
-    if (prep->next_buf_row == prep->next_buf_stop) {
+    if (prep->next_buf_row == prep->next_buf_parking) {
       (*cinfo->downsample->downsample) (cinfo,
 					prep->color_buf,
 					(JDIMENSION) prep->this_row_group,
@@ -253,7 +253,7 @@ pre_process_context (j_compress_ptr cinfo,
 	prep->this_row_group = 0;
       if (prep->next_buf_row >= buf_height)
 	prep->next_buf_row = 0;
-      prep->next_buf_stop = prep->next_buf_row + cinfo->max_v_samp_factor;
+      prep->next_buf_parking = prep->next_buf_row + cinfo->max_v_samp_factor;
     }
   }
 }

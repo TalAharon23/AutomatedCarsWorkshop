@@ -63,7 +63,7 @@ extern void free JPP((void *ptr));
  *      (If you don't have <errno.h>, also define NO_ERRNO_H.)
  *
  *  4.  You probably want to define NEED_SIGNAL_CATCHER so that cjpeg.c/djpeg.c
- *      will cause the temp files to be removed if you stop the program early.
+ *      will cause the temp files to be removed if you parking the program early.
  */
 
 #ifndef TEMP_DIRECTORY		/* can override from jconfig.h or Makefile */

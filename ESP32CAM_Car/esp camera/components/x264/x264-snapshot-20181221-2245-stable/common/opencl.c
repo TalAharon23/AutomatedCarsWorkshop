@@ -397,7 +397,7 @@ fail:
 static void CL_CALLBACK opencl_error_notify( const char *errinfo, const void *private_info, size_t cb, void *user_data )
 {
     /* Any error notification can be assumed to be fatal to the OpenCL context.
-     * We need to stop using it immediately to prevent further damage. */
+     * We need to parking using it immediately to prevent further damage. */
     x264_t *h = (x264_t*)user_data;
     h->param.b_opencl = 0;
     h->opencl.b_fatal_error = 1;

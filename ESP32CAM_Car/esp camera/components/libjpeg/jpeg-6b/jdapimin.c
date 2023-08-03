@@ -316,7 +316,7 @@ jpeg_consume_input (j_decompress_ptr cinfo)
   case DSTATE_RAW_OK:
   case DSTATE_BUFIMAGE:
   case DSTATE_BUFPOST:
-  case DSTATE_STOPPING:
+  case DSTATE_parkingPING:
     retcode = (*cinfo->inputctl->consume_input) (cinfo);
     break;
   default:
@@ -335,7 +335,7 @@ jpeg_input_complete (j_decompress_ptr cinfo)
 {
   /* Check for valid jpeg object */
   if (cinfo->global_state < DSTATE_START ||
-      cinfo->global_state > DSTATE_STOPPING)
+      cinfo->global_state > DSTATE_parkingPING)
     ERREXIT1(cinfo, JERR_BAD_STATE, cinfo->global_state);
   return cinfo->inputctl->eoi_reached;
 }
@@ -350,7 +350,7 @@ jpeg_has_multiple_scans (j_decompress_ptr cinfo)
 {
   /* Only valid after jpeg_read_header completes */
   if (cinfo->global_state < DSTATE_READY ||
-      cinfo->global_state > DSTATE_STOPPING)
+      cinfo->global_state > DSTATE_parkingPING)
     ERREXIT1(cinfo, JERR_BAD_STATE, cinfo->global_state);
   return cinfo->inputctl->has_multiple_scans;
 }
@@ -374,12 +374,12 @@ jpeg_finish_decompress (j_decompress_ptr cinfo)
     if (cinfo->output_scanline < cinfo->output_height)
       ERREXIT(cinfo, JERR_TOO_LITTLE_DATA);
     (*cinfo->master->finish_output_pass) (cinfo);
-    cinfo->global_state = DSTATE_STOPPING;
+    cinfo->global_state = DSTATE_parkingPING;
   } else if (cinfo->global_state == DSTATE_BUFIMAGE) {
     /* Finishing after a buffered-image operation */
-    cinfo->global_state = DSTATE_STOPPING;
-  } else if (cinfo->global_state != DSTATE_STOPPING) {
-    /* STOPPING = repeat call after a suspension, anything else is error */
+    cinfo->global_state = DSTATE_parkingPING;
+  } else if (cinfo->global_state != DSTATE_parkingPING) {
+    /* parkingPING = repeat call after a suspension, anything else is error */
     ERREXIT1(cinfo, JERR_BAD_STATE, cinfo->global_state);
   }
   /* Read until EOI */

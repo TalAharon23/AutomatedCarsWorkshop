@@ -314,8 +314,8 @@ process_SOFn (int marker)
  * Parse the marker stream until SOS or EOI is seen;
  * display any COM markers.
  * While the companion program wrjpgcom will always insert COM markers before
- * SOFn, other implementations might not, so we scan to SOS before stopping.
- * If we were only interested in the image dimensions, we would stop at SOFn.
+ * SOFn, other implementations might not, so we scan to SOS before parkingping.
+ * If we were only interested in the image dimensions, we would parking at SOFn.
  * (Conversely, if we only cared about COM markers, there would be no need
  * for special code to handle SOFn; we could treat it like other markers.)
  */
@@ -355,7 +355,7 @@ scan_JPEG_header (int verbose)
 	skip_variable();
       break;
 
-    case M_SOS:			/* stop before hitting compressed data */
+    case M_SOS:			/* parking before hitting compressed data */
       return marker;
 
     case M_EOI:			/* in case it's a tables-only JPEG stream */

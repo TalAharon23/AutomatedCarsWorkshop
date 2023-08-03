@@ -23,6 +23,12 @@ extern String WiFiAddr;
 
 void WheelAct(int nLf, int nLb, int nRf, int nRb);
 void save_port_to_file(int port);
+void parking();
+void Forward();
+void Back();
+void Left();
+void Right();
+void Stop();
 
 typedef struct {
         size_t size; //number of values used for filtering
@@ -308,18 +314,18 @@ static esp_err_t index_handler(httpd_req_t *req){
     String page = "";
      page += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">\n";
  page += "<script>var xhttp = new XMLHttpRequest();</script>";
- page += "<script>function getsend(arg) { xhttp.open('GET', arg +'?' + new Date().getTime(), true); xhttp.send() } </script>";
- //page += "<p align=center><IMG SRC='http://" + WiFiAddr + ":81/stream' style='width:280px;'></p><br/><br/>";
- page += "<p align=center><IMG SRC='http://" + WiFiAddr + ":81/stream' style='width:300px; transform:rotate(180deg);'></p><br/><br/>";
+// page += "<script>function getsend(arg) { xhttp.open('GET', arg +'?' + new Date().getTime(), true); xhttp.send() } </script>";
+// //page += "<p align=center><IMG SRC='http://" + WiFiAddr + ":81/stream' style='width:280px;'></p><br/><br/>";
+// page += "<p align=center><IMG SRC='http://" + WiFiAddr + ":81/stream' style='width:300px; transform:rotate(180deg);'></p><br/><br/>";
  
  page += "<p align=center> <button style=background-color:lightgrey;width:90px;height:80px onmousedown=getsend('go') onmouseup=getsend('stop') ontouchstart=getsend('go') ontouchend=getsend('stop') ><b>Forward</b></button> </p>";
  page += "<p align=center>";
  page += "<button style=background-color:lightgrey;width:90px;height:80px; onmousedown=getsend('left') onmouseup=getsend('stop') ontouchstart=getsend('left') ontouchend=getsend('stop')><b>Left</b></button>&nbsp;";
- page += "<button style=background-color:indianred;width:90px;height:80px onmousedown=getsend('stop') onmouseup=getsend('stop')><b>Stop</b></button>&nbsp;";
+ page += "<button style=background-color:indianred;width:90px;height:80px onmousedown=getsend('parking') onmouseup=getsend('stop')><b>parking</b></button>&nbsp;";
  page += "<button style=background-color:lightgrey;width:90px;height:80px onmousedown=getsend('right') onmouseup=getsend('stop') ontouchstart=getsend('right') ontouchend=getsend('stop')><b>Right</b></button>";
  page += "</p>";
 
- page += "<p align=center><button style=background-color:lightgrey;width:90px;height:80px onmousedown=getsend('back') onmouseup=getsend('stop') ontouchstart=getsend('back') ontouchend=getsend('stop') ><b>Backward</b></button></p>";  
+ page += "<p align=center><button style=background-color:lightgrey;width:90px;height:80px onmousedown=getsend('back') onmouseup=getsend('stop') ontouchstart=getsend('back') ontouchend=getsend('stop') ><b>Backward</b></button></p>";
 
  page += "<p align=center>";
  page += "<button style=background-color:yellow;width:140px;height:40px onmousedown=getsend('ledon')><b>Light ON</b></button>";
@@ -329,38 +335,48 @@ static esp_err_t index_handler(httpd_req_t *req){
     return httpd_resp_send(req, &page[0], strlen(&page[0]));
 }
 static esp_err_t go_handler(httpd_req_t* req) {
-    WheelAct(HIGH, LOW, HIGH, LOW);
-    after_movement();
+//    WheelAct(HIGH, LOW, HIGH, LOW);
+//    after_movement();
+    Forward();
     Serial.println("Go");
     httpd_resp_set_type(req, "text/html");
     return httpd_resp_send(req, "OK", 2);
 }
 static esp_err_t back_handler(httpd_req_t* req) {
-    WheelAct(LOW, HIGH, LOW, HIGH);
-    after_movement();
+//    WheelAct(LOW, HIGH, LOW, HIGH);
+//    after_movement();
+    Back();
     Serial.println("Back");
     httpd_resp_set_type(req, "text/html");
     return httpd_resp_send(req, "OK", 2);
 }
 
 static esp_err_t left_handler(httpd_req_t* req) {
-    WheelAct(HIGH, LOW, LOW, HIGH);
-    after_movement();
+//    WheelAct(HIGH, LOW, LOW, HIGH);
+//    after_movement();
+    Left();
     Serial.println("Left");
     httpd_resp_set_type(req, "text/html");
     return httpd_resp_send(req, "OK", 2);
 }
 static esp_err_t right_handler(httpd_req_t* req) {
-    WheelAct(LOW, HIGH, HIGH, LOW);
-    after_movement();
+//    WheelAct(LOW, HIGH, HIGH, LOW);
+//    after_movement();
+    Right();
     Serial.println("Right");
     httpd_resp_set_type(req, "text/html");
     return httpd_resp_send(req, "OK", 2);
 }
 
+static esp_err_t parking_handler(httpd_req_t* req) {
+    parking();
+    Serial.println("parking");
+    httpd_resp_set_type(req, "text/html");
+    return httpd_resp_send(req, "OK", 2);
+}
 static esp_err_t stop_handler(httpd_req_t* req) {
-    WheelAct(LOW, LOW, LOW, LOW);
-    Serial.println("Stop");
+    Stop();
+    Serial.println("stop");
     httpd_resp_set_type(req, "text/html");
     return httpd_resp_send(req, "OK", 2);
 }
@@ -368,6 +384,7 @@ static esp_err_t stop_handler(httpd_req_t* req) {
 static void after_movement() {
     usleep(SLEEP_TIME);
     WheelAct(LOW, LOW, LOW, LOW);
+    usleep(SLEEP_TIME);
 }
 
 static esp_err_t ledon_handler(httpd_req_t *req){
@@ -400,13 +417,18 @@ void startCameraServer(){
         .user_ctx  = NULL
     };
 
-    httpd_uri_t stop_uri = {
-        .uri       = "/stop",
+    httpd_uri_t parking_uri = {
+        .uri       = "/parking",
         .method    = HTTP_GET,
-        .handler   = stop_handler,
+        .handler   = parking_handler,
         .user_ctx  = NULL
     };
-
+    httpd_uri_t stop_url = {
+        .uri       = "/stop",
+        .method    = HTTP_GET,
+        .handler   = parking_handler,
+        .user_ctx  = NULL
+    };
     httpd_uri_t left_uri = {
         .uri       = "/left",
         .method    = HTTP_GET,
@@ -478,7 +500,7 @@ void startCameraServer(){
         httpd_register_uri_handler(camera_httpd, &index_uri);
         httpd_register_uri_handler(camera_httpd, &go_uri); 
         httpd_register_uri_handler(camera_httpd, &back_uri); 
-        httpd_register_uri_handler(camera_httpd, &stop_uri); 
+        httpd_register_uri_handler(camera_httpd, &parking_uri);
         httpd_register_uri_handler(camera_httpd, &left_uri);
         httpd_register_uri_handler(camera_httpd, &right_uri);
         httpd_register_uri_handler(camera_httpd, &ledon_uri);
@@ -504,11 +526,77 @@ void save_port_to_file(int port) // TODO: not working saving file.
 
     printf("Port number saved to port.txt file\n");
 }
-
+void parking()
+{
+    Back();
+    Back();
+    Back();
+    Left();
+    Back();
+    Left();
+    Left();
+    Back();
+    Left();
+    Back();
+    Back();
+    Left();
+    Left();
+    Back();
+    Back();
+    Back();
+    Left();
+    Back();
+    Left();
+    Back();
+    Back();
+    Back();
+    Back();
+    Back();
+    Right();
+    Right();
+    Right();
+    Right();
+    Right();
+    Right();
+    Right();
+    Right();
+    Right();
+    Forward();
+}
 void WheelAct(int nLf, int nLb, int nRf, int nRb)
 {
  digitalWrite(gpLf, nLf);
  digitalWrite(gpLb, nLb);
  digitalWrite(gpRf, nRf);
  digitalWrite(gpRb, nRb);
+}
+void Forward()
+{
+    after_movement();
+    WheelAct(HIGH, LOW, HIGH, LOW); // Forward
+    after_movement();
+}
+void Back()
+{
+    after_movement();
+    WheelAct(LOW, HIGH, LOW, HIGH); // Back
+    after_movement();
+}
+void Left()
+{
+    after_movement();
+    WheelAct(HIGH, LOW, LOW, HIGH); // Left
+    after_movement();
+}
+void Right()
+{
+    after_movement();
+    WheelAct(LOW, HIGH, HIGH, LOW); // Right
+    after_movement();
+}
+void Stop()
+{
+    after_movement();
+    WheelAct(LOW, LOW, LOW, LOW); // Stop
+    after_movement();
 }
