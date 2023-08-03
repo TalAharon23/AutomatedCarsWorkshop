@@ -7,6 +7,17 @@ from .Data_Structures import *
 class BFS:
     # BFS, Time O(n^2), Space O(n^2)
     def shortestPath(self, matrix, start, end):
+        """
+        Finds the shortest path between two points on a matrix using breadth-first search (BFS).
+
+        Parameters:
+        - matrix (list of lists): The matrix/grid where each cell is represented by a value from Val_dict.
+        - start (tuple): A tuple containing the coordinates (x, y) of the starting point.
+        - end (tuple): A tuple containing the coordinates (x, y) of the destination point.
+
+        Returns:
+        - list or None: A list of Cell objects representing the shortest path from start to end, or None if no path exists.
+        """
         sx = start[0]
         sy = start[1]
         dx = end[0]
