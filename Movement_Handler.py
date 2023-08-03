@@ -105,7 +105,7 @@ class Movement_Handler():
             num_of_steps = (int)((num_of_degrees) / RIGHT_LEFT_DEGREE)
             direction = MOVE_COMMANDS.LEFT
 
-        move_to_correct_angle(num_of_moves, direction)
+        move_to_correct_angle(num_of_steps, direction)
 
     @staticmethod
     def move_to_correct_angle(num_of_moves: int, direction: MOVE_COMMANDS):
