@@ -1,7 +1,9 @@
 import cv2
 import numpy as np
 
-def Find_Parking(frame, matrix, frameSize):
+import Data_Structures
+
+def Find_Parking(frame, matrix, frameSize, val_dict):
     # Convert the image to HSV color space
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -31,6 +33,12 @@ def Find_Parking(frame, matrix, frameSize):
         # Add the rectangle to the list if its area is larger than 10000 (i.e. it is clear)
         if w * h > 1000:
             rects.append((x, y, w, h))
+
+        for i in range(x, x + w):
+            for j in range(y, y + h):
+                if (x + w) <= 500 and (y + h) <= 700:
+                    matrix[j][i] = 200
+
 
     # Draw a rectangle around each bounding rectangle
     for rect in rects:

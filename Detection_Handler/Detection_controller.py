@@ -4,6 +4,7 @@ import os
 import numpy as np
 import tkinter as tk
 
+import Data_Structures
 import Detection_Handler.Line_Handler as ln_h
 import Detection_Handler.Car_Handler as car_h
 import Detection_Handler.Parking_Handler as park_h
@@ -12,7 +13,8 @@ import Detection_Handler.Boundaries_Handler as bd_h
 from ESP32CAM_Car.MovementAPI import move
 
 
-frameSize = (600, 500)
+frameSize = (900, 900)
+# frameSize = (650, 650) # For using laptop only
 val_dict = {
     "Border": 1,
     "Path": 2,
@@ -21,7 +23,7 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://172.20.10.4:8080/video"
+url = "http://192.168.212.147:8080/video"
 
 
 class Singleton(type):
@@ -76,6 +78,7 @@ class Detection_controller(metaclass=Singleton):
                 break
         out_video.release()
 
+        self.out_video.release()
         # release the src_video capture object
         src_video.release()
         # Closes all the windows currently opened.
@@ -89,6 +92,10 @@ class Detection_controller(metaclass=Singleton):
         processed_frame, matrix = park_h.Find_Parking(frame, self.matrix, frameSize)  # Find parking spot
         # processed_frame = car_h.Find_Car(frame, matrix, frameSize)[1]
 
+        matrix_scaled = cv2.normalize(self.matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
+        cv2.imwrite('color_img.jpg', matrix_scaled)
+        cv2.rotate(matrix_scaled, cv2.ROTATE_90_CLOCKWISE)
+        cv2.imshow('Color image', matrix_scaled)
         # Display the resulting frame
         h_concat = np.hstack((origin_frame, processed_frame))
 

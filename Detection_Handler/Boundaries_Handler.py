@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import Detection_Handler.Line_Handler as ln_h
+import Data_Structures
 
 num_of_frames = 6
 res_index = 0
