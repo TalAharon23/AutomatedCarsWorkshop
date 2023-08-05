@@ -69,7 +69,10 @@ class Movement_Handler():
                     self.parking_slots = self.Detection_controller.Parking_Slots()
                     self.set_parking_slot_destination()
 
-
+                if self.check_validation():
+                    self.car_movement()
+                else:
+                    self.handle_validation_error()
 
             self.counter += 1
 
@@ -82,6 +85,13 @@ class Movement_Handler():
         self.src_video.release()
         # Closes all the windows currently opened.
         cv2.destroyAllWindows()
+
+
+    def check_validation(self):
+        pass
+
+    def handle_validation_error(self):
+        pass
 
     def get_car_position(self):
         return self.car.get_position()
