@@ -4,6 +4,7 @@ from ESP32CAM_Car.MovementAPI import move
 
 def create_buttons():
     def on_parking_click():
+        print("Start parking!")
         move("parking")
 
     def on_stop_click():

@@ -34,12 +34,54 @@ class Movement_Handler():
     def __init__(self):
         self.Detection_controller = Detection_controller()
         self.BFS_Logic = BFS()
-        self.car = Car()
+        self.robot = Car()
         self.car_arrived_to_maneuver_point = False
         self.car_arrived_to_destination = False
         self.parking_slot_dest = None
-        self.parking_slots = Parking_Slots()
-        self.in_process = False
+        self.parking_slots = None
+        self.in_process = True
+
+
+    def start_car_parking_session(self):
+        """
+        Main loop for parking session.
+        While
+        :return:
+        """
+        while (self.Detection_controller.src_video.isOpened() and in_process):
+
+            # Capture frame-by-frame
+            ret, frame = self.Detection_controller.src_video.read()
+            # Assuming it failed to read only the last frame - video end
+            if not ret:
+                break
+            # if self.counter == 6:
+            #     # self.matrix = bd_h.Create_Template(self.frame_array)
+            #     pass
+            # elif self.counter < 6:
+            #     self.frame_array.append(self.scan_frame(frame, car))
+            elif self.counter % 3 == 0:
+                processed_frame = self.Detection_controller.scan_frame(frame, self.robot)[0]
+                self.Detection_controller.out_video.write(processed_frame)
+
+                # set parking destination
+                if parking_slot_dest == None:
+                    self.parking_slots = self.Detection_controller.Parking_Slots()
+                    self.set_parking_slot_destination()
+
+
+
+            self.counter += 1
+
+            q = cv2.waitKey(1)
+            if q == ord("q"):
+                break
+
+        self.out_video.release()
+        # release the src_video capture object
+        self.src_video.release()
+        # Closes all the windows currently opened.
+        cv2.destroyAllWindows()
 
     def get_car_position(self):
         return self.car.get_position()
@@ -61,6 +103,7 @@ class Movement_Handler():
         chosen_slot = self.parking_slots[0]
         nearest_parking_slot_path = None
         dist_nearest_parking_slot = len(nearest_parking_slot_path)
+        if self.parking_slots
         for slot in self.parking_slots:
             nearest_parking_slot_path = self.BFS_Logic.shortestPath(Detection_controller.get_matrix(),
                                                                     self.car.get_position(), self.slot)
