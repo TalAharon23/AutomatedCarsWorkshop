@@ -92,6 +92,16 @@ class Movement_Handler():
         cv2.destroyAllWindows()
 
 
+    def check_if_arrived_to_destination(self):
+        car_x_position = self.robot.position[0]
+        car_y_position = self.robot.position[1]
+        parking_slot_x_position = self.parking_slot_dest[0]
+        parking_slot_y_position = self.parking_slot_dest[1]
+        if car_x_position != None and car_y_position != None and parking_slot_x_position != None and parking_slot_y_position != None:
+            if abs(car_x_position - parking_slot_x_position) < 5 and abs(car_y_position - parking_slot_y_position):
+                return True
+        return False
+
     def check_validation(self):
         curr_position = self.robot.position
         curr_direction = self.robot.direction_degrees
