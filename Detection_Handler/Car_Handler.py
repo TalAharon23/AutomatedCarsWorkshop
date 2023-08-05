@@ -4,8 +4,10 @@ from scipy.spatial import distance
 import Data_Structures
 
 upside_left_corner = (0, 0)
-white_avg_intensity_bottom = red_avg_intensity_top = 120
-red_avg_intensity_bottom = 100
+white_avg_intensity_bottom = red_avg_intensity_top = 130
+red_avg_intensity_bottom = 130
+angle_diff_sensitivity = 12
+pairs_distance_sensitivity = 13
 
 def Find_Car(frame, matrix, frameSize, car):
     # Convert the frame to grayscale
@@ -84,12 +86,12 @@ def Find_Car(frame, matrix, frameSize, car):
 
     for paired_rice in paired_rices:
         cv2.drawContours(frame, paired_rice[0]['box'], -1, paired_rice[0]['color'], 1)
-        # cv2.drawContours(matrix, paired_rice[0]['box'], -1, (255), 1)
+        cv2.drawContours(matrix, paired_rice[0]['box'], -1, (255), 1)
         cv2.putText(frame, "{:}".format(paired_rice[0]['color_name']),
                     (paired_rice[0]['top_right'][0] - 10, paired_rice[0]['top_right'][1] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
                     (255, 255, 255), 1)
         cv2.drawContours(frame, paired_rice[1]['box'], -1, paired_rice[0]['color'], 1)
-        # cv2.drawContours(matrix, paired_rice[1]['box'], -1, (255), 1)
+        cv2.drawContours(matrix, paired_rice[1]['box'], -1, (255), 1)
         cv2.putText(frame, "{:}".format(paired_rice[1]['color_name']),
                     (paired_rice[1]['top_right'][0] - 10, paired_rice[1]['top_right'][1] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
                     (255, 255, 255), 1)
@@ -119,7 +121,7 @@ def Find_Car(frame, matrix, frameSize, car):
 
 
 
-    cv2.rectangle(frame, (400, 400), (400 + 30, 400 + 80), (255, 255, 255), 2)
+    # cv2.rectangle(frame, (400, 400), (400 + 30, 400 + 80), (255, 255, 255), 2)
     # Return the frame with the rectangles drawn around the strips
     return matrix, frame
 
@@ -129,13 +131,13 @@ def find_pairs(paired_rices, rices):
         strip1 = rices[i]
         for j in range(i + 1, len(rices)):
             strip2 = rices[j]
-            if abs(strip1['box'][0][0][0] - strip2['box'][0][0][0]) < 12 \
-                    and abs(strip1['box'][0][1][0] - strip2['box'][0][1][0]) < 12\
-                    and abs(strip1['box'][0][2][0] - strip2['box'][0][2][0]) < 12\
-                    and abs(strip1['box'][0][3][0] - strip2['box'][0][3][0]) < 12\
+            if abs(strip1['box'][0][0][0] - strip2['box'][0][0][0]) < pairs_distance_sensitivity \
+                    and abs(strip1['box'][0][1][0] - strip2['box'][0][1][0]) < pairs_distance_sensitivity\
+                    and abs(strip1['box'][0][2][0] - strip2['box'][0][2][0]) < pairs_distance_sensitivity\
+                    and abs(strip1['box'][0][3][0] - strip2['box'][0][3][0]) < pairs_distance_sensitivity\
                     and (strip1['color_name'] == strip2['color_name']): # or abs(strip1['box'][0][1] - strip2['box'][0][1]) < 50\
                 angle_diff = calculate_angle_difference(strip1['contour'], strip2['contour'])
-                if angle_diff < 10:
+                if angle_diff < angle_diff_sensitivity:
                     paired_rices.append([strip1, strip2])
                 break
 
@@ -165,7 +167,7 @@ def find_robot(robot_rices, rices):
         for j in range(i + 1, len(rices)):
             strip2 = rices[j][0]
             angle_diff = calculate_angle_difference(strip1['contour'], strip2['contour'])
-            if angle_diff < 10 and strip1['color_name'] != strip2['color_name']:
+            if angle_diff < angle_diff_sensitivity and strip1['color_name'] != strip2['color_name']:
                 robot_rices.append([rices[i], rices[j]])
             # break
 
