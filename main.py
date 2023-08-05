@@ -22,6 +22,5 @@ def main():
     # gui_thread = threading.Thread(target=UI.create_buttons)
     # gui_thread.start()
 
-
 if __name__ == '__main__':
     main()
