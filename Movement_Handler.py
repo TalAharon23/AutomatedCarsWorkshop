@@ -40,6 +40,8 @@ class Movement_Handler():
         self.parking_slot_dest = None
         self.parking_slots = None
         self.in_process = True
+        self.last_position = None
+        self.last_direction = None
 
 
     def start_car_parking_session(self):
@@ -72,7 +74,10 @@ class Movement_Handler():
                 if self.check_validation():
                     self.car_movement()
                 else:
-                    self.handle_validation_error()
+                    try:
+                        self.handle_validation_error()
+                    except:
+                        pass
 
             self.counter += 1
 
@@ -88,7 +93,20 @@ class Movement_Handler():
 
 
     def check_validation(self):
-        pass
+        curr_position = self.robot.position
+        curr_direction = self.robot.direction_degrees
+
+        if curr_position == None:
+            # The robot was not found
+            return False
+
+        if self.last_position != None:
+            if self.last_position == curr_position and self.last_direction == curr_direction:
+                return False
+
+        self.last_position = self.robot.position
+        self.last_direction = self.robot.direction_degrees
+        return True
 
     def handle_validation_error(self):
         pass
