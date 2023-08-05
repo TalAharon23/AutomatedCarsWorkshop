@@ -2,16 +2,12 @@ import cv2
 import glob
 import os
 import numpy as np
-import tkinter as tk
 
 import Data_Structures
 import Detection_Handler.Line_Handler as ln_h
 import Detection_Handler.Car_Handler as car_h
 import Detection_Handler.Parking_Handler as park_h
 import Detection_Handler.Boundaries_Handler as bd_h
-
-from ESP32CAM_Car.MovementAPI import move
-
 
 frameSize = (900, 900)
 # frameSize = (650, 650) # For using laptop only
@@ -23,7 +19,7 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://192.168.168.22:8080/video"
+url = "http://172.20.10.4:8080/video"
 
 
 class Singleton(type):
@@ -109,33 +105,4 @@ class Detection_controller(metaclass=Singleton):
     def get_matrix_size(self):
         return frameSize
 
-    def create_buttons(self):
-        def on_parking_click():
-            print("Start parking!")
-            move("parking")
 
-        def on_stop_click():
-            print("Stopping car!")
-            move("stop")
-
-        root = tk.Tk()
-        # root.geometry("30x500+83+103")
-        root.wm_attributes("-topmost", 1)
-        root.title("Controller")
-
-        # Create Button 1 with text "Parking" and bind it to the on_buttonParking_click() function
-        buttonParking = tk.Button(root, text="Parking", command=on_parking_click, width=15, height=3, bg="green",
-                            font=("Arial", 16))
-        buttonParking.pack()
-
-        # Create Button 2 with text "Stop" and bind it to the on_buttonStop_click() function
-        buttonStop = tk.Button(root, text="Stop", command=on_stop_click, width=15, height=3, bg="red",
-                            font=("Arial", 16))
-        buttonStop.pack()
-
-        # Set the size of the root window to fit the buttons
-        root.geometry("{}x{}".format(max(buttonParking.winfo_reqwidth(), buttonStop.winfo_reqwidth()),
-                                     buttonParking.winfo_reqheight() + buttonStop.winfo_reqheight()))
-
-        # Start the tkinter event loop
-        root.mainloop()
