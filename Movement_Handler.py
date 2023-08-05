@@ -38,7 +38,7 @@ class Movement_Handler():
         self.car_arrived_to_maneuver_point = False
         self.car_arrived_to_destination = False
         self.parking_slot_dest = None
-        self.parking_slots = None
+        self.parking_slots = ParkingSlots([(40, 60)])
         self.in_process = True
         self.last_position = None
         self.last_direction = None
