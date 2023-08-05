@@ -1,7 +1,7 @@
 import requests
 import time
 
-ESP32_ADDR = '172.20.10.3'
+ESP32_ADDR = '172.20.10.2'
 
 
 class MOVE_COMMANDS:

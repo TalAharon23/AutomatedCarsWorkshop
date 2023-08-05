@@ -1,10 +1,11 @@
-/.idea/AutomatedCarsWorkshop.iml
-/.idea/misc.xml
-/.idea/inspectionProfiles/profiles_settings.xml
-/.idea/inspectionProfiles/Project_Default.xml
-/.idea/vcs.xml
-/.idea/*.xml
-/*.xml
-/*.pyc
-/*.iml
-/*.avi
+.idea/
+.xml
+.pyc
+.iml
+.avi
+Resources/
+.jpg
+.odt
+.mp4
+ESP32CAM_Car/.vs/
+ESP32CAM_Car/esp camera/

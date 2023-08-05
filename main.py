@@ -19,8 +19,9 @@ def main():
     video_thread = threading.Thread(target=image_logic.scan_video, args=[car])
     video_thread.start()
     # Create a thread for the GUI
-    # gui_thread = threading.Thread(target=UI.create_buttons)
-    # gui_thread.start()
+    gui_thread = threading.Thread(target=UI.create_buttons)
+    gui_thread.start()
+
 
 if __name__ == '__main__':
     main()
