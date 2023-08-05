@@ -1,14 +1,18 @@
 import tkinter as tk
 from ESP32CAM_Car.MovementAPI import move
+import Movement_Handler as MH
 
 
 def create_buttons():
     def on_parking_click():
         print("Start parking!")
-        move("parking")
+        MH.in_process = True
+        MH.start_car_parking_session()
+        #move("parking")
 
     def on_stop_click():
         print("Stopping car!")
+        MH.in_process = False
         move("stop")
 
     root = tk.Tk()
