@@ -110,7 +110,7 @@ class Movement_Handler():
     @staticmethod
     def move_to_correct_angle(num_of_moves: int, direction: MOVE_COMMANDS):
         for i in range(num_of_moves):
-            move(angle_to_direction)
+            move(direction)
 
     @staticmethod
     def get_next_direction(curr_position: Cell, dest_position: Cell):
