@@ -17,11 +17,12 @@ DIRECTION_DICT = {
     "WEST_NORTH": 7
 }
 
+
 class Val_dict:
-    EMPTY           = 0
-    BORDER          = 1
-    PARKING_SLOT    = 2
-    Car             = 3
+    EMPTY = 0
+    BORDER = 1
+    PARKING_SLOT = 2
+    CAR = 3
 
 
 class Singleton(type):
@@ -32,23 +33,24 @@ class Singleton(type):
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
+
 class Car:
-    def __init__(self, position=None, direction=None, next_Step=None):
-        self.position               = position
-        self.direction              = direction
-        self.next_step              = next_Step
+    def __init__(self, position=None, direction_degrees=None, next_Step=None):
+        self.position = position
+        self.direction_degrees = direction_degrees
+        self.next_step = next_Step
 
     def get_position(self):
         return self.position
 
-    def get_direction(self):
-        return self.direction
+    def get_direction_degrees(self):
+        return self.direction_degrees
 
     def set_position(self, new_position):
         self.position = new_position
 
-    def set_direction(self, new_direction):
-        self.direction = new_direction
+    def set_direction_degrees(self, new_direction):
+        self.direction_degrees = new_direction
 
 
 class Parking_Slots(metaclass=Singleton):
@@ -72,8 +74,14 @@ class Cell:
     def __init__(self, x, y, dist, prev):
         self.x = x
         self.y = y
-        self.dist = dist;  # distance to start
-        self.prev = prev;  # parent cell in the path
+        self.dist = dist  # distance to start
+        self.prev = prev  # parent cell in the path
+
+    def X(self):
+        return self.x
+
+    def Y(self):
+        return self.y
 
     def __str__(self):
         return "(" + str(self.x) + "," + str(self.y) + ")"

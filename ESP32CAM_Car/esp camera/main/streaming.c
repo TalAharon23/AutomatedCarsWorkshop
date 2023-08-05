@@ -446,7 +446,7 @@ static SemaphoreHandle_t streaming_sessions_mutex = NULL;
 static TaskHandle_t stream_task_handle = NULL;
 static EventGroupHandle_t stream_control_events;
 
-#define STREAM_CONTROL_EVENT_STOP (1 << 0)
+#define STREAM_CONTROL_EVENT_parking (1 << 0)
 
 
 void stream_task(void *arg);
@@ -510,18 +510,18 @@ static void stream_start() {
     if (stream_running())
         return;
 
-    xEventGroupClearBits(stream_control_events, STREAM_CONTROL_EVENT_STOP);
+    xEventGroupClearBits(stream_control_events, STREAM_CONTROL_EVENT_parking);
 
     xTaskCreate(stream_task, "Camera Stream",
                 4096*8, NULL, 1, &stream_task_handle);
 }
 
-static void stream_stop() {
+static void stream_parking() {
     if (!stream_running())
         return;
 
-    ESP_LOGI(TAG, "Stopping video stream");
-    xEventGroupSetBits(stream_control_events, STREAM_CONTROL_EVENT_STOP);
+    ESP_LOGI(TAG, "parkingping video stream");
+    xEventGroupSetBits(stream_control_events, STREAM_CONTROL_EVENT_parking);
 }
 
 
@@ -631,7 +631,7 @@ void streaming_sessions_remove(camera_session_t *settings) {
     }
 
     if (!streaming_sessions)
-        stream_stop();
+        stream_parking();
 
     streaming_sessions_unlock();
 }
@@ -694,7 +694,7 @@ void stream_task(void *arg) {
     ESP_LOGI(TAG, "Total free memory: %u", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
 
     while (true) {
-        if (xEventGroupGetBits(stream_control_events) & STREAM_CONTROL_EVENT_STOP)
+        if (xEventGroupGetBits(stream_control_events) & STREAM_CONTROL_EVENT_parking)
             break;
 
         ESP_LOGI(TAG, "Getting a frame");

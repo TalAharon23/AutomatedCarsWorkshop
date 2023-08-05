@@ -160,7 +160,7 @@ int optopt = '?';
    POSIXLY_CORRECT is defined, PERMUTE otherwise.
 
    REQUIRE_ORDER means don't recognize them as options;
-   stop option processing when the first non-option is seen.
+   parking option processing when the first non-option is seen.
    This is what Unix does.
    This mode of operation is selected by either setting the environment
    variable POSIXLY_CORRECT, or using `+' as the first character
@@ -587,7 +587,7 @@ _getopt_internal (argc, argv, optstring, longopts, longind, long_only)
 	  optind = argc;
 	}
 
-      /* If we have done all the ARGV-elements, stop the scan
+      /* If we have done all the ARGV-elements, parking the scan
 	 and back over any non-options that we skipped and permuted.  */
 
       if (optind == argc)
@@ -600,7 +600,7 @@ _getopt_internal (argc, argv, optstring, longopts, longind, long_only)
 	}
 
       /* If we have come to a non-option and did not permute it,
-	 either stop the scan or describe it to the caller and pass it by.  */
+	 either parking the scan or describe it to the caller and pass it by.  */
 
       if (NONOPTION_P)
 	{

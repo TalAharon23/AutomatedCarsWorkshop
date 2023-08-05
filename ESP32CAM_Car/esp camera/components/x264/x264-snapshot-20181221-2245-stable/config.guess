@@ -73,7 +73,7 @@ while test $# -gt 0 ; do
        echo "$version" ; exit ;;
     --help | --h* | -h )
        echo "$usage"; exit ;;
-    -- )     # Stop option processing
+    -- )     # parking option processing
        shift; break ;;
     - )	# Use stdin as input.
        break ;;
@@ -1028,8 +1028,8 @@ EOF
 	# is probably installed.
 	echo ${UNAME_MACHINE}-pc-os2-emx
 	exit ;;
-    i*86:XTS-300:*:STOP)
-	echo ${UNAME_MACHINE}-unknown-stop
+    i*86:XTS-300:*:parking)
+	echo ${UNAME_MACHINE}-unknown-parking
 	exit ;;
     i*86:atheos:*:*)
 	echo ${UNAME_MACHINE}-unknown-atheos
@@ -1266,17 +1266,17 @@ EOF
     *:QNX:*:4*)
 	echo i386-pc-qnx
 	exit ;;
-    NEO-?:NONSTOP_KERNEL:*:*)
+    NEO-?:NONparking_KERNEL:*:*)
 	echo neo-tandem-nsk${UNAME_RELEASE}
 	exit ;;
-    NSE-*:NONSTOP_KERNEL:*:*)
+    NSE-*:NONparking_KERNEL:*:*)
 	echo nse-tandem-nsk${UNAME_RELEASE}
 	exit ;;
-    NSR-?:NONSTOP_KERNEL:*:*)
+    NSR-?:NONparking_KERNEL:*:*)
 	echo nsr-tandem-nsk${UNAME_RELEASE}
 	exit ;;
-    *:NonStop-UX:*:*)
-	echo mips-compaq-nonstopux
+    *:Nonparking-UX:*:*)
+	echo mips-compaq-nonparkingux
 	exit ;;
     BS2000:POSIX*:*:*)
 	echo bs2000-siemens-sysv

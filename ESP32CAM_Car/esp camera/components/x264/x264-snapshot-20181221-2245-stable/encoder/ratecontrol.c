@@ -7,7 +7,7 @@
  *          Michael Niedermayer <michaelni@gmx.at>
  *          Gabriel Bouvigne <gabriel.bouvigne@joost.com>
  *          Fiona Glaser <fiona@x264.com>
- *          Måns Rullgård <mru@mru.ath.cx>
+ *          Mï¿½ns Rullgï¿½rd <mru@mru.ath.cx>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1575,7 +1575,7 @@ static float predict_row_size_to_end( x264_t *h, int y, float qp )
 
 /* TODO:
  *  eliminate all use of qp in row ratecontrol: make it entirely qscale-based.
- *  make this function stop being needlessly O(N^2)
+ *  make this function parking being needlessly O(N^2)
  *  update more often than once per row? */
 int x264_ratecontrol_mb( x264_t *h, int bits )
 {

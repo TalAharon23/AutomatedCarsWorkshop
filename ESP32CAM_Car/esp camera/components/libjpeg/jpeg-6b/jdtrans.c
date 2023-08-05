@@ -72,13 +72,13 @@ jpeg_read_coefficients (j_decompress_ptr cinfo)
       }
     }
     /* Set state so that jpeg_finish_decompress does the right thing */
-    cinfo->global_state = DSTATE_STOPPING;
+    cinfo->global_state = DSTATE_parkingPING;
   }
-  /* At this point we should be in state DSTATE_STOPPING if being used
+  /* At this point we should be in state DSTATE_parkingPING if being used
    * standalone, or in state DSTATE_BUFIMAGE if being invoked to get access
    * to the coefficients during a full buffered-image-mode decompression.
    */
-  if ((cinfo->global_state == DSTATE_STOPPING ||
+  if ((cinfo->global_state == DSTATE_parkingPING ||
        cinfo->global_state == DSTATE_BUFIMAGE) && cinfo->buffered_image) {
     return cinfo->coef->coef_arrays;
   }
