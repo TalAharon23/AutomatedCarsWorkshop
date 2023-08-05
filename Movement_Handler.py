@@ -109,7 +109,31 @@ class Movement_Handler():
         return True
 
     def handle_validation_error(self):
-        pass
+        num_attempts = 0
+        max_attempts = 5
+        detection_successful = False
+
+        while num_attempts < max_attempts and not detection_successful:
+            # Move the car little to the right and forward
+            self.move_car_diagonally()
+
+            # Check if the car is now detected
+            if self.check_validation():
+                detection_successful = True
+            else:
+                num_attempts += 1
+
+        if not detection_successful:
+            # Raise an exception or set a flag indicating the car couldn't be detected
+            raise Execption("Car couldn't be detected after multiple attempts")
+
+    def move_car_diagonally(self):
+        # Move the car 10 degrees to the right
+        self.update_car_angle(self.robot, self.robot.get_direction_degrees() + 40)  # tilt car to right 40 degrees
+        # Move the car forward (you need to implement this part)
+        move(MOVE_COMMANDS.Forward)
+        # Move the car back (you need to implement this part)
+        move(MOVE_COMMANDS.Back)
 
     def get_car_position(self):
         return self.car.get_position()
