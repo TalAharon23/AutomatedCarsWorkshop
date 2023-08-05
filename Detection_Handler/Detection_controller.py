@@ -4,7 +4,6 @@ import os
 import numpy as np
 import tkinter as tk
 
-import Data_Structures
 import Detection_Handler.Line_Handler as ln_h
 import Detection_Handler.Car_Handler as car_h
 import Detection_Handler.Parking_Handler as park_h
@@ -13,8 +12,7 @@ import Detection_Handler.Boundaries_Handler as bd_h
 from ESP32CAM_Car.MovementAPI import move
 
 
-frameSize = (900, 900)
-# frameSize = (650, 650) # For using laptop only
+frameSize = (600, 500)
 val_dict = {
     "Border": 1,
     "Path": 2,
@@ -23,7 +21,7 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://192.168.212.147:8080/video"
+url = "http://172.20.10.4:8080/video"
 
 
 class Singleton(type):
@@ -78,7 +76,6 @@ class Detection_controller(metaclass=Singleton):
                 break
         out_video.release()
 
-        self.out_video.release()
         # release the src_video capture object
         src_video.release()
         # Closes all the windows currently opened.
@@ -92,10 +89,6 @@ class Detection_controller(metaclass=Singleton):
         processed_frame, matrix = park_h.Find_Parking(frame, self.matrix, frameSize)  # Find parking spot
         # processed_frame = car_h.Find_Car(frame, matrix, frameSize)[1]
 
-        matrix_scaled = cv2.normalize(self.matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
-        cv2.imwrite('color_img.jpg', matrix_scaled)
-        cv2.rotate(matrix_scaled, cv2.ROTATE_90_CLOCKWISE)
-        cv2.imshow('Color image', matrix_scaled)
         # Display the resulting frame
         h_concat = np.hstack((origin_frame, processed_frame))
 
@@ -108,34 +101,3 @@ class Detection_controller(metaclass=Singleton):
 
     def get_matrix_size(self):
         return frameSize
-
-    def create_buttons(self):
-        def on_parking_click():
-            print("Start parking!")
-            move("parking")
-
-        def on_stop_click():
-            print("Stopping car!")
-            move("stop")
-
-        root = tk.Tk()
-        # root.geometry("30x500+83+103")
-        root.wm_attributes("-topmost", 1)
-        root.title("Controller")
-
-        # Create Button 1 with text "Parking" and bind it to the on_buttonParking_click() function
-        buttonParking = tk.Button(root, text="Parking", command=on_parking_click, width=15, height=3, bg="green",
-                            font=("Arial", 16))
-        buttonParking.pack()
-
-        # Create Button 2 with text "Stop" and bind it to the on_buttonStop_click() function
-        buttonStop = tk.Button(root, text="Stop", command=on_stop_click, width=15, height=3, bg="red",
-                            font=("Arial", 16))
-        buttonStop.pack()
-
-        # Set the size of the root window to fit the buttons
-        root.geometry("{}x{}".format(max(buttonParking.winfo_reqwidth(), buttonStop.winfo_reqwidth()),
-                                     buttonParking.winfo_reqheight() + buttonStop.winfo_reqheight()))
-
-        # Start the tkinter event loop
-        root.mainloop()
