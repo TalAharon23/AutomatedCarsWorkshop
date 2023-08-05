@@ -4,6 +4,8 @@ from scipy.spatial import distance
 import Data_Structures
 
 upside_left_corner = (0, 0)
+white_avg_intensity_bottom = red_avg_intensity_top = 120
+red_avg_intensity_bottom = 100
 
 def Find_Car(frame, matrix, frameSize, car):
     # Convert the frame to grayscale
@@ -67,17 +69,17 @@ def Find_Car(frame, matrix, frameSize, car):
                 # Check class
                 strip_roi = gray[y:y+h, x:x+w]
                 avg_intensity = np.mean(strip_roi)
-                if avg_intensity > 160:
+                if avg_intensity > white_avg_intensity_bottom:
                     white_rices.append({'class': 'class1', 'box': rice, 'color': (255, 255, 255), 'width': width, 'color_name': 'white',
                                   'top_right': top_right, 'contour' : contour})
-                elif avg_intensity > 110 and avg_intensity < 160:
+                elif avg_intensity > red_avg_intensity_bottom and avg_intensity < white_avg_intensity_bottom:
                     red_rices.append({'class': 'class2', 'box': rice, 'color': (0, 0, 255), 'width': width, 'color_name': 'red',
                                   'top_right': top_right, 'contour': contour})
                 else:
                     black_rices.append({'class': 'class3', 'box': rice, 'color': (0, 0, 0), 'width': width, 'color_name': 'black',
                                   'top_right': top_right, 'contour': contour})
 
-    find_pairs(paired_rices=paired_rices, rices=red_rices)
+    find_pairs(paired_rices=paired_rices, rices=white_rices)
     find_pairs(paired_rices=paired_rices, rices=black_rices)
 
     for paired_rice in paired_rices:
@@ -109,7 +111,7 @@ def Find_Car(frame, matrix, frameSize, car):
         if angle_degrees < 0:
             angle_degrees += 360
         car.set_position(boundries[0])
-        car.set_direction(int(round(angle_degrees)))
+        car.set_direction_degrees(int(round(angle_degrees)))
         print(int(round(angle_degrees)))
         cv2.putText(frame, "{:}".format('Front'),
                     (boundries[0][0] - 10, boundries[2][0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
