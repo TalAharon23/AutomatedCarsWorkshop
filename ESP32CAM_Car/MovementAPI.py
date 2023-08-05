@@ -31,7 +31,10 @@ def move(direction: str):
     move_url = f'http://{ESP32_ADDR}/{direction}'
     response = requests.get(move_url)
     if response.status_code == 200:
-        print(f'Car moved {direction} successfully.')
+        if direction == 'parking':
+            print("Start parking!")
+        else:
+            print(f'Car moved {direction} successfully.')
     else:
         print(f'Failed to move the car {direction}.')
 

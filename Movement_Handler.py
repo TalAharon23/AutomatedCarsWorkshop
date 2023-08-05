@@ -1,5 +1,5 @@
-from ESP32CAM_Car.Movement import move
-from .Detection_Handler.Detection_controller import Detection_controller
+from ESP32CAM_Car.MovementAPI import move
+from Detection_Handler.Detection_controller import Detection_controller
 from Data_Structures import *
 import BFS_Logic
 from ESP32CAM_Car.MovementAPI import move
@@ -38,10 +38,12 @@ class Movement_Handler():
         self.car_arrived_to_maneuver_point = False
         self.car_arrived_to_destination = False
         self.parking_slot_dest = None
-        self.parking_slots = None
+        self.parking_slots = ParkingSlots([(40, 60)])
         self.in_process = True
+        self.last_position = None
+        self.last_direction = None
 
-
+    @staticmethod
     def start_car_parking_session(self):
         """
         Main loop for parking session.
@@ -69,7 +71,13 @@ class Movement_Handler():
                     self.parking_slots = self.Detection_controller.Parking_Slots()
                     self.set_parking_slot_destination()
 
-
+                if self.check_validation():
+                    self.car_movement()
+                else:
+                    try:
+                        self.handle_validation_error()
+                    except:
+                        pass
 
             self.counter += 1
 
@@ -82,6 +90,60 @@ class Movement_Handler():
         self.src_video.release()
         # Closes all the windows currently opened.
         cv2.destroyAllWindows()
+
+
+    def check_if_arrived_to_destination(self):
+        car_x_position = self.robot.position[0]
+        car_y_position = self.robot.position[1]
+        parking_slot_x_position = self.parking_slot_dest[0]
+        parking_slot_y_position = self.parking_slot_dest[1]
+        if car_x_position != None and car_y_position != None and parking_slot_x_position != None and parking_slot_y_position != None:
+            if abs(car_x_position - parking_slot_x_position) < 5 and abs(car_y_position - parking_slot_y_position):
+                return True
+        return False
+
+    def check_validation(self):
+        curr_position = self.robot.position
+        curr_direction = self.robot.direction_degrees
+
+        if curr_position == None:
+            # The robot was not found
+            return False
+
+        if self.last_position != None:
+            if self.last_position == curr_position and self.last_direction == curr_direction:
+                return False
+
+        self.last_position = self.robot.position
+        self.last_direction = self.robot.direction_degrees
+        return True
+
+    def handle_validation_error(self):
+        num_attempts = 0
+        max_attempts = 5
+        detection_successful = False
+
+        while num_attempts < max_attempts and not detection_successful:
+            # Move the car little to the right and forward
+            self.move_car_diagonally()
+
+            # Check if the car is now detected
+            if self.check_validation():
+                detection_successful = True
+            else:
+                num_attempts += 1
+
+        if not detection_successful:
+            # Raise an exception or set a flag indicating the car couldn't be detected
+            raise Execption("Car couldn't be detected after multiple attempts")
+
+    def move_car_diagonally(self):
+        # Move the car 10 degrees to the right
+        self.update_car_angle(self.robot, self.robot.get_direction_degrees() + 40)  # tilt car to right 40 degrees
+        # Move the car forward (you need to implement this part)
+        move(MOVE_COMMANDS.Forward)
+        # Move the car back (you need to implement this part)
+        move(MOVE_COMMANDS.Back)
 
     def get_car_position(self):
         return self.car.get_position()
@@ -103,13 +165,13 @@ class Movement_Handler():
         chosen_slot = self.parking_slots[0]
         nearest_parking_slot_path = None
         dist_nearest_parking_slot = len(nearest_parking_slot_path)
-        if self.parking_slots
-        for slot in self.parking_slots:
-            nearest_parking_slot_path = self.BFS_Logic.shortestPath(Detection_controller.get_matrix(),
-                                                                    self.car.get_position(), self.slot)
-            if len(nearest_parking_slot_path) < dist_nearest_parking_slot:
-                dist_nearest_parking_slot = len(nearest_parking_slot_path)
-                chosen_slot = slot
+        if self.parking_slots:
+            for slot in self.parking_slots:
+                nearest_parking_slot_path = self.BFS_Logic.shortestPath(Detection_controller.get_matrix(),
+                                                                        self.car.get_position(), self.slot)
+                if len(nearest_parking_slot_path) < dist_nearest_parking_slot:
+                    dist_nearest_parking_slot = len(nearest_parking_slot_path)
+                    chosen_slot = slot
 
         self.parking_slot_dest = chosen_slot
 

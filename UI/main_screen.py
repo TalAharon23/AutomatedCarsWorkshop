@@ -1,6 +1,6 @@
 import tkinter as tk
 from ESP32CAM_Car.MovementAPI import move
-import Detection_Handler.Movement_handler as MH
+import Movement_Handler as MH
 
 
 def create_buttons():
