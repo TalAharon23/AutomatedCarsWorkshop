@@ -1,5 +1,5 @@
-from ESP32CAM_Car.Movement import move
-from .Detection_Handler.Detection_controller import Detection_controller
+from ESP32CAM_Car.MovementAPI import move
+from Detection_Handler.Detection_controller import Detection_controller
 from Data_Structures import *
 import BFS_Logic
 from ESP32CAM_Car.MovementAPI import move
@@ -43,7 +43,7 @@ class Movement_Handler():
         self.last_position = None
         self.last_direction = None
 
-
+    @staticmethod
     def start_car_parking_session(self):
         """
         Main loop for parking session.
@@ -165,13 +165,13 @@ class Movement_Handler():
         chosen_slot = self.parking_slots[0]
         nearest_parking_slot_path = None
         dist_nearest_parking_slot = len(nearest_parking_slot_path)
-        if self.parking_slots
-        for slot in self.parking_slots:
-            nearest_parking_slot_path = self.BFS_Logic.shortestPath(Detection_controller.get_matrix(),
-                                                                    self.car.get_position(), self.slot)
-            if len(nearest_parking_slot_path) < dist_nearest_parking_slot:
-                dist_nearest_parking_slot = len(nearest_parking_slot_path)
-                chosen_slot = slot
+        if self.parking_slots:
+            for slot in self.parking_slots:
+                nearest_parking_slot_path = self.BFS_Logic.shortestPath(Detection_controller.get_matrix(),
+                                                                        self.car.get_position(), self.slot)
+                if len(nearest_parking_slot_path) < dist_nearest_parking_slot:
+                    dist_nearest_parking_slot = len(nearest_parking_slot_path)
+                    chosen_slot = slot
 
         self.parking_slot_dest = chosen_slot
 

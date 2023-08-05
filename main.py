@@ -7,6 +7,7 @@ import threading
 from ESP32CAM_Car.MovementAPI import move
 import Detection_Handler.Detection_controller as logic
 import UI.main_screen as UI
+import Movement_Handler
 
 # Will be deleted and moved into Movement_Handler
 import Data_Structures as DS

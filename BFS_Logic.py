@@ -1,8 +1,7 @@
 import sys
 import queue
 
-from .Data_Structures import *
-
+import Data_Structures as DS
 
 class BFS:
     # BFS, Time O(n^2), Space O(n^2)
@@ -31,7 +30,7 @@ class BFS:
             row = []
             for j in range(0, n):
                 if matrix[i][j] == Val_dict.EMPTY:
-                    row.append(Cell(i, j, sys.maxsize, None))
+                    row.append(DS.Cell(i, j, sys.maxsize, None))
                 else:
                     row.append(None)
             cells.append(row)
@@ -85,18 +84,18 @@ class BFS:
             queue.append(p)
 
 
-matrix = [
-    [1, 0, 1],
-    [0, 1, 1],
-    [0, 0, 1]]
-myObj = ShortestPathBetweenCellsBFS()
-# case1, there is no path
-start = [0, 0]
-end = [1, 1]
-print("case 1: ")
-myObj.shortestPath(matrix, start, end)
-# case 2, there is path
-start1 = [0, 2]
-end1 = [1, 1]
-print("case 2: ")
-myObj.shortestPath(matrix, start1, end1)
+# matrix = [
+#     [1, 0, 1],
+#     [0, 1, 1],
+#     [0, 0, 1]]
+# myObj = ShortestPathBetweenCellsBFS()
+# # case1, there is no path
+# start = [0, 0]
+# end = [1, 1]
+# print("case 1: ")
+# myObj.shortestPath(matrix, start, end)
+# # case 2, there is path
+# start1 = [0, 2]
+# end1 = [1, 1]
+# print("case 2: ")
+# myObj.shortestPath(matrix, start1, end1)
