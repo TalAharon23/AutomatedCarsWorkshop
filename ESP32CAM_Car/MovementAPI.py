@@ -1,4 +1,4 @@
-import requests
+#import requests
 import time
 
 ESP32_ADDR = '172.20.10.2'
