@@ -3,7 +3,7 @@ import numpy as np
 
 import Data_Structures
 
-def Find_Parking(frame, matrix, frameSize, val_dict):
+def Find_Parking_Slots(frame, matrix, frameSize, val_dict):
     # Convert the image to HSV color space
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 

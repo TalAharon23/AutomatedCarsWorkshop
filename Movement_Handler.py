@@ -32,25 +32,26 @@ angle_to_direction = {
 class Movement_Handler():
 
     def __init__(self):
-        self.Detection_controller = Detection_controller()
-        self.BFS_Logic = BFS()
-        self.robot = Car()
-        self.car_arrived_to_maneuver_point = False
-        self.car_arrived_to_destination = False
-        self.parking_slot_dest = None
-        self.parking_slots = ParkingSlots([(40, 60)])
-        self.in_process = True
-        self.last_position = None
-        self.last_direction = None
+        self.Detection_controller           = Detection_controller()
+        self.BFS_Logic                      = BFS_Logic.BFS()
+        self.robot                          = Car()
+        self.car_arrived_to_maneuver_point  = False
+        self.car_arrived_to_destination     = False
+        self.parking_slot_dest              = None
+        self.parking_slots                  = Parking_Slots([(40, 60)])
+        self.in_process                     = True
+        self.last_position                  = None
+        self.last_direction                 = None
+        self.counter                        = 0
 
-    @staticmethod
+    # @staticmethod
     def start_car_parking_session(self):
         """
         Main loop for parking session.
         While
         :return:
         """
-        while (self.Detection_controller.src_video.isOpened() and in_process):
+        while (self.Detection_controller.src_video.isOpened() and self.in_process):
 
             # Capture frame-by-frame
             ret, frame = self.Detection_controller.src_video.read()
@@ -67,7 +68,7 @@ class Movement_Handler():
                 self.Detection_controller.out_video.write(processed_frame)
 
                 # set parking destination
-                if parking_slot_dest == None:
+                if self.parking_slot_dest == None:
                     self.parking_slots = self.Detection_controller.Parking_Slots()
                     self.set_parking_slot_destination()
 
