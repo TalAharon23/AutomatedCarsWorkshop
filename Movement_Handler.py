@@ -69,7 +69,8 @@ class Movement_Handler():
 
                 # set parking destination
                 if self.parking_slot_dest == None:
-                    self.parking_slots = self.Detection_controller.Parking_Slots()
+                    self.parking_slots = self.Detection_controller.parking_slots.get_parking_solts()
+                    self.robot.set_position((0,0))
                     self.set_parking_slot_destination()
 
                 if self.check_validation():
@@ -164,12 +165,12 @@ class Movement_Handler():
 
     def set_parking_slot_destination(self):
         chosen_slot = self.parking_slots[0]
-        nearest_parking_slot_path = None
+        nearest_parking_slot_path = chosen_slot
         dist_nearest_parking_slot = len(nearest_parking_slot_path)
         if self.parking_slots:
             for slot in self.parking_slots:
-                nearest_parking_slot_path = self.BFS_Logic.shortestPath(Detection_controller.get_matrix(),
-                                                                        self.car.get_position(), self.slot)
+                nearest_parking_slot_path = self.BFS_Logic.shortestPath(self.Detection_controller.get_matrix(),
+                                                                        self.robot.get_position(), slot)
                 if len(nearest_parking_slot_path) < dist_nearest_parking_slot:
                     dist_nearest_parking_slot = len(nearest_parking_slot_path)
                     chosen_slot = slot

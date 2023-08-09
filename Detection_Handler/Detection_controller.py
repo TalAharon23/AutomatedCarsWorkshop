@@ -7,8 +7,8 @@ import Detection_Handler.Car_Handler as car_h
 import Detection_Handler.Parking_Handler as park_h
 import Detection_Handler.Boundaries_Handler as bd_h
 
-frameSize = (900, 900)
-# frameSize = (650, 650) # For using laptop only
+#frameSize = (900, 900)
+frameSize = (650, 650) # For using laptop only
 val_dict = {
     "Border": 1,
     "Path": 2,
@@ -42,6 +42,7 @@ class Detection_controller(metaclass=Singleton):
         self.frame_array                            = []
         self.flag                                   = True
         self.framenum                               = 0
+        self.parking_slots                          = Data_Structures.Parking_Slots()
 
 
     def scan_video(self, car):
@@ -87,7 +88,7 @@ class Detection_controller(metaclass=Singleton):
         origin_frame = frame.copy()
         # processed_frame = ln_h.Find_Lines(frame, self.matrix, frameSize, mask_line, val_dict)[1q]  # Find path
         processed_frame = ln_h.Find_Lines(frame, self.matrix, frameSize, mask_border, val_dict)[1]  # Find borders
-        # processed_frame, matrix = park_h.Find_Parking(frame, self.matrix, frameSize, val_dict)  # Find parking spot
+        processed_frame, matrix = park_h.Find_Parking_Slots(frame, self.matrix, frameSize, val_dict, self.parking_slots)  # Find parking spot
         processed_frame = car_h.Find_Car(frame, self.matrix, frameSize, car)[1]
 
         matrix_scaled = cv2.normalize(self.matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)

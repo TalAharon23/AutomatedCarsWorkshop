@@ -29,7 +29,7 @@ class BFS:
         for i in range(0, m):
             row = []
             for j in range(0, n):
-                if matrix[i][j] == Val_dict.EMPTY:
+                if matrix[i][j] == DS.Val_dict.EMPTY or DS.Val_dict.PARKING_SLOT:
                     row.append(DS.Cell(i, j, sys.maxsize, None))
                 else:
                     row.append(None)

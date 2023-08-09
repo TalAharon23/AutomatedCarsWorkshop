@@ -3,16 +3,19 @@ import numpy as np
 
 import Data_Structures
 
-def Find_Parking_Slots(frame, matrix, frameSize, val_dict):
+def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
     # Convert the image to HSV color space
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     # Define the lower and upper bounds of the green color
-    lower_green = np.array([36, 25, 25])
-    upper_green = np.array([86, 255, 255])
+    # lower_green = np.array([36, 25, 25])
+    # upper_green = np.array([86, 255, 255])
+    # Define the lower and upper bounds of the red color
+    lower_red = np.array([0, 100, 100])  # Adjust these values based on the specific shade of red you want to detect
+    upper_red = np.array([10, 255, 255])  # This range covers the hues near red
 
     # Threshold the image to get only the green color
-    mask = cv2.inRange(hsv, lower_green, upper_green)
+    mask = cv2.inRange(hsv, lower_red, upper_red)
 
     # Find contours in the binary image
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -33,6 +36,8 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict):
         # Add the rectangle to the list if its area is larger than 10000 (i.e. it is clear)
         if w * h > 1000:
             rects.append((x, y, w, h))
+            parking_slots.save_slot((x + (w/2), y + (h/2)))
+
 
         for i in range(x, x + w):
             for j in range(y, y + h):
