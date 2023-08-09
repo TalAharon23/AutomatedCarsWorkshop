@@ -15,9 +15,10 @@ import Data_Structures as DS
 
 def main():
     car = DS.Car()
-    image_logic = logic.Detection_controller()
+    # image_logic = logic.Detection_controller()
+    image_logic = Movement_Handler.Movement_Handler()
     # Create a thread for the video scanning process
-    video_thread = threading.Thread(target=image_logic.scan_video, args=[car])
+    video_thread = threading.Thread(target=image_logic.start_car_parking_session, args=[])
     video_thread.start()
     # Create a thread for the GUI
     gui_thread = threading.Thread(target=UI.create_buttons)
