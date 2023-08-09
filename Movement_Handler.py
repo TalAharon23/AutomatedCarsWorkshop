@@ -4,7 +4,7 @@ from Data_Structures import *
 import BFS_Logic
 from ESP32CAM_Car.MovementAPI import move
 
-RIGHT_LEFT_DEGREE = 5
+RIGHT_LEFT_DEGREE = 10
 
 
 class MOVE_COMMANDS:
@@ -43,6 +43,7 @@ class Movement_Handler():
         self.last_position                  = None
         self.last_direction                 = None
         self.counter                        = 0
+        self.path_index                     = 0
 
     # @staticmethod
     def start_car_parking_session(self):
@@ -63,14 +64,17 @@ class Movement_Handler():
             #     pass
             # elif self.counter < 6:
             #     self.frame_array.append(self.scan_frame(frame, car))
-            elif self.counter % 3 == 0:
+            elif self.counter % 10 == 0:
                 processed_frame = self.Detection_controller.scan_frame(frame, self.robot)[0]
                 self.Detection_controller.out_video.write(processed_frame)
 
                 # set parking destination
                 if self.parking_slot_dest == None:
                     self.parking_slots = self.Detection_controller.parking_slots.get_parking_solts()
-                    self.robot.set_position((0,0))
+                    if len(self.parking_slots) == 0 or self.robot.position == None:
+                        self.move_car_diagonally()
+                        continue
+                    # self.robot.set_position((0,0))
                     self.set_parking_slot_destination()
 
                 if self.check_validation():
@@ -80,12 +84,14 @@ class Movement_Handler():
                         self.handle_validation_error()
                     except:
                         pass
+            else:
+                self.Detection_controller.out_video.write(processed_frame)
 
             self.counter += 1
 
-            q = cv2.waitKey(1)
-            if q == ord("q"):
-                break
+            # q = cv2.waitKey(1)
+            # if q == ord("q"):
+            #     break
 
         self.out_video.release()
         # release the src_video capture object
@@ -110,14 +116,17 @@ class Movement_Handler():
 
         if curr_position == None:
             # The robot was not found
+            print("check_validation - False\n")
             return False
 
         if self.last_position != None:
             if self.last_position == curr_position and self.last_direction == curr_direction:
+                print("check_validation - False\n")
                 return False
 
         self.last_position = self.robot.position
         self.last_direction = self.robot.direction_degrees
+        print("check_validation - True\n")
         return True
 
     def handle_validation_error(self):
@@ -127,7 +136,16 @@ class Movement_Handler():
 
         while num_attempts < max_attempts and not detection_successful:
             # Move the car little to the right and forward
-            self.move_car_diagonally()
+            if self.path != None:
+                for i in range(path_index, len(self.path) - 1):
+                    print("handle_validation_error\n")
+                    current_cell = self.path[i]
+                    next_cell = self.path[i + 1]
+
+                    next_direction = self.get_next_direction(current_cell, next_cell)
+                    self.update_car_angle(angle_to_direction.get(next_direction))
+            else:
+                self.move_car_diagonally()
 
             # Check if the car is now detected
             if self.check_validation():
@@ -141,9 +159,14 @@ class Movement_Handler():
 
     def move_car_diagonally(self):
         # Move the car 10 degrees to the right
-        self.update_car_angle(self.robot, self.robot.get_direction_degrees() + 40)  # tilt car to right 40 degrees
+        #self.update_car_angle(self.robot, self.robot.get_direction_degrees() + 40)  # tilt car to right 40 degrees
         # Move the car forward (you need to implement this part)
         move(MOVE_COMMANDS.Forward)
+        move(MOVE_COMMANDS.Forward)
+        move(MOVE_COMMANDS.Forward)
+        move(MOVE_COMMANDS.Left)
+        move(MOVE_COMMANDS.Left)
+        move(MOVE_COMMANDS.Left)
         # Move the car back (you need to implement this part)
         move(MOVE_COMMANDS.Back)
 
@@ -179,49 +202,50 @@ class Movement_Handler():
         self.parking_slot_dest = chosen_slot
 
     def car_movement(self):
-        path = self.BFS_Logic.shortestPath(self.Detection_controller.get_matrix(), self.car.get_position(),
+        self.path = self.BFS_Logic.shortestPath(self.Detection_controller.get_matrix(), self.robot.get_position(),
                                            self.parking_slot_dest)
-        if path is None:
+        if self.path is None:
             print("No valid path found.")
             return
 
-        for i in range(len(path) - 1):
-            current_cell = path[i]
-            next_cell = path[i + 1]
+        # for i in range(len(self.path) - 1):
+        current_cell = self.path[0]
+        next_cell = self.path[0 + 1]
 
-            next_direction = self.get_next_direction(current_cell, next_cell)
-            update_car_angle(self.car, angle_to_direction.get(next_direction))
+        next_direction = self.get_next_direction(current_cell, next_cell)
+        self.update_car_angle(angle_to_direction.get(next_direction))
+        self.path_index = self.path_index + 1
 
-            # Move the car forward (you need to implement this part)
-            # TODO: Understand how much forward need to move!?!?
-            self.move_car_forward()
+        # Move the car forward (you need to implement this part)
+        # TODO: Understand how much forward need to move!?!?
+        move(MOVE_COMMANDS.Forward)
 
-    @staticmethod
-    def update_car_angle(car, next_direction):
+
+    def update_car_angle(self, next_direction):
         """
         :param car: object car for getting current angle of car
         :param next_direction: next direction in degrees (if right needed, it would be 180)
         :return: move command value (left/right) and num of steps that need to be done
         """
-        car_tilt_degrees = car.get_direction_degrees()  # 315 --> 0
+        car_tilt_degrees = self.robot.get_direction_degrees()  # 315 --> 0
         num_of_degrees = abs(car_tilt_degrees - next_direction)  # =315
         direction = None
         if num_of_degrees > 180:
             num_of_steps = (int)((360 - num_of_degrees) / RIGHT_LEFT_DEGREE)
-            direction = MOVE_COMMANDS.RIGHT
+            direction = MOVE_COMMANDS.Right
         else:
             num_of_steps = (int)((num_of_degrees) / RIGHT_LEFT_DEGREE)
-            direction = MOVE_COMMANDS.LEFT
+            direction = MOVE_COMMANDS.Left
 
-        move_to_correct_angle(num_of_steps, direction)
+        print(f"num_of_steps: {num_of_steps}\n")
 
-    @staticmethod
-    def move_to_correct_angle(num_of_moves: int, direction: MOVE_COMMANDS):
+        self.move_to_correct_angle(num_of_steps, direction)
+
+    def move_to_correct_angle(self, num_of_moves: int, direction: MOVE_COMMANDS):
         for i in range(num_of_moves):
             move(direction)
 
-    @staticmethod
-    def get_next_direction(curr_position: Cell, dest_position: Cell):
+    def get_next_direction(self, curr_position: Cell, dest_position: Cell):
         """
         Update the car's direction based on the current and destination positions.
         Assuming there 4 options to move!!

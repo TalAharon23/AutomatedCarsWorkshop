@@ -25,7 +25,7 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
 
     # Find the bounding rectangles of the largest 5 contours
     rects = []
-    for cnt in contours[:5]:
+    for cnt in contours[:10]:
         # Approximate the contour as a polygon
         epsilon = 0.01*cv2.arcLength(cnt,True)
         approx = cv2.approxPolyDP(cnt,epsilon,True)
@@ -36,19 +36,19 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
         # Add the rectangle to the list if its area is larger than 10000 (i.e. it is clear)
         if w * h > 1000:
             rects.append((x, y, w, h))
-            parking_slots.save_slot((x + (w/2), y + (h/2)))
+            parking_slots.save_slot((x + int(round((w/2))), y + int(round(h/2))))
 
 
         for i in range(x, x + w):
             for j in range(y, y + h):
                 if (x + w) <= 500 and (y + h) <= 700:
-                    matrix[j][i] = 200
+                    matrix[j][i] = Data_Structures.Val_dict.PARKING_SLOT
 
 
     # Draw a rectangle around each bounding rectangle
     for rect in rects:
         x, y, w, h = rect
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
 
     # Return the processed frame and the matrix
     return frame, matrix
