@@ -166,7 +166,8 @@ class Movement_Handler():
     def set_parking_slot_destination(self):
         chosen_slot = self.parking_slots[0]
         nearest_parking_slot_path = chosen_slot
-        dist_nearest_parking_slot = len(nearest_parking_slot_path)
+        dist_nearest_parking_slot = len(self.BFS_Logic.shortestPath(self.Detection_controller.get_matrix(),
+                                                                        self.robot.get_position(), chosen_slot))
         if self.parking_slots:
             for slot in self.parking_slots:
                 nearest_parking_slot_path = self.BFS_Logic.shortestPath(self.Detection_controller.get_matrix(),
@@ -177,8 +178,8 @@ class Movement_Handler():
 
         self.parking_slot_dest = chosen_slot
 
-    def car_movement(self, matrix):
-        path = self.BFS_Logic.shortestPath(Detection_controller.get_matrix(), self.car.get_position(),
+    def car_movement(self):
+        path = self.BFS_Logic.shortestPath(self.Detection_controller.get_matrix(), self.car.get_position(),
                                            self.parking_slot_dest)
         if path is None:
             print("No valid path found.")
