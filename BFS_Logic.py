@@ -17,6 +17,8 @@ class BFS:
         Returns:
         - list or None: A list of Cell objects representing the shortest path from start to end, or None if no path exists.
         """
+        print("\nshortestPath - IN\n\n")
+        print(f"Parkind data: {start[0]}, {start[1]}, {end[0]}, {end[1]}")
         sx = start[0]
         sy = start[1]
         dx = end[0]
@@ -29,7 +31,7 @@ class BFS:
         for i in range(0, m):
             row = []
             for j in range(0, n):
-                if matrix[i][j] == DS.Val_dict.EMPTY or DS.Val_dict.PARKING_SLOT:
+                if matrix[i][j] == DS.Val_dict.EMPTY or matrix[i][j] == DS.Val_dict.PARKING_SLOT or matrix[i][j] == 255:
                     row.append(DS.Cell(i, j, sys.maxsize, None))
                 else:
                     row.append(None)
@@ -68,6 +70,7 @@ class BFS:
             while p != None:
                 path.insert(0, p)
                 p = p.prev
+            print("\nshortestPath - OUT\n\n")
             return path
 
     # function to update cell visiting status, Time O(1), Space O(1)

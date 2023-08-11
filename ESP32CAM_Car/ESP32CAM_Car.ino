@@ -126,21 +126,21 @@ void setup() {
     config.fb_count = 1;
   }
 
-  // camera init
-  esp_err_t err = esp_camera_init(&config);
-  if (err != ESP_OK) {
-    Serial.printf("Camera init failed with error 0x%x", err);
-    return;
-  }
-
-  //drop down frame size for higher initial frame rate
-  sensor_t * s = esp_camera_sensor_get();
-  s->set_framesize(s, FRAMESIZE_CIF);
-
-#if defined(CAMERA_MODEL_M5STACK_WIDE) || defined(CAMERA_MODEL_M5STACK_ESP32CAM) || defined(CAMERA_MODEL_AI_THINKER)
-  s->set_vflip(s, 0);
-  s->set_hmirror(s, 0);
-#endif
+//   // camera init
+//   esp_err_t err = esp_camera_init(&config);
+//   if (err != ESP_OK) {
+//     Serial.printf("Camera init failed with error 0x%x", err);
+//     return;
+//   }
+//
+//   //drop down frame size for higher initial frame rate
+//   sensor_t * s = esp_camera_sensor_get();
+//   s->set_framesize(s, FRAMESIZE_CIF);
+//
+// #if defined(CAMERA_MODEL_M5STACK_WIDE) || defined(CAMERA_MODEL_M5STACK_ESP32CAM) || defined(CAMERA_MODEL_AI_THINKER)
+//   s->set_vflip(s, 0);
+//   s->set_hmirror(s, 0);
+// #endif
 
   WiFi.begin(ssid, password);
 

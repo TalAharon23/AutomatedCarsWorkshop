@@ -18,11 +18,12 @@ def main():
     # image_logic = logic.Detection_controller()
     image_logic = Movement_Handler.Movement_Handler()
     # Create a thread for the video scanning process
-    video_thread = threading.Thread(target=image_logic.start_car_parking_session, args=[])
-    video_thread.start()
+    image_logic.start_car_parking_session()
+    # video_thread = threading.Thread(target=image_logic.start_car_parking_session, args=[])
+    # video_thread.start()
     # Create a thread for the GUI
-    gui_thread = threading.Thread(target=UI.create_buttons)
-    gui_thread.start()
+    # gui_thread = threading.Thread(target=UI.create_buttons)
+    # gui_thread.start()
 
 
 if __name__ == '__main__':

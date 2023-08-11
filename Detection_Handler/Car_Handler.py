@@ -112,12 +112,12 @@ def Find_Car(frame, matrix, frameSize, car):
         angle_degrees = np.degrees(angle_radians)
         if angle_degrees < 0:
             angle_degrees += 360
-        car.set_position(boundries[0])
+        car.set_position((round(boundries[0][0]), round(boundries[0][1])))
         car.set_direction_degrees(int(round(angle_degrees)))
         print(int(round(angle_degrees)))
-        cv2.putText(frame, "{:}".format('Front'),
-                    (boundries[0][0] - 10, boundries[2][0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
-                    (255, 255, 255), 1)
+        # cv2.putText(frame, "{:}".format('Front'),
+        #             (boundries[0][0] - 10, boundries[2][0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
+        #             (255, 255, 255), 1)
 
 
 
