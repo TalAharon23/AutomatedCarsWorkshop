@@ -64,9 +64,12 @@ class Movement_Handler():
             #     pass
             # elif self.counter < 6:
             #     self.frame_array.append(self.scan_frame(frame, car))
-            elif self.counter % 10 == 0:
+            elif self.counter % 12 == 0:
                 processed_frame = self.Detection_controller.scan_frame(frame, self.robot)[0]
                 self.Detection_controller.out_video.write(processed_frame)
+
+            elif self.counter % 60 == 0:
+                self.Detection_controller.out_video.release()
 
                 # set parking destination
                 if self.parking_slot_dest == None:

@@ -108,11 +108,16 @@ def Find_Car(frame, matrix, frameSize, car):
         contour_centroid = (centroid_x, centroid_y)
         dx = upside_left_corner[0] - contour_centroid[0]
         dy = upside_left_corner[1] - contour_centroid[1]
-        angle_radians = np.arctan2(dy, dx)
-        angle_degrees = np.degrees(angle_radians)
-        if angle_degrees < 0:
-            angle_degrees += 360
-        car.set_position((round(boundries[0][0]), round(boundries[0][1])))
+        # angle_radians = np.arctan2(dy, dx)
+        # angle_degrees = np.degrees(angle_radians)
+        rect1 = cv2.minAreaRect(robot_rice[0][0]['contour'])
+        angle_degrees = rect1[2]
+        angle_degrees = calculate_actual_angle_difference(robot_rices, angle_degrees)
+
+
+        # if angle_degrees < 0:
+        #     angle_degrees += 360
+        car.set_position(get_white_strip_rice(robot_rices))
         car.set_direction_degrees(int(round(angle_degrees)))
         print(int(round(angle_degrees)))
         # cv2.putText(frame, "{:}".format('Front'),
@@ -171,6 +176,19 @@ def find_robot(robot_rices, rices):
                 robot_rices.append([rices[i], rices[j]])
             # break
 
+def get_white_strip_rice(robot_rices):
+    # strip_1_color = robot_rices[0]
+    strip_1 = None
+    strip_2 = None
+
+    for rice in robot_rices[0]:
+        if rice[0]['color_name'] == 'white':
+            strip_1 = rice[0]
+        elif rice[0]['color_name'] == 'black':
+            strip_2 = rice[0]
+
+    return (round((strip_1['box'][0][0][0] + strip_1['box'][0][1][0]) / 2), round(((strip_1['box'][0][0][1] + strip_1['box'][0][1][1]) / 2)))
+
 
 def get_bounding_box(pairs):
     all_points = np.concatenate([pair for pair in pairs], axis=0)
@@ -188,3 +206,33 @@ def find_center(point1, point2):
     center_x = (x1 + x2) / 2
     center_y = (y1 + y2) / 2
     return (center_x, center_y)
+
+
+def calculate_actual_angle_difference(robot_rices, curr_angle):
+    # strip_1_color = robot_rices[0]
+    strip_1 = None
+    strip_2 = None
+
+    for rice in robot_rices[0]:
+        if rice[0]['color_name'] == 'white':
+            strip_1 = rice[0]
+        elif rice[0]['color_name'] == 'black':
+            strip_2 = rice[0]
+
+    # print(strip_1['box'][0][0][0])
+    # print(strip_2['box'][0][0][0])
+    # print(strip_1['box'][0][0][1])
+    # print(strip_2['box'][0][0][1])
+
+    if strip_1['box'][0][0][0] < strip_2['box'][0][0][0] and strip_1['box'][0][0][1] < strip_2['box'][0][0][1]:
+        print(f"{curr_angle} + 270 = {curr_angle + 270}") #fix
+        return curr_angle + 270
+    elif strip_1['box'][0][0][0] < strip_2['box'][0][0][0] and strip_1['box'][0][0][1] > strip_2['box'][0][0][1]:
+        print(f"{curr_angle} + 180 = {curr_angle + 180}") #fix
+        return curr_angle + 180
+    elif strip_1['box'][0][0][0] > strip_2['box'][0][0][0] and strip_1['box'][0][0][1] < strip_2['box'][0][0][1]:
+        print(f"{curr_angle} + 0 = {curr_angle + 0}") #fix
+        return curr_angle + 0
+    else:
+        print(f"{curr_angle} + 90 = {curr_angle + 90}") #fix
+        return curr_angle + 90
