@@ -33,15 +33,15 @@ class Singleton(type):
 class Detection_controller(metaclass=Singleton):
 
     def __init__(self):
-        self.num_of_frame_for_stabiliztion = 0
-        self.counter = 0
-        self.src_video = cv2.VideoCapture(url)
-        self.out_video = cv2.VideoWriter('Resources/Amir_Test/output_video.avi',
-                                         cv2.VideoWriter_fourcc(*'DIVX'), 24, frameSize)
-        self.matrix = np.zeros(frameSize)
-        self.frame_array = []
-        self.flag = True
-        self.framenum = 0
+        self.num_of_frame_for_stabiliztion          = 0
+        self.counter                                = 0
+        self.src_video                              = cv2.VideoCapture(url)
+        self.out_video                              = cv2.VideoWriter('Resources/Amir_Test/output_video.avi',
+                                                                      cv2.VideoWriter_fourcc(*'DIVX'), 12,frameSize)
+        self.matrix                                 = np.zeros(frameSize)
+        self.frame_array                            = []
+        self.flag                                   = True
+        self.framenum                               = 0
         # self.parking_slots                          = Data_Structures.Parking_Slots()
 
     def scan_video(self, car, parking_slots):
