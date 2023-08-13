@@ -8,7 +8,7 @@ from Data_Structures import *
 import BFS_Logic
 from ESP32CAM_Car.MovementAPI import move
 
-RIGHT_LEFT_DEGREE = 8
+RIGHT_LEFT_DEGREE = 10
 
 
 class MOVE_COMMANDS:

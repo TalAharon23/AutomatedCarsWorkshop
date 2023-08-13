@@ -45,10 +45,10 @@ class Detection_controller(metaclass=Singleton):
         self.src_video                              = cv2.VideoCapture(url)
         self.out_video                              = cv2.VideoWriter('Resources/Amir_Test/output_video.avi',
                                                                       cv2.VideoWriter_fourcc(*'DIVX'), 12,frameSize)
+        self.matrix                                 = np.zeros(frameSize)
         self.frame_array                            = []
         self.flag                                   = True
         self.framenum                               = 0
-        # global matrix                               = np.zeros(frameSize)
         # self.parking_slots                          = Data_Structures.Parking_Slots()
 
     def scan_video(self, car, parking_slots):
@@ -65,10 +65,10 @@ class Detection_controller(metaclass=Singleton):
                 DS_lock.release()
                 break
             if self.counter == 6:
-                # matrix = bd_h.Create_Template(self.frame_array)
+                # self.matrix = bd_h.Create_Template(self.frame_array)
                 pass
-            # elif self.counter < 6:
-            #     self.frame_array.append(self.scan_frame(frame, car, parking_slots))
+            elif self.counter < 6:
+                self.frame_array.append(self.scan_frame(frame, car))
             elif self.counter % 3 == 0:
                 DS_lock.acquire()
                 processed_frame = self.scan_frame(frame, car, parking_slots)
