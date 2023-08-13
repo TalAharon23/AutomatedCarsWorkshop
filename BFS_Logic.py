@@ -17,8 +17,6 @@ class BFS:
         Returns:
         - list or None: A list of Cell objects representing the shortest path from start to end, or None if no path exists.
         """
-        print("\nshortestPath - IN\n\n")
-        print(f"Parkind data: {start[0]}, {start[1]}, {end[0]}, {end[1]}")
         sx = start[0]
         sy = start[1]
         dx = end[0]
@@ -38,7 +36,7 @@ class BFS:
             cells.append(row)
             # breadth first search
         queue = []
-        src = cells[sx][sy]
+        src = cells[int(sx)][int(sy)]
         src.dist = 0
         queue.append(src)
         dest = None
