@@ -17,7 +17,7 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://172.20.10.4:8080/video"
+url = "http://192.162.3.194:8080/video"
 
 
 class Singleton(type):
@@ -37,7 +37,7 @@ class Detection_controller(metaclass=Singleton):
         self.counter                                = 0
         self.src_video                              = cv2.VideoCapture(url)
         self.out_video                              = cv2.VideoWriter('Resources/Amir_Test/output_video.avi',
-                                                                      cv2.VideoWriter_fourcc(*'DIVX'), 2,frameSize)
+                                                                      cv2.VideoWriter_fourcc(*'DIVX'), 12,frameSize)
         self.matrix                                 = np.zeros(frameSize)
         self.frame_array                            = []
         self.flag                                   = True
