@@ -1,3 +1,4 @@
+import cv2
 from ESP32CAM_Car.MovementAPI import move
 from Detection_Handler.Detection_controller import Detection_controller
 from Data_Structures import *
@@ -92,9 +93,9 @@ class Movement_Handler():
 
             self.counter += 1
 
-            # q = cv2.waitKey(1)
-            # if q == ord("q"):
-            #     break
+            q = cv2.waitKey(1)
+            if q == ord("q"):
+                break
 
         self.out_video.release()
         # release the src_video capture object

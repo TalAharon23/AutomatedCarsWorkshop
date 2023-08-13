@@ -97,6 +97,9 @@ class Detection_controller(metaclass=Singleton):
         cv2.imshow('Color image', matrix_scaled)
         # Display the resulting frame
         h_concat = np.hstack((origin_frame, processed_frame))
+        q = cv2.waitKey(1)
+        if q == ord("q"):
+            cv2.destroyAllWindows()
 
         # Display the concatenated frame
         cv2.imshow('Autonomous Car', h_concat)
