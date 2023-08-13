@@ -42,10 +42,9 @@ class Detection_controller(metaclass=Singleton):
         self.frame_array                            = []
         self.flag                                   = True
         self.framenum                               = 0
-        self.parking_slots                          = Data_Structures.Parking_Slots()
+        # self.parking_slots                          = Data_Structures.Parking_Slots()
 
-
-    def scan_video(self, car):
+    def scan_video(self, car, parking_slots):
         while (self.src_video.isOpened()):
             # Capture frame-by-frame
             ret, frame = self.src_video.read()
@@ -83,12 +82,13 @@ class Detection_controller(metaclass=Singleton):
         matrix_scaled = cv2.normalize(matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
         cv2.imwrite("matrix_image" + str(self.framenum) + ".jpg", matrix_scaled)
 
-    def scan_frame(self, frame, car):
+    def scan_frame(self, frame, car, parking_slots):
         frame = cv2.resize(frame, frameSize, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
         origin_frame = frame.copy()
         # processed_frame = ln_h.Find_Lines(frame, self.matrix, frameSize, mask_line, val_dict)[1q]  # Find path
         processed_frame = ln_h.Find_Lines(frame, self.matrix, frameSize, mask_border, val_dict)[1]  # Find borders
-        processed_frame, matrix = park_h.Find_Parking_Slots(frame, self.matrix, frameSize, val_dict, self.parking_slots)  # Find parking spot
+        processed_frame, matrix = park_h.Find_Parking_Slots(frame, self.matrix, frameSize, val_dict,
+                                                            parking_slots)  # Find parking spot
         processed_frame = car_h.Find_Car(frame, self.matrix, frameSize, car)[1]
 
         matrix_scaled = cv2.normalize(self.matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
@@ -97,6 +97,9 @@ class Detection_controller(metaclass=Singleton):
         cv2.imshow('Color image', matrix_scaled)
         # Display the resulting frame
         h_concat = np.hstack((origin_frame, processed_frame))
+        q = cv2.waitKey(1)
+        if q == ord("q"):
+            cv2.destroyAllWindows()
 
         # Display the concatenated frame
         cv2.imshow('Autonomous Car', h_concat)

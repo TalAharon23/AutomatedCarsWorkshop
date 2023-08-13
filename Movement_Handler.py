@@ -1,3 +1,4 @@
+import cv2
 from ESP32CAM_Car.MovementAPI import move
 from Detection_Handler.Detection_controller import Detection_controller
 from Data_Structures import *
@@ -38,7 +39,7 @@ class Movement_Handler():
         self.car_arrived_to_maneuver_point  = False
         self.car_arrived_to_destination     = False
         self.parking_slot_dest              = None
-        self.parking_slots                  = Parking_Slots([(40, 60)])
+        self.parking_slots                  = Parking_Slots()
         self.in_process                     = True
         self.last_position                  = None
         self.last_direction                 = None
@@ -64,21 +65,23 @@ class Movement_Handler():
             #     pass
             # elif self.counter < 6:
             #     self.frame_array.append(self.scan_frame(frame, car))
-            elif self.counter % 12 == 0:
-                processed_frame = self.Detection_controller.scan_frame(frame, self.robot)[0]
+            elif self.counter % 10 == 0:
+                processed_frame = self.Detection_controller.scan_frame(frame, self.robot, self.parking_slots)[0]
                 self.Detection_controller.out_video.write(processed_frame)
 
-            elif self.counter % 60 == 0:
-                self.Detection_controller.out_video.release()
-
                 # set parking destination
+                if len(self.parking_slots.get_parking_solts()) == 0:
+                    self.counter += 1
+                    continue
+                    # self.parking_slots = self.Detection_controller.parking_slots.get_parking_solts()
+                    # print(len(self.parking_slots))
+
                 if self.parking_slot_dest == None:
-                    self.parking_slots = self.Detection_controller.parking_slots.get_parking_solts()
-                    if len(self.parking_slots) == 0 or self.robot.position == None:
+                    if len(self.parking_slots.get_parking_solts()) == 0 or self.robot.position == None:
                         self.move_car_diagonally()
                         continue
                     # self.robot.set_position((0,0))
-                    self.set_parking_slot_destination()
+                self.set_parking_slot_destination()
 
                 if self.check_validation():
                     self.car_movement()
@@ -92,13 +95,13 @@ class Movement_Handler():
 
             self.counter += 1
 
-            # q = cv2.waitKey(1)
-            # if q == ord("q"):
-            #     break
+            q = cv2.waitKey(1)
+            if q == ord("q"):
+                break
 
-        self.out_video.release()
+        self.Detection_controller.out_video.release()
         # release the src_video capture object
-        self.src_video.release()
+        self.Detection_controller.src_video.release()
         # Closes all the windows currently opened.
         cv2.destroyAllWindows()
 
@@ -190,12 +193,13 @@ class Movement_Handler():
         self.in_process = value
 
     def set_parking_slot_destination(self):
-        chosen_slot = self.parking_slots[0]
+        parking_slots = self.parking_slots.get_parking_solts()
+        chosen_slot = parking_slots[0]
         nearest_parking_slot_path = chosen_slot
         dist_nearest_parking_slot = len(self.BFS_Logic.shortestPath(self.Detection_controller.get_matrix(),
                                                                         self.robot.get_position(), chosen_slot))
-        if self.parking_slots:
-            for slot in self.parking_slots:
+        if parking_slots:
+            for slot in parking_slots:
                 nearest_parking_slot_path = self.BFS_Logic.shortestPath(self.Detection_controller.get_matrix(),
                                                                         self.robot.get_position(), slot)
                 if len(nearest_parking_slot_path) < dist_nearest_parking_slot:
