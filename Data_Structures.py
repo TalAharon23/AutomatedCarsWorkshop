@@ -6,6 +6,8 @@
 #     "Robot": 4
 # }
 
+import threading
+
 DIRECTION_DICT = {
     "NORTH": 0,
     "NORTH_EAST": 1,
@@ -16,6 +18,7 @@ DIRECTION_DICT = {
     "WEST": 6,
     "WEST_NORTH": 7
 }
+ds_mutex = threading.Lock()
 
 
 class Val_dict:
@@ -41,33 +44,52 @@ class Car:
         self.next_step = next_Step
 
     def get_position(self):
-        return self.position
+        ds_mutex.acquire()
+        temp = self.position
+        ds_mutex.release()
+        return temp
 
     def get_direction_degrees(self):
-        return self.direction_degrees
+        ds_mutex.acquire()
+        temp = self.direction_degrees
+        ds_mutex.release()
+        return temp
 
     def set_position(self, new_position):
+        ds_mutex.acquire()
         self.position = new_position
+        ds_mutex.release()
 
     def set_direction_degrees(self, new_direction):
+        ds_mutex.acquire()
         self.direction_degrees = new_direction
+        ds_mutex.release()
 
 
 class Parking_Slots(metaclass=Singleton):
     def __init__(self, position=None, direction=None):
         self.parking_slots = []
 
-    def get_parking_solts(self):
-        return self.parking_slots
+    def get_parking_slots(self):
+        ds_mutex.acquire()
+        temp = self.parking_slots
+        ds_mutex.release()
+        return temp
 
-    def clean_parking_solts(self):
+    def clean_parking_slots(self):
+        ds_mutex.acquire()
         self.parking_slots.clear()
+        ds_mutex.release()
 
     def remove_slot(self, slot):
+        ds_mutex.acquire()
         self.parking_slots.remove(slot)
+        ds_mutex.release()
 
     def save_slot(self, slot):
+        ds_mutex.acquire()
         self.parking_slots.append(slot)
+        ds_mutex.release()
 
 
 class Cell:

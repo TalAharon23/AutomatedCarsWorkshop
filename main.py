@@ -13,9 +13,8 @@ import Movement_Handler
 import Data_Structures as DS
 
 
+
 def main():
-    car = DS.Car()
-    # image_logic = logic.Detection_controller()
     image_logic = Movement_Handler.Movement_Handler()
     # Create a thread for the video scanning process
     image_logic.start_car_parking_session()

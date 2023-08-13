@@ -34,7 +34,7 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
         x,y,w,h = cv2.boundingRect(approx)
 
         # Add the rectangle to the list if its area is larger than 10000 (i.e. it is clear)
-        if w * h > 1000:
+        if w * h > 10000:# and w * h < 8000:
             rects.append((x, y, w, h))
             parking_slots.save_slot((x + int(round((w/2))), y + int(round(h/2))))
 
