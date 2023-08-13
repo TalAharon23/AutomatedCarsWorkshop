@@ -38,7 +38,7 @@ class BFS:
             cells.append(row)
             # breadth first search
         queue = []
-        src = cells[sx][sy]
+        src = cells[int(sx)][int(sy)]
         src.dist = 0
         queue.append(src)
         dest = None
