@@ -26,11 +26,20 @@ class DIRECTIONS:
 
 
 angle_to_direction = {
-    'Left': 0,
-    'Right': 180,
-    'Up': 90,
-    'Down': 270
+    'Left': 270,
+    'Right': 90,
+    'Up': 0,
+    'Down': 180
 }
+
+direction_to_angle = {
+    270: 'Left',
+    90: 'Right',
+    0: 'Up',
+    180: 'Down'
+}
+
+
 
 
 class Movement_Handler():
@@ -45,6 +54,7 @@ class Movement_Handler():
         self.in_process                     = True
         self.last_position                  = None
         self.last_direction                 = None
+        self.last_turn                      = None
         self.counter                        = 0
         self.path_index                     = 0
 
@@ -85,7 +95,7 @@ class Movement_Handler():
                         self.move_car_diagonally()
                         continue
                     # self.robot.set_position((0,0))
-                self.set_parking_slot_destination()
+                    self.set_parking_slot_destination()
 
                 if self.check_validation():
                     self.car_movement()
@@ -93,7 +103,7 @@ class Movement_Handler():
                     try:
                         self.handle_validation_error()
                     except:
-                        pass
+                        self.move_car_diagonally()
             # else:
             #     self.Detection_controller.out_video.write(processed_frame)
 
@@ -147,8 +157,8 @@ class Movement_Handler():
         while num_attempts < max_attempts and not detection_successful:
             # Move the car little to the right and forward
             if self.path != None:
-                for i in range(path_index, len(self.path) - 1):
-                    print("handle_validation_error\n")
+                for i in range(self.path_index, len(self.path) - 1):
+                    print("handle_validation_error - moving on path\n")
                     current_cell = self.path[i]
                     next_cell = self.path[i + 1]
 
@@ -162,6 +172,7 @@ class Movement_Handler():
                 detection_successful = True
             else:
                 num_attempts += 1
+                self.move_car_diagonally()
 
         if not detection_successful:
             # Raise an exception or set a flag indicating the car couldn't be detected
@@ -171,12 +182,15 @@ class Movement_Handler():
         # Move the car 10 degrees to the right
         #self.update_car_angle(self.robot, self.robot.get_direction_degrees() + 40)  # tilt car to right 40 degrees
         # Move the car forward (you need to implement this part)
+        if self.last_turn == None:
+            self.last_turn = MOVE_COMMANDS.Left
+
         move(MOVE_COMMANDS.Forward)
         move(MOVE_COMMANDS.Forward)
         move(MOVE_COMMANDS.Forward)
-        move(MOVE_COMMANDS.Left)
-        move(MOVE_COMMANDS.Left)
-        move(MOVE_COMMANDS.Left)
+        move(self.last_turn)
+        move(self.last_turn)
+        move(self.last_turn)
         # Move the car back (you need to implement this part)
         move(MOVE_COMMANDS.Back)
 
@@ -225,6 +239,7 @@ class Movement_Handler():
 
         next_direction = self.get_next_direction(current_cell, next_cell)
         self.update_car_angle(angle_to_direction.get(next_direction))
+        self.reset_robot_data()
         self.path_index = self.path_index + 1
 
         # Move the car forward (you need to implement this part)
@@ -241,18 +256,20 @@ class Movement_Handler():
         car_tilt_degrees = self.robot.get_direction_degrees()  # 315 --> 0
         num_of_degrees = abs(car_tilt_degrees - next_direction)  # =315
         direction = None
-        if num_of_degrees > 180:
-            num_of_steps = (int)((360 - num_of_degrees) / RIGHT_LEFT_DEGREE)
-            direction = MOVE_COMMANDS.Right
-        else:
-            num_of_steps = (int)((num_of_degrees) / RIGHT_LEFT_DEGREE)
-            direction = MOVE_COMMANDS.Left
+        if num_of_degrees > 15:
+            if num_of_degrees > 180:
+                num_of_steps = (int)((360 - num_of_degrees) / RIGHT_LEFT_DEGREE)
+                direction = (next_direction + 180) % 360
+            else:
+                num_of_steps = (int)((num_of_degrees) / RIGHT_LEFT_DEGREE)
+                direction = next_direction
 
-        print(f"num_of_steps: {num_of_steps}\n")
+            print(f"num_of_steps: {num_of_steps}\n")
 
-        self.move_to_correct_angle(num_of_steps, direction)
+            self.move_to_correct_angle(num_of_steps, direction)
+            self.last_turn = direction
 
-    def move_to_correct_angle(self, num_of_moves: int, direction: MOVE_COMMANDS):
+    def move_to_correct_angle(self, num_of_moves: int, direction):
         for i in range(num_of_moves):
             move(direction)
 
@@ -264,12 +281,16 @@ class Movement_Handler():
         :param dest_position: Destination position cell
         """
         if curr_position.x == dest_position.x and curr_position.y < dest_position.y:
-            dir_to_move = DIRECTIONS.Right
-        elif curr_position.x == dest_position.x and curr_position.y > dest_position.y:
-            dir_to_move = DIRECTIONS.Left
-        elif curr_position.x < dest_position.x and curr_position.y == dest_position.y:
             dir_to_move = DIRECTIONS.Down
+        elif curr_position.x == dest_position.x and curr_position.y > dest_position.y:
+            dir_to_move = DIRECTIONS.UP
+        elif curr_position.x < dest_position.x and curr_position.y == dest_position.y:
+            dir_to_move = DIRECTIONS.Right
         elif curr_position.x > dest_position.x and curr_position.y == dest_position.y:
-            dir_to_move = DIRECTIONS.Up
+            dir_to_move = DIRECTIONS.Left
 
         return dir_to_move
+
+    def reset_robot_data(self):
+        self.robot.position = None
+        self.robot.direction_degrees = None

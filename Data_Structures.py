@@ -69,16 +69,28 @@ class Car:
 class Parking_Slots(metaclass=Singleton):
     def __init__(self, position=None, direction=None):
         self.parking_slots = []
+        self.parking_slots_contours = []
 
     def get_parking_slots(self):
         ds_mutex.acquire()
-        temp = self.parking_slots
+        temp = self.parking_slots.copy()
+        ds_mutex.release()
+        return temp
+
+    def get_parking_slots_contours(self):
+        ds_mutex.acquire()
+        temp = self.parking_slots_contours.copy()
         ds_mutex.release()
         return temp
 
     def clean_parking_slots(self):
         ds_mutex.acquire()
         self.parking_slots.clear()
+        ds_mutex.release()
+
+    def clean_parking_slots_contours(self):
+        ds_mutex.acquire()
+        self.parking_slots_contours.clear()
         ds_mutex.release()
 
     def remove_slot(self, slot):
@@ -89,6 +101,11 @@ class Parking_Slots(metaclass=Singleton):
     def save_slot(self, slot):
         ds_mutex.acquire()
         self.parking_slots.append(slot)
+        ds_mutex.release()
+
+    def save_slot_contours(self, slot):
+        ds_mutex.acquire()
+        self.parking_slots_contours.append(slot)
         ds_mutex.release()
 
 
