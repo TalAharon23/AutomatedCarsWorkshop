@@ -45,10 +45,10 @@ class Detection_controller(metaclass=Singleton):
         self.src_video                              = cv2.VideoCapture(url)
         self.out_video                              = cv2.VideoWriter('Resources/Amir_Test/output_video.avi',
                                                                       cv2.VideoWriter_fourcc(*'DIVX'), 12,frameSize)
+        self.matrix                                 = np.zeros(frameSize)
         self.frame_array                            = []
         self.flag                                   = True
         self.framenum                               = 0
-        # global matrix                               = np.zeros(frameSize)
         # self.parking_slots                          = Data_Structures.Parking_Slots()
 
     def scan_video(self, car, parking_slots):
@@ -65,10 +65,10 @@ class Detection_controller(metaclass=Singleton):
                 DS_lock.release()
                 break
             if self.counter == 6:
-                # matrix = bd_h.Create_Template(self.frame_array)
+                # self.matrix = bd_h.Create_Template(self.frame_array)
                 pass
-            # elif self.counter < 6:
-            #     self.frame_array.append(self.scan_frame(frame, car, parking_slots))
+            elif self.counter < 6:
+                self.frame_array.append(self.scan_frame(frame, car))
             elif self.counter % 3 == 0:
                 DS_lock.acquire()
                 processed_frame = self.scan_frame(frame, car, parking_slots)
@@ -109,8 +109,17 @@ class Detection_controller(metaclass=Singleton):
         origin_frame = frame.copy()
         # processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_line, val_dict)[1q]  # Find path
         # processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border, val_dict)[1]  # Find borders
-        processed_frame, matrix = park_h.Find_Parking_Slots(frame, matrix, frameSize, val_dict,
-                                                            parking_slots)  # Find parking spot
+        if len(parking_slots.get_parking_slots()) < 2:
+            processed_frame, matrix = park_h.Find_Parking_Slots(frame, matrix, frameSize, val_dict,
+                                                                parking_slots)  # Find parking spot
+        else:
+            for cnt in parking_slots.get_parking_slots_contours():
+                epsilon = 0.01 * cv2.arcLength(cnt, True)
+                approx = cv2.approxPolyDP(cnt, epsilon, True)
+
+                # Find the bounding rectangle of the polygon
+                x, y, w, h = cv2.boundingRect(approx)
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
         processed_frame = car_h.Find_Car(frame, matrix, frameSize, car)[1]
 
         matrix_scaled = cv2.normalize(matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
