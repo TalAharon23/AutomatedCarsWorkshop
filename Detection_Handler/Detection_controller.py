@@ -18,7 +18,7 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://192.162.3.194:8080/video"
+url = "http://192.168.245.90:8080/video"
 
 
 class Singleton(type):
@@ -68,7 +68,7 @@ class Detection_controller(metaclass=Singleton):
                 # self.matrix = bd_h.Create_Template(self.frame_array)
                 pass
             elif self.counter < 6:
-                self.frame_array.append(self.scan_frame(frame, car))
+                self.frame_array.append(self.scan_frame(frame, car, parking_slots))
             elif self.counter % 3 == 0:
                 DS_lock.acquire()
                 processed_frame = self.scan_frame(frame, car, parking_slots)
