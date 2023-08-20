@@ -4,8 +4,8 @@ from scipy.spatial import distance
 import Data_Structures
 
 upside_left_corner = (0, 0)
-white_avg_intensity_bottom = red_avg_intensity_top = 120
-red_avg_intensity_bottom = 120
+white_avg_intensity_bottom = red_avg_intensity_top = 150
+red_avg_intensity_bottom = 150
 angle_diff_sensitivity = 11
 pairs_distance_sensitivity = 11
 
@@ -61,9 +61,9 @@ def Find_Car(frame, matrix, frameSize, car):
 
                 length = max(dimension_a, dimension_b)
                 width = min(dimension_a, dimension_b)
-                if length < 4 or length > 15:
+                if length < 3 or length > 15:
                     continue
-                if width < 1 or width > 6:
+                if width < 2 or width > 6:
                     continue
 
                 rice = [box.astype("int")]

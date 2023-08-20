@@ -11,21 +11,34 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
     # lower_green = np.array([36, 25, 25])
     # upper_green = np.array([86, 255, 255])
     # Define the lower and upper bounds of the red color
-    lower_red = np.array([0, 100, 100])  # Adjust these values based on the specific shade of red you want to detect
-    upper_red = np.array([10, 255, 255])  # This range covers the hues near red
+    # lower_red = np.array([0, 100, 100])  # Adjust these values based on the specific shade of red you want to detect
+    # upper_red = np.array([20, 255, 255])  # This range covers the hues near red
+    lower_red1 = np.array([0, 100, 100])
+    upper_red1 = np.array([10, 255, 255])
+    lower_red2 = np.array([160, 100, 100])
+    upper_red2 = np.array([180, 255, 255])
+
+    # Create masks for each red range
+    mask1 = cv2.inRange(hsv, lower_red1, upper_red1)
+    mask2 = cv2.inRange(hsv, lower_red2, upper_red2)
+
+    # Combine the masks to get the final mask
+    final_mask = cv2.bitwise_or(mask1, mask2)
+    kernel = np.ones((5, 5), np.uint8)
+    final_mask = cv2.morphologyEx(final_mask, cv2.MORPH_OPEN, kernel)
 
     # Threshold the image to get only the green color
-    mask = cv2.inRange(hsv, lower_red, upper_red)
+    # mask = cv2.inRange(hsv, lower_red, upper_red)
 
     # Find contours in the binary image
-    contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(final_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     # Sort the contours by area in descending order
     contours = sorted(contours, key=cv2.contourArea, reverse=True)
 
     # Find the bounding rectangles of the largest 5 contours
     rects = []
-    for cnt in contours[:10]:
+    for cnt in contours: # [:100]:
         # Approximate the contour as a polygon
         epsilon = 0.01*cv2.arcLength(cnt,True)
         approx = cv2.approxPolyDP(cnt,epsilon,True)
@@ -34,7 +47,7 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
         x,y,w,h = cv2.boundingRect(approx)
 
         # Add the rectangle to the list if its area is larger than 10000 (i.e. it is clear)
-        if w * h > 9000:# and w * h < 8000:
+        if w * h > 12000:# and w * h < 8000:
             rects.append((x, y, w, h))
             parking_slots.save_slot_contours(cnt)
             parking_slots.save_slot((x + int(round((w/2))), y + int(round(h/2))))

@@ -1,3 +1,5 @@
+import time
+
 import cv2
 import threading
 
@@ -8,7 +10,7 @@ from Data_Structures import *
 import BFS_Logic
 from ESP32CAM_Car.MovementAPI import move
 
-RIGHT_LEFT_DEGREE = 5
+RIGHT_LEFT_DEGREE = 7
 
 
 class MOVE_COMMANDS:
@@ -67,6 +69,7 @@ class Movement_Handler():
         """
         dc = Detection_controller()
         threading.Thread(target=dc.scan_video, args=[self.robot, self.parking_slots]).start()
+        time.sleep(2)
         while (Detection_controller.isVideoOnLive() and self.in_process):
 
             # Capture frame-by-frame
@@ -82,7 +85,8 @@ class Movement_Handler():
             if self.counter % 7 == 0:
                 # processed_frame = Detection_controller.get_matrix(frame, self.robot, self.parking_slots)[0]
                 # self.Detection_controller.out_video.write(processed_frame)
-
+                if self.counter % 30 == 0:
+                    dc.reset_Matrix()
                 # set parking destination
                 if len(self.parking_slots.get_parking_slots()) == 0:
                     self.counter += 1
@@ -96,7 +100,7 @@ class Movement_Handler():
                         continue
                     # self.robot.set_position((0,0))
                     self.set_parking_slot_destination()
-
+                time.sleep(0.6)
                 if self.check_validation():
                     self.car_movement()
                 else:
@@ -131,6 +135,7 @@ class Movement_Handler():
         return False
 
     def check_validation(self):
+        time.sleep(0.2)
         curr_position = self.robot.position
         curr_direction = self.robot.direction_degrees
 
@@ -190,6 +195,28 @@ class Movement_Handler():
         move(MOVE_COMMANDS.Forward)
         move(self.last_turn)
         move(self.last_turn)
+        if self.check_validation():
+            return
+        move(self.last_turn)
+        move(self.last_turn)
+        move(self.last_turn)
+        if self.check_validation():
+            return
+        move(self.last_turn)
+        move(self.last_turn)
+        move(self.last_turn)
+        if self.check_validation():
+            return
+        move(self.last_turn)
+        move(self.last_turn)
+        move(self.last_turn)
+        if self.check_validation():
+            return
+        move(self.last_turn)
+        move(self.last_turn)
+        if self.check_validation():
+            return
+        move(self.last_turn)
         move(self.last_turn)
         # Move the car back (you need to implement this part)
         move(MOVE_COMMANDS.Back)
@@ -244,7 +271,8 @@ class Movement_Handler():
 
         # Move the car forward (you need to implement this part)
         # TODO: Understand how much forward need to move!?!?
-        move(MOVE_COMMANDS.Forward)
+        # move(MOVE_COMMANDS.Forward)
+        # move(MOVE_COMMANDS.Forward)
 
 
     def update_car_angle(self, next_direction):
@@ -256,18 +284,24 @@ class Movement_Handler():
         car_tilt_degrees = self.robot.get_direction_degrees()  # 315 --> 0
         num_of_degrees = abs(car_tilt_degrees - next_direction)  # =315
         direction = None
-        if num_of_degrees > 15:
-            # if car_tilt_degrees - num_of_degrees > 0:
-            if (num_of_degrees - car_tilt_degrees < 180 and car_tilt_degrees < next_direction or
-                    car_tilt_degrees - num_of_degrees < 180 and car_tilt_degrees > next_direction):
-                num_of_degrees = abs(car_tilt_degrees - next_direction)
-                num_of_steps = (int)(num_of_degrees / RIGHT_LEFT_DEGREE)
-                direction = (next_direction + 180) % 360
-                direction = (MOVE_COMMANDS.Right)
-            else:
-                num_of_degrees = abs(next_direction - car_tilt_degrees)  # =315
-                num_of_steps = (int)((num_of_degrees) / RIGHT_LEFT_DEGREE)
-                direction = MOVE_COMMANDS.Left
+        if num_of_degrees > 30:
+            direction = (MOVE_COMMANDS.Right)
+            num_of_steps = 3
+            # # if car_tilt_degrees - num_of_degrees > 0:
+            # if (abs(next_direction - car_tilt_degrees) < 180 and car_tilt_degrees < next_direction or
+            #         car_tilt_degrees - next_direction < 180 and car_tilt_degrees > next_direction):
+            #     num_of_degrees = abs(car_tilt_degrees - next_direction)
+            #     num_of_steps = (int)(num_of_degrees / RIGHT_LEFT_DEGREE)
+            #     direction = (next_direction + 180) % 360
+            #     direction = (MOVE_COMMANDS.Right)
+            # else:
+            #     num_of_degrees = abs((360 - next_direction) - car_tilt_degrees)  # =315
+            #     num_of_steps = (int)((num_of_degrees) / RIGHT_LEFT_DEGREE)
+            #     direction = MOVE_COMMANDS.Left
+        else:
+            num_of_steps = 3
+            direction = MOVE_COMMANDS.Forward
+
 
             print(f"num_of_steps: {num_of_steps}\n")
 

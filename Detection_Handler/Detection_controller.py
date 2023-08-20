@@ -154,6 +154,12 @@ class Detection_controller(metaclass=Singleton):
         DS_lock.release()
         return temp_matrix
 
+    def reset_Matrix(self):
+        global matrix
+        DS_lock.acquire()
+        matrix = np.zeros(frameSize)
+        DS_lock.release()
+
     @staticmethod
     def get_matrix_size():
         return frameSize
