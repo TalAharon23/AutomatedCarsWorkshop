@@ -6,8 +6,8 @@ import Data_Structures
 upside_left_corner = (0, 0)
 white_avg_intensity_bottom = red_avg_intensity_top = 150
 red_avg_intensity_bottom = 150
-angle_diff_sensitivity = 11
-pairs_distance_sensitivity = 11
+angle_diff_sensitivity = 15
+pairs_distance_sensitivity = 15
 
 def Find_Car(frame, matrix, frameSize, car):
     # Convert the frame to grayscale
@@ -19,8 +19,8 @@ def Find_Car(frame, matrix, frameSize, car):
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
     # Reduce threshold to increase white noise
-    threshold1 = 100
-    threshold2 = 130
+    threshold1 = 80
+    threshold2 = 100
     edges = cv2.Canny(blurred, threshold1, threshold2)
     cv2.imshow("test", edges)
     # Find contours in the dilated image
@@ -28,7 +28,7 @@ def Find_Car(frame, matrix, frameSize, car):
     rect = cv2.minAreaRect(contours[0])
     box = cv2.boxPoints(rect)
     box = np.int0(box)
-    cv2.drawContours(frame, [box], 0, (100, 100, 100), 2)
+    # cv2.drawContours(frame, [box], 0, (100, 100, 100), 2)
 
     # Filter the contours to find the red strips for the forward and black strips for the backward
     red_rices = []
@@ -44,7 +44,7 @@ def Find_Car(frame, matrix, frameSize, car):
             perimeter = cv2.arcLength(contour, True)
             approx = cv2.approxPolyDP(contour, 1.1 * perimeter, True)
             x, y, w, h = cv2.boundingRect(contour)
-            if len(approx) > 0 and len(approx) < 13: # and ((w > 25 and h < 25) or (h > 25 and w < 25)):
+            if len(approx) > 0 and len(approx) < 20: # and ((w > 25 and h < 25) or (h > 25 and w < 25)):
                 # Check if the strip is red or black based on its average intensity
 
                 box = cv2.minAreaRect(contour)
@@ -61,9 +61,11 @@ def Find_Car(frame, matrix, frameSize, car):
 
                 length = max(dimension_a, dimension_b)
                 width = min(dimension_a, dimension_b)
-                if length < 3 or length > 15:
+                if length < 1 or length > 50:
                     continue
-                if width < 2 or width > 6:
+                if width < 1 or width > 40:
+                    continue
+                if width * length < 25:
                     continue
 
                 rice = [box.astype("int")]

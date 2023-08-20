@@ -187,7 +187,7 @@ class Movement_Handler():
         # Move the car 10 degrees to the right
         #self.update_car_angle(self.robot, self.robot.get_direction_degrees() + 40)  # tilt car to right 40 degrees
         # Move the car forward (you need to implement this part)
-        if self.last_turn == None:
+        if self.last_turn == None or self.last_turn == MOVE_COMMANDS.Forward or self.last_turn == MOVE_COMMANDS.Back:
             self.last_turn = MOVE_COMMANDS.Left
 
         move(MOVE_COMMANDS.Forward)
