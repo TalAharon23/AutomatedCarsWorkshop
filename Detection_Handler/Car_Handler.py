@@ -4,8 +4,8 @@ from scipy.spatial import distance
 import Data_Structures
 
 upside_left_corner = (0, 0)
-white_avg_intensity_bottom = red_avg_intensity_top = 110
-red_avg_intensity_bottom = 110
+white_avg_intensity_bottom = red_avg_intensity_top = 120
+red_avg_intensity_bottom = 120
 angle_diff_sensitivity = 11
 pairs_distance_sensitivity = 11
 
