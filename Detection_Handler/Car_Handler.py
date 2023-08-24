@@ -47,7 +47,6 @@ def Find_Car(frame, matrix, frameSize, car):
                 box = cv2.boxPoints(box)
                 # box = np.array(box, dtype="int")
                 box = np.int0(box)
-                cv2.drawContours(frame, [box], 0, (100, 100, 100), 2)
 
                 (top_left, top_right, bottom_right, bottom_left) = box
 
@@ -59,12 +58,15 @@ def Find_Car(frame, matrix, frameSize, car):
 
                 length = max(dimension_a, dimension_b)
                 width = min(dimension_a, dimension_b)
-                # if length < 1 or length > 50:
-                #     continue
-                # if width < 1 or width > 40:
-                #     continue
-                # if width * length < 25:
-                #     continue
+                if length < 12 or length > 55:
+                    continue
+                if width < 12 or width > 55:
+                    continue
+                if 1600 > width * length or width * length > 3100:
+                    continue
+
+                cv2.drawContours(frame, [box], 0, (100, 100, 100), 2)
+
 
                 rice = [box.astype("int")]
                 white_rices = []
@@ -75,13 +77,14 @@ def Find_Car(frame, matrix, frameSize, car):
                 if avg_intensity > white_avg_intensity_bottom:
                     white_rices.append({'class': 'class1', 'box': rice, 'color': (255, 255, 255), 'width': width, 'color_name': 'white',
                                   'top_right': top_right, 'contour' : contour})
+                    cv2.putText(frame, "{:}".format('Front'),
+                                (box[0][0] + 10, box[0][1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
+                                (255, 255, 255), 1)
                 else:
                     black_rices.append({'class': 'class3', 'box': rice, 'color': (0, 0, 0), 'width': width, 'color_name': 'black',
                                   'top_right': top_right, 'contour': contour})
 
-                cv2.putText(frame, "{:}".format('Front'),
-                            (box[0][0] - 10, box[2][0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
-                            (255, 255, 255), 1)
+
 
 
 
