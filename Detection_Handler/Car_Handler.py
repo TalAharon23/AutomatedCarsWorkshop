@@ -76,7 +76,7 @@ def Find_Car(frame, matrix, frameSize, car):
                 avg_intensity = np.mean(strip_roi)
                 if avg_intensity > white_avg_intensity_bottom:
                     white_rices.append({'class': 'class1', 'box': rice, 'color': (255, 255, 255), 'width': width, 'color_name': 'white',
-                                  'top_right': top_right, 'contour' : contour})
+                                  'top_right': top_right, 'contour': contour})
                     cv2.putText(frame, "{:}".format('Front'),
                                 (box[0][0] + 10, box[0][1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
                                 (255, 255, 255), 1)
