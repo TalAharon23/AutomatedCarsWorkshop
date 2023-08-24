@@ -40,14 +40,21 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
     rects = []
     for cnt in contours: # [:100]:
         # Approximate the contour as a polygon
+        # cnt = cv2.minAreaRect(cnt)
+
         epsilon = 0.01*cv2.arcLength(cnt,True)
         approx = cv2.approxPolyDP(cnt,epsilon,True)
+
+        box = cv2.minAreaRect(cnt)
+        box = cv2.boxPoints(box)
+        # box = np.array(box, dtype="int")
+        box = np.int0(box)
 
         # Find the bounding rectangle of the polygon
         x,y,w,h = cv2.boundingRect(approx)
 
         # Add the rectangle to the list if its area is larger than 10000 (i.e. it is clear)
-        if w * h > 12000:# and w * h < 8000:
+        if w * h > 9000 and w * h < 30000:
             rects.append((x, y, w, h))
             parking_slots.save_slot_contours(cnt)
             parking_slots.save_slot((x + int(round((w/2))), y + int(round(h/2))))
@@ -58,11 +65,13 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
                 if (x + w) <= 500 and (y + h) <= 700:
                     matrix[j][i] = Data_Structures.Val_dict.PARKING_SLOT
 
+        cv2.drawContours(frame, [box], 0, (255, 0, 255), 2)
 
-    # Draw a rectangle around each bounding rectangle
-    for rect in rects:
-        x, y, w, h = rect
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
+
+    # # Draw a rectangle around each bounding rectangle
+    # for rect in rects:
+    #     x, y, w, h = rect
+    #     cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
 
     # Return the processed frame and the matrix
     return frame, matrix

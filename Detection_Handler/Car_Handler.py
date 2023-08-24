@@ -26,7 +26,7 @@ def Find_Car(frame, matrix, frameSize, car):
     # threshold1 = 150  # brightly lit
     # threshold2 = 330  # brightly lit
     threshold1 = 150    # afternoon
-    threshold2 = 270    # afternoon
+    threshold2 = 330    # afternoon
     edges = cv2.Canny(blurred, threshold1, threshold2)
     cv2.imshow("test", edges)
     # Find contours in the dilated image
@@ -85,7 +85,7 @@ def Find_Car(frame, matrix, frameSize, car):
                         cv2.drawContours(frame, [box], 0, (255, 255, 255), 2)
 
                     elif avg_intensity < red_avg_intensity_top and avg_intensity > red_avg_intensity_bottom:
-                        cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
+                        cv2.drawContours(frame, [box], 0, (255, 0, 0), 2)
 
                     else:
                         for index in range(len(contours_list)):
@@ -107,18 +107,32 @@ def Find_Car(frame, matrix, frameSize, car):
                 for j in range(i + 1, num_contours):
                     angle_difference = calculate_angle_difference(contours_list[i], contours_list[j])
                     if 0.5 < angle_difference < 12:
-                        print(angle_difference)
                         cv2.drawContours(frame, contours_list[i]['box'], 0, contours_list[i]['color'], 2)
                         cv2.drawContours(frame, contours_list[j]['box'], 0, contours_list[j]['color'], 2)
                         print(calculate_actual_angle_difference(contours_list, calculate_curr_angle(contours_list[0]['contour'], contours_list[1]['contour'])))
-                    # if contours_list[i]['color_name'] == 'white':
-                    #     cv2.putText(frame, "{:}".format('Front'),
-                    #                 (contours_list[i]['box'][0][0] + 10, contours_list[i]['box'][0][1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
-                    #                 (0, 0, 0), 1)
-                    # else:
-                    #     cv2.putText(frame, "{:}".format('Front'),
-                    #                 (contours_list[i]['box'][0][0] + 10, contours_list[j]['box'][0][1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
-                    #                 (0, 0, 0), 1)
+                        car.set_direction_degrees(calculate_actual_angle_difference(contours_list, calculate_curr_angle(contours_list[0]['contour'], contours_list[1]['contour'])))
+
+                        if contours_list[i]['color_name'] == 'white':
+                            M = cv2.moments(contours_list[i]['contour'])
+                        else:
+                            M = cv2.moments(contours_list[j]['contour'])
+
+                        if M["m00"] != 0:
+                            cX = int(M["m10"] / M["m00"])
+                            cY = int(M["m01"] / M["m00"])
+                        else:
+                            cX, cY = 0, 0
+
+                        car.set_position((cX, cY))
+
+                        #     cv2.putText(frame, "{:}".format('Front'),
+                        #                 (contours_list[i]['box'][0][0] + 10, contours_list[i]['box'][0][1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
+                        #                 (0, 0, 0), 1)
+                        # else:
+                        #     cv2.putText(frame, "{:}".format('Front'),
+                        #                 (contours_list[j]['box'][0][0] + 10, contours_list[j]['box'][0][1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
+                        #                 (0, 0, 0), 1)
+
 
 
         while len(contours_list) > 2:
@@ -142,10 +156,15 @@ def calculate_distance(contour1, contour2):
     # Calculate the Euclidean distance between the centroids of the contours
     M1 = cv2.moments(contour1)
     M2 = cv2.moments(contour2)
-    cX1 = int(M1["m10"] / M1["m00"])
-    cY1 = int(M1["m01"] / M1["m00"])
-    cX2 = int(M2["m10"] / M2["m00"])
-    cY2 = int(M2["m01"] / M2["m00"])
+
+    if M1["m00"] != 0 and M2["m00"] != 0:
+        cX1 = int(M1["m10"] / M1["m00"])
+        cY1 = int(M1["m01"] / M1["m00"])
+        cX2 = int(M2["m10"] / M2["m00"])
+        cY2 = int(M2["m01"] / M2["m00"])
+    else:
+        cX1, cY1, cX2, cY2,  = 0, 0
+
     distance = np.sqrt((cX1 - cX2)**2 + (cY1 - cY2)**2)
     return distance
 

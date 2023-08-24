@@ -114,12 +114,18 @@ class Detection_controller(metaclass=Singleton):
                                                                 parking_slots)  # Find parking spot
         else:
             for cnt in parking_slots.get_parking_slots_contours():
-                epsilon = 0.01 * cv2.arcLength(cnt, True)
-                approx = cv2.approxPolyDP(cnt, epsilon, True)
+                # epsilon = 0.01 * cv2.arcLength(cnt, True)
 
-                # Find the bounding rectangle of the polygon
-                x, y, w, h = cv2.boundingRect(approx)
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
+                perimeter = cv2.arcLength(cnt, True)
+                # perimeter = cv2.arcLength(contour, False)
+                approx = cv2.approxPolyDP(cnt, perimeter, 3, True)
+                # approx = cv2.approxPolyDP(cnt, epsilon, True)
+
+                box = cv2.minAreaRect(cnt)
+                box = cv2.boxPoints(box)
+                # box = np.array(box, dtype="int")
+                box = np.int0(box)
+
         processed_frame = car_h.Find_Car(frame, matrix, frameSize, car)[1]
 
         matrix_scaled = cv2.normalize(matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
