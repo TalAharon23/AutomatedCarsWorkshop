@@ -25,6 +25,7 @@ def Find_Car(frame, matrix, frameSize, car):
     cv2.imshow("test", edges)
     # Find contours in the dilated image
     contours, hierarchy = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    pixelsPerMm = 2
     # rect = cv2.minAreaRect(contours[0])
     # box = cv2.boxPoints(rect)
     # box = np.int0(box)
