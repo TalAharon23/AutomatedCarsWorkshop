@@ -25,8 +25,8 @@ def Find_Car(frame, matrix, frameSize, car):
     # Reduce threshold to increase white noise
     # threshold1 = 150  # brightly lit
     # threshold2 = 330  # brightly lit
-    threshold1 = 150    # afternoon
-    threshold2 = 330    # afternoon
+    threshold1 = 140    # afternoon
+    threshold2 = 300    # afternoon
     edges = cv2.Canny(blurred, threshold1, threshold2)
     cv2.imshow("test", edges)
     # Find contours in the dilated image
