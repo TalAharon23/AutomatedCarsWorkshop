@@ -72,16 +72,6 @@ class Movement_Handler():
         time.sleep(2)
         while (Detection_controller.isVideoOnLive() and self.in_process):
 
-            # Capture frame-by-frame
-            # ret, frame = Detection_controller.src_video.read()
-            # Assuming it failed to read only the last frame - video end
-            # if not ret:
-            #     break
-            # if self.counter == 6:
-            #     # self.matrix = bd_h.Create_Template(self.frame_array)
-            #     pass
-            # elif self.counter < 6:
-            #     self.frame_array.append(self.scan_frame(frame, car))
             if self.counter % 7 == 0:
                 # processed_frame = Detection_controller.get_matrix(frame, self.robot, self.parking_slots)[0]
                 # self.Detection_controller.out_video.write(processed_frame)

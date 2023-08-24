@@ -2,14 +2,18 @@ import cv2
 import numpy as np
 from scipy.spatial import distance
 import Data_Structures
+import copy
 
 upside_left_corner = (0, 0)
-white_avg_intensity_bottom = red_avg_intensity_top = 150
-red_avg_intensity_bottom = 150
+white_avg_intensity_bottom = red_avg_intensity_top = 120
+red_avg_intensity_bottom = 120
 angle_diff_sensitivity = 15
 pairs_distance_sensitivity = 15
+contours_list = []
+
 
 def Find_Car(frame, matrix, frameSize, car):
+    global contours_list
     # Convert the frame to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     # cv2.rectangle(gray, (150, 400), (150 + 70, 400 + 10), (255), 2)
@@ -19,8 +23,10 @@ def Find_Car(frame, matrix, frameSize, car):
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
     # Reduce threshold to increase white noise
-    threshold1 = 80
-    threshold2 = 100
+    # threshold1 = 150  # brightly lit
+    # threshold2 = 330  # brightly lit
+    threshold1 = 150    # afternoon
+    threshold2 = 270    # afternoon
     edges = cv2.Canny(blurred, threshold1, threshold2)
     cv2.imshow("test", edges)
     # Find contours in the dilated image
@@ -33,20 +39,20 @@ def Find_Car(frame, matrix, frameSize, car):
 
     # Filter the contours to find the red strips for the forward and black strips for the backward
 
-
-    if contours is not None:
+    if contours != None:
         for contour in contours:
             perimeter = cv2.arcLength(contour, True)
             # perimeter = cv2.arcLength(contour, False)
-            approx = cv2.approxPolyDP(contour, 1.1 * perimeter, True)
+            approx = cv2.approxPolyDP(contour, perimeter, 3, True)
             x, y, w, h = cv2.boundingRect(contour)
-            if len(approx) > 0 and len(approx) < 50: # and ((w > 25 and h < 25) or (h > 25 and w < 25)):
+            if len(approx) > 0 and len(approx) < 3: # and ((w > 25 and h < 25) or (h > 25 and w < 25)):
                 # Check if the strip is red or black based on its average intensity
 
                 box = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(box)
                 # box = np.array(box, dtype="int")
                 box = np.int0(box)
+                # cv2.drawContours(frame, [box], 0, (0, 255, 0), 2)
 
                 (top_left, top_right, bottom_right, bottom_left) = box
 
@@ -58,34 +64,65 @@ def Find_Car(frame, matrix, frameSize, car):
 
                 length = max(dimension_a, dimension_b)
                 width = min(dimension_a, dimension_b)
-                if length < 12 or length > 55:
-                    continue
-                if width < 12 or width > 55:
-                    continue
-                if 1600 > width * length or width * length > 3100:
-                    continue
+                # if length < 1 or length > 70:
+                #     continue
+                # if width < 1 or width > 70:
+                #     continue
+                # if 900 > width * length or width * length > 2200:
+                #     continue
 
-                cv2.drawContours(frame, [box], 0, (100, 100, 100), 2)
+                if length > 14 and length < 40 and width > 14 and width < 40 and width * length > 400 and width * length < 700:
+                    rice = [box.astype("int")]
+                    # Check class
+                    strip_roi = gray[y:y+h, x:x+w]
+                    avg_intensity = np.mean(strip_roi)
+                    if avg_intensity > white_avg_intensity_bottom:
+                        for index in range(len(contours_list)):
+                            if contours_list[index - 1]['color_name'] == 'white':
+                                del contours_list[index - 1]
+                        contours_list.append({'class': 'class1', 'box': rice, 'color': (255, 255, 255), 'width': width, 'color_name': 'white',
+                                      'top_right': top_right, 'contour': contour})
+                        cv2.drawContours(frame, [box], 0, (255, 255, 255), 2)
+
+                    elif avg_intensity < red_avg_intensity_top and avg_intensity > red_avg_intensity_bottom:
+                        cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
+
+                    else:
+                        for index in range(len(contours_list)):
+                            if contours_list[index - 1]['color_name'] == 'black':
+                                del contours_list[index - 1]
+
+                        contours_list.append({'class': 'class3', 'box': rice, 'color': (0, 0, 0), 'width': width, 'color_name': 'black',
+                                      'top_right': top_right, 'contour': contour})
+                        cv2.drawContours(frame, [box], 0, (0, 0, 0), 2)
 
 
-                rice = [box.astype("int")]
-                white_rices = []
-                black_rices = []
-                # Check class
-                strip_roi = gray[y:y+h, x:x+w]
-                avg_intensity = np.mean(strip_roi)
-                if avg_intensity > white_avg_intensity_bottom:
-                    white_rices.append({'class': 'class1', 'box': rice, 'color': (255, 255, 255), 'width': width, 'color_name': 'white',
-                                  'top_right': top_right, 'contour': contour})
-                    cv2.putText(frame, "{:}".format('Front'),
-                                (box[0][0] + 10, box[0][1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
-                                (255, 255, 255), 1)
-                else:
-                    black_rices.append({'class': 'class3', 'box': rice, 'color': (0, 0, 0), 'width': width, 'color_name': 'black',
-                                  'top_right': top_right, 'contour': contour})
+                    # if len(contours_list) == 2:
+                    #     break
 
 
+        num_contours = len(contours_list)
+        if len(contours_list) == 2 and calculate_distance(contours_list[0]['contour'], contours_list[1]['contour']) < 150:
+            for i in range(num_contours):
+                for j in range(i + 1, num_contours):
+                    angle_difference = calculate_angle_difference(contours_list[i], contours_list[j])
+                    if 0.5 < angle_difference < 12:
+                        print(angle_difference)
+                        cv2.drawContours(frame, contours_list[i]['box'], 0, contours_list[i]['color'], 2)
+                        cv2.drawContours(frame, contours_list[j]['box'], 0, contours_list[j]['color'], 2)
+                        print(calculate_actual_angle_difference(contours_list, calculate_curr_angle(contours_list[0]['contour'], contours_list[1]['contour'])))
+                    # if contours_list[i]['color_name'] == 'white':
+                    #     cv2.putText(frame, "{:}".format('Front'),
+                    #                 (contours_list[i]['box'][0][0] + 10, contours_list[i]['box'][0][1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
+                    #                 (0, 0, 0), 1)
+                    # else:
+                    #     cv2.putText(frame, "{:}".format('Front'),
+                    #                 (contours_list[i]['box'][0][0] + 10, contours_list[j]['box'][0][1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
+                    #                 (0, 0, 0), 1)
 
+
+        while len(contours_list) > 2:
+            del contours_list[0]
 
 
 
@@ -101,14 +138,26 @@ def Find_Car(frame, matrix, frameSize, car):
 
     return matrix, frame
 
+def calculate_distance(contour1, contour2):
+    # Calculate the Euclidean distance between the centroids of the contours
+    M1 = cv2.moments(contour1)
+    M2 = cv2.moments(contour2)
+    cX1 = int(M1["m10"] / M1["m00"])
+    cY1 = int(M1["m01"] / M1["m00"])
+    cX2 = int(M2["m10"] / M2["m00"])
+    cY2 = int(M2["m01"] / M2["m00"])
+    distance = np.sqrt((cX1 - cX2)**2 + (cY1 - cY2)**2)
+    return distance
+
 def find_pairs(paired_rices, rices):
     pass
     # Find paired strips from the same color
 
 def calculate_angle_difference(contour1, contour2):
     # Find the bounding rectangles of the contours
-    rect1 = cv2.minAreaRect(contour1)
-    rect2 = cv2.minAreaRect(contour2)
+    rect1 = cv2.minAreaRect(contour1['contour'])
+    rect2 = cv2.minAreaRect(contour2['contour'])
+
 
     # Get the angles of the bounding rectangles
     angle1 = rect1[2]
@@ -116,18 +165,42 @@ def calculate_angle_difference(contour1, contour2):
 
     # Calculate the absolute difference in angles
     angle_diff = abs(angle1 - angle2)
-
     # Normalize the angle difference to the range of [0, 180]
     angle_diff = angle_diff % 180
-
     # Take the minimum angle difference between the original and complement angles
     angle_diff = min(angle_diff, 180 - angle_diff)
-
     return angle_diff
+
+def calculate_curr_angle(contour1, contour2):
+    # Find the bounding rectangles of the contours
+    rect1 = cv2.minAreaRect(contour1)
+    rect2 = cv2.minAreaRect(contour2)
+    # Get the angles of the bounding rectangles
+    angle1 = rect1[2]
+    angle2 = rect2[2]
+
+    return (angle1 + angle2)/2
+
 
 def find_robot(robot_rices, rices):
     pass
             # break
+
+def find_pairs(paired_rices, rices):
+    # Find paired strips from the same color
+    for i in range(len(rices)):
+        strip1 = rices[i]
+        for j in range(i + 1, len(rices)):
+            strip2 = rices[j]
+            if abs(strip1['box'][0][0][0] - strip2['box'][0][0][0]) < pairs_distance_sensitivity \
+                    and abs(strip1['box'][0][1][0] - strip2['box'][0][1][0]) < pairs_distance_sensitivity\
+                    and abs(strip1['box'][0][2][0] - strip2['box'][0][2][0]) < pairs_distance_sensitivity\
+                    and abs(strip1['box'][0][3][0] - strip2['box'][0][3][0]) < pairs_distance_sensitivity\
+                    and (strip1['color_name'] == strip2['color_name']): # or abs(strip1['box'][0][1] - strip2['box'][0][1]) < 50\
+                angle_diff = calculate_angle_difference(strip1['contour'], strip2['contour'])
+                if angle_diff < angle_diff_sensitivity:
+                    paired_rices.append([strip1, strip2])
+                break
 
 def get_white_strip_rice(robot_rices):
     # strip_1_color = robot_rices[0]
@@ -166,11 +239,11 @@ def calculate_actual_angle_difference(robot_rices, curr_angle):
     strip_1 = None
     strip_2 = None
 
-    for rice in robot_rices[0]:
-        if rice[0]['color_name'] == 'white':
-            strip_1 = rice[0]
-        elif rice[0]['color_name'] == 'black':
-            strip_2 = rice[0]
+    for rice in robot_rices:
+        if rice['color_name'] == 'white':
+            strip_1 = rice
+        elif rice['color_name'] == 'black':
+            strip_2 = rice
 
     # print(strip_1['box'][0][0][0])
     # print(strip_2['box'][0][0][0])
@@ -178,6 +251,7 @@ def calculate_actual_angle_difference(robot_rices, curr_angle):
     # print(strip_2['box'][0][0][1])
 
     if strip_1['box'][0][0][0] < strip_2['box'][0][0][0] and strip_1['box'][0][0][1] < strip_2['box'][0][0][1]:
+        # print(f"{curr_angle} + 270 = {curr_angle + 270}") #fix
         print(f"{curr_angle} + 270 = {curr_angle + 270}") #fix
         return curr_angle + 270
     elif strip_1['box'][0][0][0] < strip_2['box'][0][0][0] and strip_1['box'][0][0][1] > strip_2['box'][0][0][1]:
