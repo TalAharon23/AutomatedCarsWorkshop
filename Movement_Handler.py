@@ -8,7 +8,7 @@ from Data_Structures import *
 import BFS_Logic
 from ESP32CAM_Car.MovementAPI import move
 
-RIGHT_LEFT_DEGREE = 10
+RIGHT_LEFT_DEGREE = 5
 
 
 class MOVE_COMMANDS:
@@ -79,7 +79,7 @@ class Movement_Handler():
             #     pass
             # elif self.counter < 6:
             #     self.frame_array.append(self.scan_frame(frame, car))
-            if self.counter % 10 == 0:
+            if self.counter % 7 == 0:
                 # processed_frame = Detection_controller.get_matrix(frame, self.robot, self.parking_slots)[0]
                 # self.Detection_controller.out_video.write(processed_frame)
 
@@ -257,12 +257,17 @@ class Movement_Handler():
         num_of_degrees = abs(car_tilt_degrees - next_direction)  # =315
         direction = None
         if num_of_degrees > 15:
-            if num_of_degrees > 180:
-                num_of_steps = (int)((360 - num_of_degrees) / RIGHT_LEFT_DEGREE)
+            # if car_tilt_degrees - num_of_degrees > 0:
+            if (num_of_degrees - car_tilt_degrees < 180 and car_tilt_degrees < next_direction or
+                    car_tilt_degrees - num_of_degrees < 180 and car_tilt_degrees > next_direction):
+                num_of_degrees = abs(car_tilt_degrees - next_direction)
+                num_of_steps = (int)(num_of_degrees / RIGHT_LEFT_DEGREE)
                 direction = (next_direction + 180) % 360
+                direction = (MOVE_COMMANDS.Right)
             else:
+                num_of_degrees = abs(next_direction - car_tilt_degrees)  # =315
                 num_of_steps = (int)((num_of_degrees) / RIGHT_LEFT_DEGREE)
-                direction = next_direction
+                direction = MOVE_COMMANDS.Left
 
             print(f"num_of_steps: {num_of_steps}\n")
 
@@ -283,7 +288,7 @@ class Movement_Handler():
         if curr_position.x == dest_position.x and curr_position.y < dest_position.y:
             dir_to_move = DIRECTIONS.Down
         elif curr_position.x == dest_position.x and curr_position.y > dest_position.y:
-            dir_to_move = DIRECTIONS.UP
+            dir_to_move = DIRECTIONS.Up
         elif curr_position.x < dest_position.x and curr_position.y == dest_position.y:
             dir_to_move = DIRECTIONS.Right
         elif curr_position.x > dest_position.x and curr_position.y == dest_position.y:

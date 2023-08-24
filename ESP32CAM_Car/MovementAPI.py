@@ -1,7 +1,7 @@
 import requests
 import time
 
-ESP32_ADDR = '192.168.184.240'
+ESP32_ADDR = '192.168.245.240'
 # ESP32_ADDR = '172.20.10.3'
 
 
