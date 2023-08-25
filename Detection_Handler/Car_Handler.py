@@ -71,7 +71,7 @@ def Find_Car(frame, matrix, frameSize, car):
                 # if 900 > width * length or width * length > 2200:
                 #     continue
 
-                if length > 15 and length < 50 and width > 15 and width < 50 and width * length > 350 and width * length < 900:
+                if length > 15 and length < 60 and width > 15 and width < 60 and width * length > 350 and width * length < 2000:
                     rice = [box.astype("int")]
                     # Check class
                     strip_roi = gray[y:y+h, x:x+w]
