@@ -8,7 +8,7 @@ import Detection_Handler.Car_Handler as car_h
 import Detection_Handler.Parking_Handler as park_h
 import Detection_Handler.Boundaries_Handler as bd_h
 
-frameSize = (900, 900)
+frameSize = (700, 750)
 # frameSize = (600, 650) # For using laptop only
 val_dict = {
     "Border": 1,
@@ -18,7 +18,7 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://10.100.102.33:8080/video"
+url = "http://10.100.102.35:8080/video"
 # url = "http://192.168.245.4:8s080/video"
 
 
@@ -42,6 +42,7 @@ box = None
 class Detection_controller(metaclass=Singleton):
 
     def __init__(self):
+        self.url = url
         self.num_of_frame_for_stabiliztion          = 0
         self.counter                                = 0
         self.src_video                              = cv2.VideoCapture(url)

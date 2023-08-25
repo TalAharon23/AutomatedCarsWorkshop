@@ -70,7 +70,7 @@ class Movement_Handler():
         dc = Detection_controller()
         threading.Thread(target=dc.scan_video, args=[self.robot, self.parking_slots]).start()
         time.sleep(3)
-        while (Detection_controller.isVideoOnLive() and self.in_process):
+        while Detection_controller.isVideoOnLive() and self.in_process:
 
             if self.counter % 7 == 0:
                 # processed_frame = Detection_controller.get_matrix(frame, self.robot, self.parking_slots)[0]
