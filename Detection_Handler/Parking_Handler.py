@@ -6,7 +6,7 @@ import Data_Structures
 def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
     # Convert the image to HSV color space
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
+    box = None
     # Define the lower and upper bounds of the green color
     # lower_green = np.array([36, 25, 25])
     # upper_green = np.array([86, 255, 255])
@@ -54,7 +54,7 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
         x,y,w,h = cv2.boundingRect(approx)
 
         # Add the rectangle to the list if its area is larger than 10000 (i.e. it is clear)
-        if w * h > 7000 and w * h < 36000:
+        if w * h > 10000 and w * h < 36000:
             rects.append((x, y, w, h))
             parking_slots.save_slot_contours(cnt)
             parking_slots.save_slot((x + int(round((w/2))), y + int(round(h/2))))

@@ -69,7 +69,7 @@ class Movement_Handler():
         """
         dc = Detection_controller()
         threading.Thread(target=dc.scan_video, args=[self.robot, self.parking_slots]).start()
-        time.sleep(2)
+        time.sleep(3)
         while (Detection_controller.isVideoOnLive() and self.in_process):
 
             if self.counter % 7 == 0:
@@ -92,6 +92,8 @@ class Movement_Handler():
                     self.set_parking_slot_destination()
                 time.sleep(0.6)
                 if self.check_validation():
+                    if self.counter % 3 == 0:
+                        self.move_to_correct_angle(1, MOVE_COMMANDS.Forward)
                     self.car_movement()
                 else:
                     try:
@@ -158,7 +160,7 @@ class Movement_Handler():
         while num_attempts < max_attempts and not detection_successful:
             # Move the car little to the right and forward
             if self.path != None:
-                for i in range(self.path_index, len(self.path) - 1):
+                for i in range(self.path_index, 5):
                     print("handle_validation_error - moving on path\n")
                     current_cell = self.path[i]
                     next_cell = self.path[i + 1]
@@ -279,7 +281,7 @@ class Movement_Handler():
         :return: move command value (left/right) and num of steps that need to be done
         """
         car_tilt_degrees = self.robot.get_direction_degrees()  # 315 --> 0
-        abs_num_of_degrees = abs(car_tilt_degrees - next_direction)  # =315
+        abs_num_of_degrees = min(abs(car_tilt_degrees - next_direction), 360 - abs(car_tilt_degrees - next_direction))  # =315
         num_of_degrees = car_tilt_degrees - next_direction  # =315
         direction = None
         if abs_num_of_degrees > 15:
@@ -308,10 +310,11 @@ class Movement_Handler():
 
 
         print(f"num_of_steps: {num_of_steps}\n")
+        self.move_to_correct_angle(1, DIRECTIONS.Up)
 
         self.move_to_correct_angle(num_of_steps, direction)
         self.last_turn = direction
-        time.sleep(1.5)
+        time.sleep(1)
 
     def move_to_correct_angle(self, num_of_moves: int, direction):
         for i in range(num_of_moves):

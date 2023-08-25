@@ -71,7 +71,7 @@ def Find_Car(frame, matrix, frameSize, car):
                 # if 900 > width * length or width * length > 2200:
                 #     continue
 
-                if length > 15 and length < 60 and width > 15 and width < 60 and width * length > 350 and width * length < 2000:
+                if length > 4 and length < 40 and width > 4 and width < 40 and width * length > 400 and width * length < 1000:
                     rice = [box.astype("int")]
                     # Check class
                     strip_roi = gray[y:y+h, x:x+w]
@@ -82,7 +82,7 @@ def Find_Car(frame, matrix, frameSize, car):
                                 del contours_list[index - 1]
                         contours_list.append({'class': 'class1', 'box': rice, 'color': (255, 255, 255), 'width': width, 'color_name': 'white',
                                       'top_right': top_right, 'contour': contour})
-                        cv2.drawContours(frame, [box], 0, (255, 255, 255), 2)
+                        # cv2.drawContours(frame, [box], 0, (255, 255, 255), 2)
 
                     elif avg_intensity < red_avg_intensity_top and avg_intensity > red_avg_intensity_bottom:
                         cv2.drawContours(frame, [box], 0, (255, 0, 0), 2)
@@ -94,7 +94,7 @@ def Find_Car(frame, matrix, frameSize, car):
 
                         contours_list.append({'class': 'class3', 'box': rice, 'color': (0, 0, 0), 'width': width, 'color_name': 'black',
                                       'top_right': top_right, 'contour': contour})
-                        cv2.drawContours(frame, [box], 0, (0, 0, 0), 2)
+                        # cv2.drawContours(frame, [box], 0, (0, 0, 0), 2)
 
 
                     # if len(contours_list) == 2:
@@ -102,11 +102,11 @@ def Find_Car(frame, matrix, frameSize, car):
 
 
         num_contours = len(contours_list)
-        if len(contours_list) == 2 and calculate_distance(contours_list[0]['contour'], contours_list[1]['contour']) < 150:
+        if len(contours_list) == 2 and calculate_distance(contours_list[0]['contour'], contours_list[1]['contour']) < 90:
             for i in range(num_contours):
                 for j in range(i + 1, num_contours):
                     angle_difference = calculate_angle_difference(contours_list[i], contours_list[j])
-                    if 0.5 < angle_difference < 12:
+                    if 0 < angle_difference < 10 and contours_list[i]['color_name'] != contours_list[j]['color_name']:
                         cv2.drawContours(frame, contours_list[i]['box'], 0, contours_list[i]['color'], 2)
                         cv2.drawContours(frame, contours_list[j]['box'], 0, contours_list[j]['color'], 2)
                         print(calculate_actual_angle_difference(contours_list, calculate_curr_angle(contours_list[0]['contour'], contours_list[1]['contour'])))
