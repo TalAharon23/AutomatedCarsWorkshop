@@ -54,10 +54,12 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
         x,y,w,h = cv2.boundingRect(approx)
 
         # Add the rectangle to the list if its area is larger than 10000 (i.e. it is clear)
-        if w * h > 9000 and w * h < 30000:
+        if w * h > 7000 and w * h < 36000:
             rects.append((x, y, w, h))
             parking_slots.save_slot_contours(cnt)
             parking_slots.save_slot((x + int(round((w/2))), y + int(round(h/2))))
+            cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
+
 
 
         for i in range(x, x + w):
@@ -65,7 +67,6 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
                 if (x + w) <= 500 and (y + h) <= 700:
                     matrix[j][i] = Data_Structures.Val_dict.PARKING_SLOT
 
-        cv2.drawContours(frame, [box], 0, (255, 0, 255), 2)
 
 
     # # Draw a rectangle around each bounding rectangle
@@ -74,4 +75,4 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
     #     cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
 
     # Return the processed frame and the matrix
-    return frame, matrix
+    return box, matrix

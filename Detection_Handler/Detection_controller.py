@@ -9,7 +9,7 @@ import Detection_Handler.Parking_Handler as park_h
 import Detection_Handler.Boundaries_Handler as bd_h
 
 frameSize = (800, 900)
-# frameSize = (650, 650) # For using laptop only
+# frameSize = (600, 650) # For using laptop only
 val_dict = {
     "Border": 1,
     "Path": 2,
@@ -18,7 +18,8 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://192.168.245.4:8080/video"
+url = "http://10.100.102.33:8080/video"
+# url = "http://192.168.245.4:8s080/video"
 
 
 class Singleton(type):
@@ -34,6 +35,7 @@ matrix  = np.zeros(frameSize)
 videoIsLive = True
 processed_frame = None
 DS_lock = threading.Lock()
+box = None
 
 
 # main class
@@ -104,13 +106,14 @@ class Detection_controller(metaclass=Singleton):
 
     def scan_frame(self, frame, car, parking_slots):
         global matrix
+        global box
 
         frame = cv2.resize(frame, frameSize, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
         origin_frame = frame.copy()
         # processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_line, val_dict)[1q]  # Find path
         # processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border, val_dict)[1]  # Find borders
         if len(parking_slots.get_parking_slots()) < 2:
-            processed_frame, matrix = park_h.Find_Parking_Slots(frame, matrix, frameSize, val_dict,
+            box, matrix = park_h.Find_Parking_Slots(frame, matrix, frameSize, val_dict,
                                                                 parking_slots)  # Find parking spot
         else:
             for cnt in parking_slots.get_parking_slots_contours():
@@ -127,6 +130,10 @@ class Detection_controller(metaclass=Singleton):
                 box = np.int0(box)
 
         processed_frame = car_h.Find_Car(frame, matrix, frameSize, car)[1]
+
+        if box is not None:
+            cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
+
 
         matrix_scaled = cv2.normalize(matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
         cv2.imwrite('color_img.jpg', matrix_scaled)

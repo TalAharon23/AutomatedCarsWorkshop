@@ -25,7 +25,7 @@ def Find_Car(frame, matrix, frameSize, car):
     # Reduce threshold to increase white noise
     # threshold1 = 150  # brightly lit
     # threshold2 = 330  # brightly lit
-    threshold1 = 140    # afternoon
+    threshold1 = 150    # afternoon
     threshold2 = 300    # afternoon
     edges = cv2.Canny(blurred, threshold1, threshold2)
     cv2.imshow("test", edges)
@@ -71,7 +71,7 @@ def Find_Car(frame, matrix, frameSize, car):
                 # if 900 > width * length or width * length > 2200:
                 #     continue
 
-                if length > 14 and length < 40 and width > 14 and width < 40 and width * length > 400 and width * length < 700:
+                if length > 15 and length < 50 and width > 15 and width < 50 and width * length > 350 and width * length < 900:
                     rice = [box.astype("int")]
                     # Check class
                     strip_roi = gray[y:y+h, x:x+w]
@@ -271,14 +271,10 @@ def calculate_actual_angle_difference(robot_rices, curr_angle):
 
     if strip_1['box'][0][0][0] < strip_2['box'][0][0][0] and strip_1['box'][0][0][1] < strip_2['box'][0][0][1]:
         # print(f"{curr_angle} + 270 = {curr_angle + 270}") #fix
-        print(f"{curr_angle} + 270 = {curr_angle + 270}") #fix
         return curr_angle + 270
     elif strip_1['box'][0][0][0] < strip_2['box'][0][0][0] and strip_1['box'][0][0][1] > strip_2['box'][0][0][1]:
-        print(f"{curr_angle} + 180 = {curr_angle + 180}") #fix
         return curr_angle + 180
     elif strip_1['box'][0][0][0] > strip_2['box'][0][0][0] and strip_1['box'][0][0][1] < strip_2['box'][0][0][1]:
-        print(f"{curr_angle} + 0 = {curr_angle + 0}") #fix
         return curr_angle + 0
     else:
-        print(f"{curr_angle} + 90 = {curr_angle + 90}") #fix
         return curr_angle + 90
