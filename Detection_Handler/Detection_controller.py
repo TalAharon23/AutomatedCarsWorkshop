@@ -8,8 +8,8 @@ import Detection_Handler.Car_Handler as car_h
 import Detection_Handler.Parking_Handler as park_h
 import Detection_Handler.Boundaries_Handler as bd_h
 
-frameSize = (900, 900)
-# frameSize = (600, 650) # For using laptop only
+# frameSize = (900, 900)
+frameSize = (600, 650) # For using laptop only
 val_dict = {
     "Border": 1,
     "Path": 2,
@@ -136,9 +136,9 @@ class Detection_controller(metaclass=Singleton):
 
 
         matrix_scaled = cv2.normalize(matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
-        cv2.imwrite('color_img.jpg', matrix_scaled)
+        cv2.imwrite('matrix_img.jpg', matrix_scaled)
         cv2.rotate(matrix_scaled, cv2.ROTATE_90_CLOCKWISE)
-        cv2.imshow('Color image', matrix_scaled)
+        cv2.imshow('Matrix image', matrix_scaled)
         # Display the resulting frame
         h_concat = np.hstack((origin_frame, processed_frame))
         q = cv2.waitKey(1)
@@ -166,6 +166,13 @@ class Detection_controller(metaclass=Singleton):
         temp_matrix = matrix.copy()
         DS_lock.release()
         return temp_matrix
+
+    @staticmethod
+    def set_matrix(new_matrix):
+        global matrix
+        DS_lock.acquire()
+        matrix = new_matrix
+        DS_lock.release()
 
     def reset_Matrix(self):
         global matrix

@@ -71,29 +71,31 @@ def Find_Car(frame, matrix, frameSize, car):
                 # if 900 > width * length or width * length > 2200:
                 #     continue
 
-                if length > 4 and length < 40 and width > 4 and width < 40 and width * length > 400 and width * length < 1000:
+                if length > 13 and length < 55 and width > 13 and width < 55 and width * length > 350 and width * length < 1200:
                     rice = [box.astype("int")]
                     # Check class
                     strip_roi = gray[y:y+h, x:x+w]
                     avg_intensity = np.mean(strip_roi)
                     if avg_intensity > white_avg_intensity_bottom:
-                        for index in range(len(contours_list)):
-                            if contours_list[index - 1]['color_name'] == 'white':
-                                del contours_list[index - 1]
-                        contours_list.append({'class': 'class1', 'box': rice, 'color': (255, 255, 255), 'width': width, 'color_name': 'white',
-                                      'top_right': top_right, 'contour': contour})
+                        if check_contour_is_valid(rice):
+                            for index in range(len(contours_list)):
+                                if contours_list[index - 1]['color_name'] == 'white':
+                                    del contours_list[index - 1]
+                            contours_list.append({'class': 'class1', 'box': rice, 'color': (255, 255, 255), 'width': width, 'color_name': 'white',
+                                          'top_right': top_right, 'contour': contour})
                         # cv2.drawContours(frame, [box], 0, (255, 255, 255), 2)
 
                     elif avg_intensity < red_avg_intensity_top and avg_intensity > red_avg_intensity_bottom:
                         cv2.drawContours(frame, [box], 0, (255, 0, 0), 2)
 
                     else:
-                        for index in range(len(contours_list)):
-                            if contours_list[index - 1]['color_name'] == 'black':
-                                del contours_list[index - 1]
+                        if check_contour_is_valid(rice):
+                            for index in range(len(contours_list)):
+                                if contours_list[index - 1]['color_name'] == 'black':
+                                    del contours_list[index - 1]
 
-                        contours_list.append({'class': 'class3', 'box': rice, 'color': (0, 0, 0), 'width': width, 'color_name': 'black',
-                                      'top_right': top_right, 'contour': contour})
+                            contours_list.append({'class': 'class3', 'box': rice, 'color': (0, 0, 0), 'width': width, 'color_name': 'black',
+                                          'top_right': top_right, 'contour': contour})
                         # cv2.drawContours(frame, [box], 0, (0, 0, 0), 2)
 
 
@@ -102,28 +104,40 @@ def Find_Car(frame, matrix, frameSize, car):
 
 
         num_contours = len(contours_list)
-        if len(contours_list) == 2 and calculate_distance(contours_list[0]['contour'], contours_list[1]['contour']) < 90:
-            for i in range(num_contours):
-                for j in range(i + 1, num_contours):
-                    angle_difference = calculate_angle_difference(contours_list[i], contours_list[j])
-                    if 0 < angle_difference < 10 and contours_list[i]['color_name'] != contours_list[j]['color_name']:
-                        cv2.drawContours(frame, contours_list[i]['box'], 0, contours_list[i]['color'], 2)
-                        cv2.drawContours(frame, contours_list[j]['box'], 0, contours_list[j]['color'], 2)
-                        print(calculate_actual_angle_difference(contours_list, calculate_curr_angle(contours_list[0]['contour'], contours_list[1]['contour'])))
-                        car.set_direction_degrees(calculate_actual_angle_difference(contours_list, calculate_curr_angle(contours_list[0]['contour'], contours_list[1]['contour'])))
+        if len(contours_list) == 2:
+            if calculate_distance(contours_list[0]['contour'], contours_list[1]['contour']) < 100:
+                for i in range(num_contours):
+                    for j in range(i + 1, num_contours):
+                        angle_difference = calculate_angle_difference(contours_list[i], contours_list[j])
+                        if 0 <= angle_difference < 45 and contours_list[i]['color_name'] != contours_list[j]['color_name']:
+                            cv2.drawContours(frame, contours_list[i]['box'], 0, contours_list[i]['color'], 2)
+                            cv2.drawContours(frame, contours_list[j]['box'], 0, contours_list[j]['color'], 2)
+                            print(calculate_actual_angle_difference(contours_list, calculate_curr_angle(contours_list[0]['contour'], contours_list[1]['contour'])))
+                            car.set_direction_degrees(calculate_actual_angle_difference(contours_list, calculate_curr_angle(contours_list[0]['contour'], contours_list[1]['contour'])))
+                            cX = cY = 0
+                            if contours_list[i]['color_name'] == 'white':
+                                M1 = cv2.moments(contours_list[i]['contour'])
+                                M2 = cv2.moments(contours_list[j]['contour'])
+                            else:
+                                M1 = cv2.moments(contours_list[j]['contour'])
+                                M2 = cv2.moments(contours_list[i]['contour'])
 
-                        if contours_list[i]['color_name'] == 'white':
-                            M = cv2.moments(contours_list[i]['contour'])
-                        else:
-                            M = cv2.moments(contours_list[j]['contour'])
+                            if M1["m00"] != 0 and M2["m00"] != 0:
+                                cX1 = int(M1["m10"] / M1["m00"])
+                                cY1 = int(M1["m01"] / M1["m00"])
+                                cX2 = int(M2["m10"] / M2["m00"])
+                                cY2 = int(M2["m01"] / M2["m00"])
 
-                        if M["m00"] != 0:
-                            cX = int(M["m10"] / M["m00"])
-                            cY = int(M["m01"] / M["m00"])
-                        else:
-                            cX, cY = 0, 0
+                                cX = int(round((cX1 + cX2) / 2))
+                                cY = int(round((cY1 + cY2) / 2))
+                            else:
+                                cX, cY = 0, 0
 
-                        car.set_position((cX, cY))
+                            car.set_position((cX, cY))
+                            matrix[cX][cY] = Data_Structures.Val_dict.CAR
+                            matrix[cX][cY + 1] = Data_Structures.Val_dict.CAR
+                            matrix[cX + 1][cY] = Data_Structures.Val_dict.CAR
+                            matrix[cX + 1][cY + 1] = Data_Structures.Val_dict.CAR
 
                         #     cv2.putText(frame, "{:}".format('Front'),
                         #                 (contours_list[i]['box'][0][0] + 10, contours_list[i]['box'][0][1] + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3,
@@ -278,3 +292,12 @@ def calculate_actual_angle_difference(robot_rices, curr_angle):
         return curr_angle + 0
     else:
         return curr_angle + 90
+
+
+def check_contour_is_valid(box):
+    returnVal = True
+    for cell in box[0]:
+        if cell[0] < 0 or cell [1] < 0:
+            returnVal = False
+
+    return returnVal

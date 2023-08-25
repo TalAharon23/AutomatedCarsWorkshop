@@ -188,36 +188,36 @@ class Movement_Handler():
         if self.last_turn == None or self.last_turn == MOVE_COMMANDS.Forward or self.last_turn == MOVE_COMMANDS.Back:
             self.last_turn = MOVE_COMMANDS.Left
 
-        move(MOVE_COMMANDS.Forward)
-        move(MOVE_COMMANDS.Forward)
-        move(MOVE_COMMANDS.Forward)
-        move(self.last_turn)
-        move(self.last_turn)
-        if self.check_validation():
-            return
-        move(self.last_turn)
-        move(self.last_turn)
-        move(self.last_turn)
-        if self.check_validation():
-            return
-        move(self.last_turn)
-        move(self.last_turn)
-        move(self.last_turn)
-        if self.check_validation():
-            return
-        move(self.last_turn)
-        move(self.last_turn)
-        move(self.last_turn)
-        if self.check_validation():
-            return
-        move(self.last_turn)
-        move(self.last_turn)
-        if self.check_validation():
-            return
-        move(self.last_turn)
-        move(self.last_turn)
-        # Move the car back (you need to implement this part)
-        move(MOVE_COMMANDS.Back)
+        # move(MOVE_COMMANDS.Forward)
+        # move(MOVE_COMMANDS.Forward)
+        # move(MOVE_COMMANDS.Forward)
+        # move(self.last_turn)
+        # move(self.last_turn)
+        # if self.check_validation():
+        #     return
+        # move(self.last_turn)
+        # move(self.last_turn)
+        # move(self.last_turn)
+        # if self.check_validation():
+        #     return
+        # move(self.last_turn)
+        # move(self.last_turn)
+        # move(self.last_turn)
+        # if self.check_validation():
+        #     return
+        # move(self.last_turn)
+        # move(self.last_turn)
+        # move(self.last_turn)
+        # if self.check_validation():
+        #     return
+        # move(self.last_turn)
+        # move(self.last_turn)
+        # if self.check_validation():
+        #     return
+        # move(self.last_turn)
+        # move(self.last_turn)
+        # # Move the car back (you need to implement this part)
+        # move(MOVE_COMMANDS.Back)
 
     def get_car_position(self):
         return self.car.get_position()
@@ -267,12 +267,19 @@ class Movement_Handler():
         self.check_if_arrived()
         self.reset_robot_data()
         self.path_index = self.path_index + 1
+        self.print_BFS_in_matrix()
 
         # Move the car forward (you need to implement this part)
         # TODO: Understand how much forward need to move!?!?
         # move(MOVE_COMMANDS.Forward)
         # move(MOVE_COMMANDS.Forward)
 
+    def print_BFS_in_matrix(self):
+        origin_matrix = Detection_controller.get_matrix()
+        for cell in self.path:
+            origin_matrix[cell.X(), cell.Y()] = 1
+
+        Detection_controller.set_matrix(origin_matrix)
 
     def update_car_angle(self, next_direction):
         """
@@ -310,15 +317,16 @@ class Movement_Handler():
 
 
         print(f"num_of_steps: {num_of_steps}\n")
-        self.move_to_correct_angle(1, DIRECTIONS.Up)
+        # self.move_to_correct_angle(1, DIRECTIONS.Up)
 
-        self.move_to_correct_angle(num_of_steps, direction)
+        # self.move_to_correct_angle(num_of_steps, direction)
         self.last_turn = direction
         time.sleep(1)
 
     def move_to_correct_angle(self, num_of_moves: int, direction):
         for i in range(num_of_moves):
-            move(direction)
+            pass
+            # move(direction)
 
     def get_next_direction(self, curr_position: Cell, dest_position: Cell):
         """
