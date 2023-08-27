@@ -122,7 +122,8 @@ class Movement_Handler():
 
     def check_if_arrived(self):
         if self.parking_slot_dest is not None or self.robot.get_position() is not None:
-            if abs(self.robot.get_position()[0] - self.parking_slot_dest[0]) < 25 and abs(self.robot.get_position()[1] - self.parking_slot_dest[1]) < 25:
+            if abs(self.robot.get_position()[0] - self.parking_slot_dest[0]) < 17 and abs(self.robot.get_position()[1] - self.parking_slot_dest[1]) < 17:
+
                 print("Parking successful!")
                 print("Parking successful!")
                 print("Parking successful!")
@@ -300,7 +301,9 @@ class Movement_Handler():
         abs_num_of_degrees = min(abs(car_tilt_degrees - next_direction), 360 - abs(car_tilt_degrees - next_direction))  # =315
         num_of_degrees = car_tilt_degrees - next_direction  # =315
         direction = None
-        if abs_num_of_degrees > 10:
+        
+        if abs_num_of_degrees > 7:
+
             # direction = (MOVE_COMMANDS.Right)
             # num_of_steps = 3
             # if car_tilt_degrees - num_of_degrees > 0:
