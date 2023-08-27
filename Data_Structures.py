@@ -26,6 +26,7 @@ class Val_dict:
     BORDER = 1
     PARKING_SLOT = 2
     CAR = 3
+    BFS_ROAD = 4
 
 
 class Singleton(type):
@@ -35,6 +36,23 @@ class Singleton(type):
         if cls not in cls._instances:
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
+
+
+class Cell:
+    def __init__(self, x, y, dist=None, prev=None):
+        self.x = x
+        self.y = y
+        self.dist = dist  # distance to start
+        self.prev = prev  # parent cell in the path
+
+    def X(self):
+        return self.x
+
+    def Y(self):
+        return self.y
+
+    def __str__(self):
+        return "(" + str(self.x) + "," + str(self.y) + ")"
 
 
 class Car:
@@ -55,7 +73,7 @@ class Car:
         ds_mutex.release()
         return temp
 
-    def set_position(self, new_position):
+    def set_position(self, new_position: Cell):
         ds_mutex.acquire()
         self.position = new_position
         ds_mutex.release()
@@ -107,23 +125,6 @@ class Parking_Slots(metaclass=Singleton):
         ds_mutex.acquire()
         self.parking_slots_contours.append(slot)
         ds_mutex.release()
-
-
-class Cell:
-    def __init__(self, x, y, dist, prev):
-        self.x = x
-        self.y = y
-        self.dist = dist  # distance to start
-        self.prev = prev  # parent cell in the path
-
-    def X(self):
-        return self.x
-
-    def Y(self):
-        return self.y
-
-    def __str__(self):
-        return "(" + str(self.x) + "," + str(self.y) + ")"
 
 
 class contour_data:
