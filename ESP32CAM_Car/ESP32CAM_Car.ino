@@ -19,8 +19,8 @@
 //#define CAMERA_MODEL_M5STACK_PSRAM
 #define CAMERA_MODEL_AI_THINKER
 
-const char* ssid = "AlmogA";   //Enter SSID WIFI Name
-const char* password = "qwert12345";   //Enter WIFI Password
+const char* ssid = "AndroidAP";   //Enter SSID WIFI Name
+const char* password = "pftb1416";   //Enter WIFI Password
 
 #if defined(CAMERA_MODEL_WROVER_KIT)
 #define PWDN_GPIO_NUM    -1

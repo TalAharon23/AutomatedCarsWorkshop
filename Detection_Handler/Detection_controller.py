@@ -18,8 +18,8 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://10.100.102.33:8080/video"
-# url = "http://192.168.245.4:8s080/video"
+# url = "http://10.100.102.33:8080/video"
+url = "http://192.168.245.4:8080/video"
 
 
 class Singleton(type):
@@ -71,7 +71,7 @@ class Detection_controller(metaclass=Singleton):
                 pass
             elif self.counter < 6:
                 self.frame_array.append(self.scan_frame(frame, car, parking_slots))
-            elif self.counter % 5 == 0:
+            elif self.counter % 6 == 0:
                 DS_lock.acquire()
                 processed_frame = self.scan_frame(frame, car, parking_slots)
                 self.out_video.write(processed_frame)
@@ -174,6 +174,7 @@ class Detection_controller(metaclass=Singleton):
         matrix = new_matrix
         DS_lock.release()
 
+    @staticmethod
     def reset_Matrix(self):
         global matrix
         DS_lock.acquire()

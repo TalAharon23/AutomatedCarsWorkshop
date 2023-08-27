@@ -29,7 +29,7 @@ class BFS:
         for i in range(0, m):
             row = []
             for j in range(0, n):
-                if matrix[i][j] == DS.Val_dict.EMPTY or matrix[i][j] == DS.Val_dict.PARKING_SLOT or matrix[i][j] == 255 or matrix[i][j] == DS.Val_dict.CAR:
+                if matrix[i][j] == DS.Val_dict.EMPTY or matrix[i][j] == DS.Val_dict.PARKING_SLOT or matrix[i][j] == 255 or matrix[i][j] == DS.Val_dict.CAR or DS.Val_dict.BFS_ROAD:
                     row.append(DS.Cell(i, j, sys.maxsize, None))
                 else:
                     row.append(None)

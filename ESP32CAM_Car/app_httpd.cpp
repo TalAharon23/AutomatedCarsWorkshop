@@ -44,7 +44,9 @@ typedef struct {
 } jpg_chunking_t;
 
 #define PART_BOUNDARY "123456789000000000000987654321"
-#define SLEEP_TIME 50000
+//#define SLEEP_TIME 50000
+#define SLEEP_TIME_FORWARD 50000
+#define SLEEP_TIME_TURN 25000
 static const char* _STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
 static const char* _STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
 static const char* _STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %u\r\n\r\n";
@@ -381,10 +383,16 @@ static esp_err_t stop_handler(httpd_req_t* req) {
     return httpd_resp_send(req, "OK", 2);
 }
 
-static void after_movement() {
-    usleep(SLEEP_TIME);
+static void after_movement_forward() {
+    usleep(SLEEP_TIME_FORWARD);
     WheelAct(LOW, LOW, LOW, LOW);
-    usleep(SLEEP_TIME);
+    usleep(SLEEP_TIME_FORWARD);
+}
+
+static void after_movement_turn() {
+    usleep(SLEEP_TIME_TURN);
+    WheelAct(LOW, LOW, LOW, LOW);
+    usleep(SLEEP_TIME_TURN);
 }
 
 static esp_err_t ledon_handler(httpd_req_t *req){
@@ -572,31 +580,31 @@ void WheelAct(int nLf, int nLb, int nRf, int nRb)
 }
 void Forward()
 {
-    after_movement();
+    after_movement_forward();
     WheelAct(HIGH, LOW, HIGH, LOW); // Forward
-    after_movement();
+    after_movement_forward();
 }
 void Back()
 {
-    after_movement();
+    after_movement_forward();
     WheelAct(LOW, HIGH, LOW, HIGH); // Back
-    after_movement();
+    after_movement_forward();
 }
 void Left()
 {
-    after_movement();
+    after_movement_turn();
     WheelAct(HIGH, LOW, LOW, HIGH); // Left
-    after_movement();
+    after_movement_turn();
 }
 void Right()
 {
-    after_movement();
+    after_movement_turn();
     WheelAct(LOW, HIGH, HIGH, LOW); // Right
-    after_movement();
+    after_movement_turn();
 }
 void Stop()
 {
-    after_movement();
+    after_movement_turn();
     WheelAct(LOW, LOW, LOW, LOW); // Stop
-    after_movement();
+    after_movement_turn();
 }
