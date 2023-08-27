@@ -22,6 +22,7 @@ mask_border = 'Border'
 url = "http://192.168.245.4:8080/video"
 
 
+
 class Singleton(type):
     _instances = {}
 

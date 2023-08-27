@@ -74,6 +74,7 @@ class Movement_Handler():
         time.sleep(1.5)
         while (Detection_controller.isVideoOnLive() and self.in_process):
 
+
             if self.counter % 7 == 0:
                 # processed_frame = Detection_controller.get_matrix(frame, self.robot, self.parking_slots)[0]
                 # self.Detection_controller.out_video.write(processed_frame)
