@@ -148,6 +148,9 @@ class Detection_controller(metaclass=Singleton):
 
         # Display the concatenated frame
         cv2.imshow('Autonomous Car', h_concat)
+
+        # Move the OpenCV window to the top-left corner of the screen
+        cv2.moveWindow('Autonomous Car', 0, 0)
         return processed_frame
 
     @staticmethod

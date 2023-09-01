@@ -37,6 +37,15 @@ class AutoPark:
         # Make the window non-resizable
         self.window.resizable(False, False)
 
+        # Get the screen width
+        screen_width = window.winfo_screenwidth()
+
+        # Calculate the horizontal position for the top-right corner
+        horizontal_position = screen_width - window.winfo_width()
+
+        # Set the window position in the top-right corner
+        window.geometry(f"+{horizontal_position - 250}+0")
+
         # Initialize Movement_Handler and Detection_controller
         self.detector = Detection_controller()
         self.image_logic = Movement_Handler()
@@ -64,6 +73,7 @@ class AutoPark:
         self.window.after(10, self.update_ui)
 
     def start_parking(self):
+        print("Starting car parking session!")
         self.image_logic.set_process_val(True)
 
         # Start the parking session in a new thread
