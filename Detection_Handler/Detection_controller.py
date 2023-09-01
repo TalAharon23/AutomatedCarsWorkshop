@@ -18,8 +18,10 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://10.100.102.17:8080/video"
+# url = "http://10.100.102.33:8080/video"
 # url = "http://192.168.245.4:8080/video"
+url = "http://10.100.102.17:8080/video"
+
 
 
 class Singleton(type):
