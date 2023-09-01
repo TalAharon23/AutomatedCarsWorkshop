@@ -19,7 +19,8 @@ val_dict = {
 mask_line = 'Path'
 mask_border = 'Border'
 # url = "http://10.100.102.33:8080/video"
-url = "http://192.168.245.4:8080/video"
+# url = "http://192.168.245.4:8080/video"
+url = "http://10.100.102.17:8080/video"
 
 
 
@@ -107,7 +108,6 @@ class Detection_controller(metaclass=Singleton):
 
     def scan_frame(self, frame, car, parking_slots):
         global matrix
-        global box
 
         frame = cv2.resize(frame, frameSize, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
         origin_frame = frame.copy()

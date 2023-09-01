@@ -1,38 +1,78 @@
-import tkinter as tk
-from ESP32CAM_Car.MovementAPI import move
-import Movement_Handler as MH
+import cv2
+from tkinter import *
+from tkinter import Label, Button
+from PIL import Image, ImageTk
+from threading import Thread
+from Movement_Handler import Movement_Handler
+from Detection_Handler.Detection_controller import Detection_controller
 
 
-def create_buttons():
-    def on_parking_click():
-        print("Start parking!")
-        MH.in_process = True
-        MH.start_car_parking_session()
-        #move("parking")
+class AutoPark:
+    def __init__(self, window, window_title):
+        self.window = window
+        self.window.title(window_title)
 
-    def on_stop_click():
-        print("Stopping car!")
-        MH.in_process = False
-        move("stop")
+        # Load the project image and resize it
+        self.project_image = Image.open("Resources/logo_final.png")
+        self.project_image = self.project_image.resize((320, 130), Image.ANTIALIAS)
 
-    root = tk.Tk()
-    # root.geometry("30x500+83+103")
-    root.wm_attributes("-topmost", 1)
-    root.title("Controller")
+        # Create a PhotoImage object from the resized image
+        self.project_photo = ImageTk.PhotoImage(self.project_image)
 
-    # Create Button 1 with text "Parking" and bind it to the on_buttonParking_click() function
-    buttonParking = tk.Button(root, text="Parking", command=on_parking_click, width=15, height=3, bg="green",
-                              font=("Arial", 16))
-    buttonParking.pack()
+        # Create a Label widget to display the image
+        image_label = Label(window, image=self.project_photo)
+        image_label.pack()
 
-    # Create Button 2 with text "Stop" and bind it to the on_buttonStop_click() function
-    buttonStop = tk.Button(root, text="Stop", command=on_stop_click, width=15, height=3, bg="red",
-                           font=("Arial", 16))
-    buttonStop.pack()
+        # Create buttons below the image with a larger font size
+        self.parking_button = Button(window, text="Parking", command=self.start_parking, width=30, bg="green",
+                                     font=("Helvetica", 14))
+        self.parking_button.pack()
 
-    # Set the size of the root window to fit the buttons
-    root.geometry("{}x{}".format(max(buttonParking.winfo_reqwidth(), buttonStop.winfo_reqwidth()),
-                                 buttonParking.winfo_reqheight() + buttonStop.winfo_reqheight()))
+        self.stop_button = Button(window, text="Stop", command=self.stop_function, width=30, bg="red",
+                                  font=("Helvetica", 14))
+        self.stop_button.pack()
 
-    # Start the tkinter event loop
-    root.mainloop()
+        window.geometry("250x210")
+
+        # Make the window non-resizable
+        self.window.resizable(False, False)
+
+        # Initialize Movement_Handler and Detection_controller
+        self.detector = Detection_controller()
+        self.image_logic = Movement_Handler()
+
+        # Start the video scanning process in a thread
+        Thread(target=self.start_video_scanning).start()
+
+        # Initialize video capture for the UI
+        self.video_capture = cv2.VideoCapture()
+        self.update_ui()
+
+    def start_video_scanning(self):
+        a = 2
+        self.detector.scan_video(self.image_logic.robot, self.image_logic.parking_slots)
+
+    def update_ui(self):
+        ret, frame = self.video_capture.read()
+        if ret:
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            photo = ImageTk.PhotoImage(image=Image.fromarray(frame))
+            for label in self.image_labels:
+                label.config(image=photo)
+                label.image = photo
+
+        self.window.after(10, self.update_ui)
+
+    def start_parking(self):
+        self.image_logic.set_process_val(True)
+
+        # Start the parking session in a new thread
+        Thread(target=self.image_logic.start_car_parking_session).start()
+
+    def stop_function(self):
+        print("Stop button clicked")
+        self.image_logic.set_process_val(False)
+
+    def on_closing(self):
+        self.video_capture.release()
+        self.window.destroy()

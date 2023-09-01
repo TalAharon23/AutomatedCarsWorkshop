@@ -70,7 +70,7 @@ class Movement_Handler():
         :return:
         """
         dc = Detection_controller()
-        threading.Thread(target=dc.scan_video, args=[self.robot, self.parking_slots]).start()
+        # threading.Thread(target=dc.scan_video, args=[self.robot, self.parking_slots]).start()
         time.sleep(1.5)
         while (Detection_controller.isVideoOnLive() and self.in_process):
 
@@ -301,7 +301,7 @@ class Movement_Handler():
         abs_num_of_degrees = min(abs(car_tilt_degrees - next_direction), 360 - abs(car_tilt_degrees - next_direction))  # =315
         num_of_degrees = car_tilt_degrees - next_direction  # =315
         direction = None
-        
+
         if abs_num_of_degrees > 7:
 
             # direction = (MOVE_COMMANDS.Right)
@@ -360,6 +360,9 @@ class Movement_Handler():
     def reset_robot_data(self):
         self.robot.position = None
         self.robot.direction_degrees = None
+
+    def set_process_val(self, is_in_process: bool):
+        self.in_process = is_in_process
 
     def next_cell_optimization(self):
         first_direction_change = 0
