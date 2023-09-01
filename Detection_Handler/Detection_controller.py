@@ -8,8 +8,8 @@ import Detection_Handler.Car_Handler as car_h
 import Detection_Handler.Parking_Handler as park_h
 import Detection_Handler.Boundaries_Handler as bd_h
 
-frameSize = (900, 900)
-# frameSize = (600, 650) # For using laptop only
+# frameSize = (900, 900)
+frameSize = (600, 650) # For using laptop only
 val_dict = {
     "Border": 1,
     "Path": 2,
@@ -106,7 +106,6 @@ class Detection_controller(metaclass=Singleton):
 
     def scan_frame(self, frame, car, parking_slots):
         global matrix
-        global box
 
         frame = cv2.resize(frame, frameSize, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
         origin_frame = frame.copy()

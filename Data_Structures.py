@@ -26,6 +26,7 @@ class Val_dict:
     BORDER = 1
     PARKING_SLOT = 2
     CAR = 3
+    BFS_ROAD = 4
 
 
 class Singleton(type):

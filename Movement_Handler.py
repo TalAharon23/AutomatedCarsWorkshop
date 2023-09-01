@@ -1,5 +1,6 @@
 import time
-
+import tkinter as tk
+from tkinter import messagebox
 import cv2
 import threading
 
@@ -10,7 +11,8 @@ from Data_Structures import *
 import BFS_Logic
 from ESP32CAM_Car.MovementAPI import move
 
-RIGHT_LEFT_DEGREE = 6
+# RIGHT_LEFT_DEGREE = 6
+RIGHT_LEFT_DEGREE = 3
 
 
 class MOVE_COMMANDS:
@@ -69,8 +71,9 @@ class Movement_Handler():
         """
         dc = Detection_controller()
         # threading.Thread(target=dc.scan_video, args=[self.robot, self.parking_slots]).start()
-        time.sleep(3)
-        while Detection_controller.isVideoOnLive() and self.in_process:
+        time.sleep(1.5)
+        while (Detection_controller.isVideoOnLive() and self.in_process):
+
 
             if self.counter % 7 == 0:
                 # processed_frame = Detection_controller.get_matrix(frame, self.robot, self.parking_slots)[0]
@@ -90,11 +93,12 @@ class Movement_Handler():
                         continue
                     # self.robot.set_position((0,0))
                     self.set_parking_slot_destination()
-                time.sleep(0.6)
+                time.sleep(0.4)
                 if self.check_validation():
                     if self.counter % 3 == 0:
                         self.move_to_correct_angle(1, MOVE_COMMANDS.Forward)
                     self.car_movement()
+                    # dc.reset_Matrix()
                 else:
                     try:
                         self.handle_validation_error()
@@ -118,7 +122,11 @@ class Movement_Handler():
 
     def check_if_arrived(self):
         if self.parking_slot_dest is not None or self.robot.get_position() is not None:
-            if abs(self.robot.get_position()[0] - self.parking_slot_dest[0]) < 25 and abs(self.robot.get_position()[1] - self.parking_slot_dest[1]) < 25:
+            if abs(self.robot.get_position()[0] - self.parking_slot_dest[0]) < 17 and abs(self.robot.get_position()[1] - self.parking_slot_dest[1]) < 17:
+
+                print("Parking successful!")
+                print("Parking successful!")
+                print("Parking successful!")
                 print("Parking successful!")
                 self.in_process = False
 
@@ -259,8 +267,11 @@ class Movement_Handler():
             return
 
         # for i in range(len(self.path) - 1):
-        current_cell = self.path[0]
-        next_cell = self.path[0 + 1]
+        index = self.next_cell_optimization()
+        current_cell = self.path[index]
+        # next_cell = self.path[1]
+        next_cell = self.path[index + 1]
+        self.print_BFS_in_matrix()
 
         next_direction = self.get_next_direction(current_cell, next_cell)
         self.update_car_angle(angle_to_direction.get(next_direction))
@@ -270,9 +281,15 @@ class Movement_Handler():
 
         # Move the car forward (you need to implement this part)
         # TODO: Understand how much forward need to move!?!?
-        # move(MOVE_COMMANDS.Forward)
-        # move(MOVE_COMMANDS.Forward)
+        move(MOVE_COMMANDS.Forward)
 
+    def print_BFS_in_matrix(self):
+        origin_matrix = Detection_controller.get_matrix()
+        for cell in self.path:
+            origin_matrix[cell.Y(), cell.X()] = Val_dict.BFS_ROAD
+        # print(self.path[len(self.path - 1)])
+
+        Detection_controller.set_matrix(origin_matrix)
 
     def update_car_angle(self, next_direction):
         """
@@ -284,7 +301,9 @@ class Movement_Handler():
         abs_num_of_degrees = min(abs(car_tilt_degrees - next_direction), 360 - abs(car_tilt_degrees - next_direction))  # =315
         num_of_degrees = car_tilt_degrees - next_direction  # =315
         direction = None
-        if abs_num_of_degrees > 15:
+
+        if abs_num_of_degrees > 7:
+
             # direction = (MOVE_COMMANDS.Right)
             # num_of_steps = 3
             # if car_tilt_degrees - num_of_degrees > 0:
@@ -310,11 +329,11 @@ class Movement_Handler():
 
 
         print(f"num_of_steps: {num_of_steps}\n")
-        self.move_to_correct_angle(1, DIRECTIONS.Up)
+        # self.move_to_correct_angle(1, DIRECTIONS.Up)
 
         self.move_to_correct_angle(num_of_steps, direction)
         self.last_turn = direction
-        time.sleep(1)
+        # time.sleep(1)
 
     def move_to_correct_angle(self, num_of_moves: int, direction):
         for i in range(num_of_moves):
@@ -344,3 +363,25 @@ class Movement_Handler():
 
     def set_process_val(self, is_in_process: bool):
         self.in_process = is_in_process
+
+    def next_cell_optimization(self):
+        first_direction_change = 0
+        if len(self.path) > 15:
+
+            for index in range(0, min(len(self.path), 22)):
+                current_cell = self.path[index + 2]
+                previous_cell = self.path[index + 1]
+
+                # Determine directions for current and previous cells
+                current_direction = self.get_next_direction(previous_cell, current_cell)
+                previous_direction = self.get_next_direction(self.path[index], previous_cell)
+
+                # Check for direction change
+                if current_direction != previous_direction:
+                    first_direction_change = index + 2
+                    break
+
+            if first_direction_change is not None:
+                self.robot.set_position(self.path[first_direction_change])
+
+        return first_direction_change

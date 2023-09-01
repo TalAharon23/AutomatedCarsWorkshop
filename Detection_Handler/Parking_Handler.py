@@ -62,9 +62,8 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
 
 
 
-        for i in range(x, x + w):
-            for j in range(y, y + h):
-                if (x + w) <= 500 and (y + h) <= 700:
+            for i in range(x, x + w):
+                for j in range(y, y + h):
                     matrix[j][i] = Data_Structures.Val_dict.PARKING_SLOT
 
 
