@@ -8,7 +8,7 @@ import Detection_Handler.Car_Handler as car_h
 import Detection_Handler.Parking_Handler as park_h
 import Detection_Handler.Boundaries_Handler as bd_h
 
-frameSize = (700, 750)
+frameSize = (900, 900)
 # frameSize = (600, 650) # For using laptop only
 val_dict = {
     "Border": 1,
@@ -18,8 +18,8 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://10.100.102.35:8080/video"
-# url = "http://192.168.245.4:8s080/video"
+url = "http://10.100.102.17:8080/video"
+# url = "http://192.168.245.4:8080/video"
 
 
 class Singleton(type):
@@ -42,7 +42,6 @@ box = None
 class Detection_controller(metaclass=Singleton):
 
     def __init__(self):
-        self.url = url
         self.num_of_frame_for_stabiliztion          = 0
         self.counter                                = 0
         self.src_video                              = cv2.VideoCapture(url)
@@ -72,7 +71,7 @@ class Detection_controller(metaclass=Singleton):
                 pass
             elif self.counter < 6:
                 self.frame_array.append(self.scan_frame(frame, car, parking_slots))
-            elif self.counter % 5 == 0:
+            elif self.counter % 6 == 0:
                 DS_lock.acquire()
                 processed_frame = self.scan_frame(frame, car, parking_slots)
                 self.out_video.write(processed_frame)
@@ -137,9 +136,9 @@ class Detection_controller(metaclass=Singleton):
 
 
         matrix_scaled = cv2.normalize(matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
-        cv2.imwrite('color_img.jpg', matrix_scaled)
+        cv2.imwrite('matrix_img.jpg', matrix_scaled)
         cv2.rotate(matrix_scaled, cv2.ROTATE_90_CLOCKWISE)
-        cv2.imshow('Color image', matrix_scaled)
+        cv2.imshow('Matrix image', matrix_scaled)
         # Display the resulting frame
         h_concat = np.hstack((origin_frame, processed_frame))
         q = cv2.waitKey(1)
@@ -168,6 +167,14 @@ class Detection_controller(metaclass=Singleton):
         DS_lock.release()
         return temp_matrix
 
+    @staticmethod
+    def set_matrix(new_matrix):
+        global matrix
+        DS_lock.acquire()
+        matrix = new_matrix
+        DS_lock.release()
+
+    @staticmethod
     def reset_Matrix(self):
         global matrix
         DS_lock.acquire()

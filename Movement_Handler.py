@@ -68,7 +68,7 @@ class Movement_Handler():
         :return:
         """
         dc = Detection_controller()
-        threading.Thread(target=dc.scan_video, args=[self.robot, self.parking_slots]).start()
+        # threading.Thread(target=dc.scan_video, args=[self.robot, self.parking_slots]).start()
         time.sleep(3)
         while Detection_controller.isVideoOnLive() and self.in_process:
 
@@ -341,3 +341,6 @@ class Movement_Handler():
     def reset_robot_data(self):
         self.robot.position = None
         self.robot.direction_degrees = None
+
+    def set_process_val(self, is_in_process: bool):
+        self.in_process = is_in_process
