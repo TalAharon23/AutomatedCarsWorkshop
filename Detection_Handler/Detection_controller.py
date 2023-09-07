@@ -8,8 +8,8 @@ import Detection_Handler.Car_Handler as car_h
 import Detection_Handler.Parking_Handler as park_h
 import Detection_Handler.Boundaries_Handler as bd_h
 
-frameSize = (900, 900)
-# frameSize = (650, 650) # For using laptop only
+# frameSize = (900, 900)
+frameSize = (600, 650) # For using laptop only
 val_dict = {
     "Border": 1,
     "Path": 2,
@@ -18,7 +18,10 @@ val_dict = {
 }
 mask_line = 'Path'
 mask_border = 'Border'
-url = "http://192.168.245.90:8080/video"
+# url = "http://10.100.102.33:8080/video"
+# url = "http://192.168.245.4:8080/video"
+url = "http://10.100.102.17:8080/video"
+
 
 
 class Singleton(type):
@@ -34,6 +37,7 @@ matrix  = np.zeros(frameSize)
 videoIsLive = True
 processed_frame = None
 DS_lock = threading.Lock()
+box = None
 
 
 # main class
@@ -69,7 +73,7 @@ class Detection_controller(metaclass=Singleton):
                 pass
             elif self.counter < 6:
                 self.frame_array.append(self.scan_frame(frame, car, parking_slots))
-            elif self.counter % 3 == 0:
+            elif self.counter % 6 == 0:
                 DS_lock.acquire()
                 processed_frame = self.scan_frame(frame, car, parking_slots)
                 self.out_video.write(processed_frame)
@@ -110,22 +114,32 @@ class Detection_controller(metaclass=Singleton):
         # processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_line, val_dict)[1q]  # Find path
         # processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border, val_dict)[1]  # Find borders
         if len(parking_slots.get_parking_slots()) < 2:
-            processed_frame, matrix = park_h.Find_Parking_Slots(frame, matrix, frameSize, val_dict,
+            box, matrix = park_h.Find_Parking_Slots(frame, matrix, frameSize, val_dict,
                                                                 parking_slots)  # Find parking spot
         else:
             for cnt in parking_slots.get_parking_slots_contours():
-                epsilon = 0.01 * cv2.arcLength(cnt, True)
-                approx = cv2.approxPolyDP(cnt, epsilon, True)
+                # epsilon = 0.01 * cv2.arcLength(cnt, True)
 
-                # Find the bounding rectangle of the polygon
-                x, y, w, h = cv2.boundingRect(approx)
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
+                perimeter = cv2.arcLength(cnt, True)
+                # perimeter = cv2.arcLength(contour, False)
+                approx = cv2.approxPolyDP(cnt, perimeter, 3, True)
+                # approx = cv2.approxPolyDP(cnt, epsilon, True)
+
+                box = cv2.minAreaRect(cnt)
+                box = cv2.boxPoints(box)
+                # box = np.array(box, dtype="int")
+                box = np.int0(box)
+
         processed_frame = car_h.Find_Car(frame, matrix, frameSize, car)[1]
 
+        if box is not None:
+            cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
+
+
         matrix_scaled = cv2.normalize(matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
-        cv2.imwrite('color_img.jpg', matrix_scaled)
+        cv2.imwrite('matrix_img.jpg', matrix_scaled)
         cv2.rotate(matrix_scaled, cv2.ROTATE_90_CLOCKWISE)
-        cv2.imshow('Color image', matrix_scaled)
+        cv2.imshow('Matrix image', matrix_scaled)
         # Display the resulting frame
         h_concat = np.hstack((origin_frame, processed_frame))
         q = cv2.waitKey(1)
@@ -134,6 +148,9 @@ class Detection_controller(metaclass=Singleton):
 
         # Display the concatenated frame
         cv2.imshow('Autonomous Car', h_concat)
+
+        # Move the OpenCV window to the top-left corner of the screen
+        cv2.moveWindow('Autonomous Car', 0, 0)
         return processed_frame
 
     @staticmethod
@@ -153,6 +170,20 @@ class Detection_controller(metaclass=Singleton):
         temp_matrix = matrix.copy()
         DS_lock.release()
         return temp_matrix
+
+    @staticmethod
+    def set_matrix(new_matrix):
+        global matrix
+        DS_lock.acquire()
+        matrix = new_matrix
+        DS_lock.release()
+
+    @staticmethod
+    def reset_Matrix(self):
+        global matrix
+        DS_lock.acquire()
+        matrix = np.zeros(frameSize)
+        DS_lock.release()
 
     @staticmethod
     def get_matrix_size():
