@@ -133,7 +133,7 @@ def Find_Car(frame, matrix, frameSize, car):
                     else:
                         cX, cY = 0, 0
 
-                    car.set_position((cX, cY))
+                    car.set_position(Data_Structures.Cell(cX, cY))
                     matrix[cY][cX] = Data_Structures.Val_dict.CAR
                     matrix[cY][cX + 1] = Data_Structures.Val_dict.CAR
                     matrix[cY + 1][cX] = Data_Structures.Val_dict.CAR

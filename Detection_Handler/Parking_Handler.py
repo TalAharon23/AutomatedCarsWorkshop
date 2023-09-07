@@ -3,6 +3,10 @@ import numpy as np
 
 import Data_Structures
 
+
+x_parking_delta = 75
+y_parking_delta = 160
+
 def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
     # Convert the image to HSV color space
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -57,7 +61,7 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
         if w * h > 10000 and w * h < 36000:
             rects.append((x, y, w, h))
             parking_slots.save_slot_contours(cnt)
-            parking_slots.save_slot((x + int(round((w/2))), y + int(round(h/2))))
+            parking_slots.save_slot(Data_Structures.Cell(x + int(round((w/2))) + x_parking_delta, y + int(round(h/2)) + y_parking_delta))
             cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
 
 
