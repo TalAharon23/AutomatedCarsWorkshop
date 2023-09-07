@@ -308,7 +308,7 @@ class Movement_Handler():
         num_of_degrees = car_tilt_degrees - next_direction  # =315
         direction = None
 
-        if abs_num_of_degrees > 6:
+        if abs_num_of_degrees > 7:
 
             # direction = (MOVE_COMMANDS.Right)
             # num_of_steps = 3

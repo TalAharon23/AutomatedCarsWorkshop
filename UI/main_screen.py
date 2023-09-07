@@ -86,3 +86,15 @@ class AutoPark:
     def on_closing(self):
         self.video_capture.release()
         self.window.destroy()
+
+    def display_text_in_window(text_widget, new_line, lines_to_display, max_lines=5):
+        lines_to_display.append(new_line)
+
+        # Remove the oldest lines if there are more than max_lines
+        if len(lines_to_display) > max_lines:
+            lines_to_display.pop(0)
+
+        text_widget.delete(1.0, tk.END)  # Clear the existing text
+        for line in lines_to_display:
+            text_widget.insert(tk.END, line + '\n')
+        text_widget.see(tk.END)  # Scroll to the end
