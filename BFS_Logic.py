@@ -17,10 +17,10 @@ class BFS:
         Returns:
         - list or None: A list of Cell objects representing the shortest path from start to end, or None if no path exists.
         """
-        sx = start[0]
-        sy = start[1]
-        dx = end[0]
-        dy = end[1]
+        sx = start.X()
+        sy = start.Y()
+        dx = end.X()
+        dy = end.Y()
 
         # initialize the cells
         m = len(matrix)

@@ -20,6 +20,7 @@ class MOVE_COMMANDS:
     Left = "left"
     Right = "right"
     Back = "back"
+    Parking = "parking"
 
 
 class DIRECTIONS:
@@ -93,7 +94,7 @@ class Movement_Handler():
                         continue
                     # self.robot.set_position((0,0))
                     self.set_parking_slot_destination()
-                time.sleep(0.4)
+                time.sleep(0.2)
                 if self.check_validation():
                     if self.counter % 3 == 0:
                         self.move_to_correct_angle(1, MOVE_COMMANDS.Forward)
@@ -121,27 +122,30 @@ class Movement_Handler():
 
 
     def check_if_arrived(self):
-        if self.parking_slot_dest is not None or self.robot.get_position() is not None:
-            if abs(self.robot.get_position()[0] - self.parking_slot_dest[0]) < 17 and abs(self.robot.get_position()[1] - self.parking_slot_dest[1]) < 17:
+        if self.parking_slot_dest is not None and self.robot.get_position() is not None and self.robot.get_position().X():
+            if abs(self.robot.get_position().X() - self.parking_slot_dest.X()) < 10 and abs(self.robot.get_position().Y() - self.parking_slot_dest.Y()) < 10:
+                while self.robot.get_direction_degrees() < 180 or self.robot.get_direction_degrees() > 190:
+                    self.update_car_angle(185)
 
+                move(MOVE_COMMANDS.Parking)
                 print("Parking successful!")
                 print("Parking successful!")
                 print("Parking successful!")
                 print("Parking successful!")
                 self.in_process = False
 
-    def check_if_arrived_to_destination(self):
-        car_x_position = self.robot.position[0]
-        car_y_position = self.robot.position[1]
-        parking_slot_x_position = self.parking_slot_dest[0]
-        parking_slot_y_position = self.parking_slot_dest[1]
-        if car_x_position != None and car_y_position != None and parking_slot_x_position != None and parking_slot_y_position != None:
-            if abs(car_x_position - parking_slot_x_position) < 5 and abs(car_y_position - parking_slot_y_position):
-                return True
-        return False
+    # def check_if_arrived_to_destination(self):
+    #     car_x_position = self.robot.position[0]
+    #     car_y_position = self.robot.position[1]
+    #     parking_slot_x_position = self.parking_slot_dest[0]
+    #     parking_slot_y_position = self.parking_slot_dest[1]
+    #     if car_x_position != None and car_y_position != None and parking_slot_x_position != None and parking_slot_y_position != None:
+    #         if abs(car_x_position - parking_slot_x_position) < 7 and abs(car_y_position - parking_slot_y_position) < 7:
+    #             return True
+    #     return False
 
     def check_validation(self):
-        time.sleep(0.5)
+        time.sleep(0.2)
         curr_position = self.robot.position
         curr_direction = self.robot.direction_degrees
 
@@ -270,18 +274,20 @@ class Movement_Handler():
         index = self.next_cell_optimization()
         current_cell = self.path[index]
         # next_cell = self.path[1]
-        next_cell = self.path[index + 1]
-        self.print_BFS_in_matrix()
+        if index + 1 < len(self.path):
+            next_cell = self.path[index + 1]
+            self.print_BFS_in_matrix()
+            self.check_if_arrived()
+            if self.in_process:
+                next_direction = self.get_next_direction(current_cell, next_cell)
+                self.update_car_angle(angle_to_direction.get(next_direction))
+                self.check_if_arrived()
+                self.reset_robot_data()
+                self.path_index = self.path_index + 1
 
-        next_direction = self.get_next_direction(current_cell, next_cell)
-        self.update_car_angle(angle_to_direction.get(next_direction))
-        self.check_if_arrived()
-        self.reset_robot_data()
-        self.path_index = self.path_index + 1
-
-        # Move the car forward (you need to implement this part)
-        # TODO: Understand how much forward need to move!?!?
-        move(MOVE_COMMANDS.Forward)
+                # Move the car forward (you need to implement this part)
+                # TODO: Understand how much forward need to move!?!?
+                move(MOVE_COMMANDS.Forward)
 
     def print_BFS_in_matrix(self):
         origin_matrix = Detection_controller.get_matrix()
@@ -302,7 +308,7 @@ class Movement_Handler():
         num_of_degrees = car_tilt_degrees - next_direction  # =315
         direction = None
 
-        if abs_num_of_degrees > 7:
+        if abs_num_of_degrees > 6:
 
             # direction = (MOVE_COMMANDS.Right)
             # num_of_steps = 3
