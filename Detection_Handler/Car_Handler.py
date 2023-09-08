@@ -58,7 +58,7 @@ def Find_Car(frame, matrix, frameSize, car):
 
                 if length > 11 and length < 35 and width > 11 and width < 35 and width * length > 250 and width * length < 700:
                     rice = [box.astype("int")]
-                    strip_roi = gray[x:x + w, y:y + h]
+                    strip_roi = gray[y:y + h, x:x + w]
                     avg_intensity = np.mean(strip_roi)
                     if avg_intensity > white_avg_intensity_bottom:
                         if check_contour_is_valid(rice):

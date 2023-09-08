@@ -128,6 +128,7 @@ class Movement_Handler():
                     self.update_car_angle(185)
 
                 move(MOVE_COMMANDS.Parking)
+                self.update_car_angle(185)
                 print("Parking successful!")
                 print("Parking successful!")
                 print("Parking successful!")
@@ -308,7 +309,7 @@ class Movement_Handler():
         num_of_degrees = car_tilt_degrees - next_direction  # =315
         direction = None
 
-        if abs_num_of_degrees > 7:
+        if abs_num_of_degrees > 6:
 
             # direction = (MOVE_COMMANDS.Right)
             # num_of_steps = 3
