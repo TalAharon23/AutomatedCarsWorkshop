@@ -9,8 +9,16 @@ from Detection_Handler.Detection_controller import Detection_controller
 
 class AutoPark:
     def __init__(self, window, window_title):
+        # Initialize Movement_Handler and Detection_controller
+        self.detector = Detection_controller()
+        self.image_logic = Movement_Handler()
+
+        # Start the video scanning process in a thread
+        Thread(target=self.start_video_scanning).start()
+
         self.window = window
         self.window.title(window_title)
+
 
         # Load the project image and resize it
         self.project_image = Image.open("Resources/logo_final.png")
@@ -32,7 +40,7 @@ class AutoPark:
                                   font=("Helvetica", 14))
         self.stop_button.pack()
 
-        window.geometry("250x210")
+        self.window.geometry("250x210")
 
         # Make the window non-resizable
         self.window.resizable(False, False)
@@ -43,19 +51,12 @@ class AutoPark:
         # Calculate the horizontal position for the top-right corner
         horizontal_position = screen_width - window.winfo_width()
 
-        # Set the window position in the top-right corner
-        window.geometry(f"+{horizontal_position - 250}+0")
-
-        # Initialize Movement_Handler and Detection_controller
-        self.detector = Detection_controller()
-        self.image_logic = Movement_Handler()
-
-        # Start the video scanning process in a thread
-        Thread(target=self.start_video_scanning).start()
-
         # Initialize video capture for the UI
         self.video_capture = cv2.VideoCapture()
         self.update_ui()
+
+        # Set the window position in the top-right corner
+        self.window.geometry(f"+{horizontal_position - 250}+0")
 
     def start_video_scanning(self):
         a = 2

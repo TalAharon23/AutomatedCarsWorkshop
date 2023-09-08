@@ -4,8 +4,8 @@ import numpy as np
 import Data_Structures
 
 
-x_parking_delta = 75
-y_parking_delta = 160
+x_parking_delta = 85
+y_parking_delta = 150
 
 def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
     # Convert the image to HSV color space
@@ -62,13 +62,17 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
             rects.append((x, y, w, h))
             rect = cv2.minAreaRect(cnt)
             angle = rect[2]
-            parking_slots.save_slot_contours(cnt)
-            parking_slots.save_slot(Data_Structures.Cell(x + int(round((w/2))) + x_parking_delta, y + int(round(h/2)) + y_parking_delta))
-            cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
+            if angle == 90:
+                angle = 0 # 90 in counter angle is equivalent to 360 in circle
             if w > h:
                 angle += 90
             else:
                 angle += 180
+            parking_slots.save_slot_contours(cnt)
+            parking_slots.save_slot(Data_Structures.Cell(x + int(round((w/2))) + x_parking_delta, y + int(round(h/2))
+                                                         + y_parking_delta), int(angle))
+            cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
+
             print(f"parking: {angle}")
             print(f"parking: {angle}")
             print(f"parking: {angle}")

@@ -13,7 +13,7 @@ from ESP32CAM_Car.MovementAPI import move
 
 # RIGHT_LEFT_DEGREE = 6
 RIGHT_LEFT_DEGREE = 3
-
+delta_tilt_degrees = 6
 
 class MOVE_COMMANDS:
     Forward = "go"
@@ -22,6 +22,12 @@ class MOVE_COMMANDS:
     Back = "back"
     Parking = "parking"
 
+angle_to_direction_from_Move_Command = {
+    MOVE_COMMANDS.Left: 270,
+    MOVE_COMMANDS.Right: 90,
+    MOVE_COMMANDS.Forward: 0,
+    MOVE_COMMANDS.Back: 180
+}
 
 class DIRECTIONS:
     Up = "Up"
@@ -55,6 +61,7 @@ class Movement_Handler():
         self.car_arrived_to_maneuver_point  = False
         self.car_arrived_to_destination     = False
         self.parking_slot_dest              = None
+        self.parking_slot_dest_angle        = None
         self.parking_slots                  = Parking_Slots()
         self.in_process                     = True
         self.last_position                  = None
@@ -97,7 +104,7 @@ class Movement_Handler():
                 time.sleep(0.2)
                 if self.check_validation():
                     if self.counter % 3 == 0:
-                        self.move_to_correct_angle(1, MOVE_COMMANDS.Forward)
+                        move(MOVE_COMMANDS.Forward)
                     self.car_movement()
                     # dc.reset_Matrix()
                 else:
@@ -125,10 +132,10 @@ class Movement_Handler():
         if self.parking_slot_dest is not None and self.robot.get_position() is not None and self.robot.get_position().X():
             if abs(self.robot.get_position().X() - self.parking_slot_dest.X()) < 10 and abs(self.robot.get_position().Y() - self.parking_slot_dest.Y()) < 10:
                 while self.robot.get_direction_degrees() < 180 or self.robot.get_direction_degrees() > 190:
-                    self.update_car_angle(182)
+                    self.update_car_angle(self.parking_slot_dest_angle)
 
                 move(MOVE_COMMANDS.Parking)
-                self.update_car_angle(182)
+                self.update_car_angle(self.parking_slot_dest_angle)
                 print("Parking successful!")
                 print("Parking successful!")
                 print("Parking successful!")
@@ -249,18 +256,23 @@ class Movement_Handler():
         self.in_process = value
 
     def set_parking_slot_destination(self):
+        chosen_parking_slot_index = 0
         parking_slots = self.parking_slots.get_parking_slots()
-        chosen_slot = parking_slots[0]
-        nearest_parking_slot_path = chosen_slot
+        chosen_slot = parking_slots[chosen_parking_slot_index]
+        # nearest_parking_slot_path = chosen_slot
         dist_nearest_parking_slot = len(self.BFS_Logic.shortestPath(Detection_controller.get_matrix(),
                                                                         self.robot.get_position(), chosen_slot))
         if parking_slots:
             for slot in parking_slots:
                 nearest_parking_slot_path = self.BFS_Logic.shortestPath(Detection_controller.get_matrix(),
                                                                         self.robot.get_position(), slot)
+                self.parking_slot_dest_angle = self.parking_slots.get_parking_angles()[chosen_parking_slot_index]
                 if len(nearest_parking_slot_path) < dist_nearest_parking_slot:
                     dist_nearest_parking_slot = len(nearest_parking_slot_path)
                     chosen_slot = slot
+                    self.parking_slot_dest_angle = self.parking_slots.get_parking_angles()[chosen_parking_slot_index]
+
+                chosen_parking_slot_index +=1
 
         self.parking_slot_dest = chosen_slot
 
@@ -288,7 +300,7 @@ class Movement_Handler():
 
                 # Move the car forward (you need to implement this part)
                 # TODO: Understand how much forward need to move!?!?
-                move(MOVE_COMMANDS.Forward)
+                # move(MOVE_COMMANDS.Forward)
 
     def print_BFS_in_matrix(self):
         origin_matrix = Detection_controller.get_matrix()
@@ -304,12 +316,12 @@ class Movement_Handler():
         :param next_direction: next direction in degrees (if right needed, it would be 180)
         :return: move command value (left/right) and num of steps that need to be done
         """
-        car_tilt_degrees = self.robot.get_direction_degrees()  # 315 --> 0
-        abs_num_of_degrees = min(abs(car_tilt_degrees - next_direction), 360 - abs(car_tilt_degrees - next_direction))  # =315
-        num_of_degrees = car_tilt_degrees - next_direction  # =315
+        car_tilt_degrees = self.robot.get_direction_degrees()
+        abs_num_of_degrees = min(abs(car_tilt_degrees - next_direction), 360 - abs(car_tilt_degrees - next_direction))
+        num_of_degrees = car_tilt_degrees - next_direction
         direction = None
 
-        if abs_num_of_degrees > 6:
+        while abs_num_of_degrees > delta_tilt_degrees and self.in_process:
 
             # direction = (MOVE_COMMANDS.Right)
             # num_of_steps = 3
@@ -330,21 +342,22 @@ class Movement_Handler():
                 num_of_degrees = 360 - abs(car_tilt_degrees - next_direction)
                 num_of_steps = (int)((num_of_degrees) / RIGHT_LEFT_DEGREE)
                 direction = MOVE_COMMANDS.Left
-        else:
-            num_of_steps = 1
-            direction = MOVE_COMMANDS.Forward
 
+            move(direction)
+
+            car_tilt_degrees = self.robot.get_direction_degrees()
+            abs_num_of_degrees = min(abs(car_tilt_degrees - next_direction),
+                                     360 - abs(car_tilt_degrees - next_direction))
+            num_of_degrees = car_tilt_degrees - next_direction
+
+        if abs_num_of_degrees <= delta_tilt_degrees:
+            num_of_steps = 1
+            move(MOVE_COMMANDS.Forward)
 
         print(f"num_of_steps: {num_of_steps}\n")
-        # self.move_to_correct_angle(1, DIRECTIONS.Up)
 
-        self.move_to_correct_angle(num_of_steps, direction)
         self.last_turn = direction
-        # time.sleep(1)
 
-    def move_to_correct_angle(self, num_of_moves: int, direction):
-        for i in range(num_of_moves):
-            move(direction)
 
     def get_next_direction(self, curr_position: Cell, dest_position: Cell):
         """
@@ -373,9 +386,9 @@ class Movement_Handler():
 
     def next_cell_optimization(self):
         first_direction_change = 0
-        if len(self.path) > 15:
+        if len(self.path) > 24:
 
-            for index in range(0, min(len(self.path), 22)):
+            for index in range(0, min(len(self.path), 21)):
                 current_cell = self.path[index + 2]
                 previous_cell = self.path[index + 1]
 
@@ -392,3 +405,9 @@ class Movement_Handler():
                 self.robot.set_position(self.path[first_direction_change])
 
         return first_direction_change
+
+    def get_tilt_delta(self, next_direction):
+        car_tilt_degrees = self.robot.get_direction_degrees()  # 315 --> 0
+        abs_num_of_degrees = min(abs(car_tilt_degrees - next_direction), 360 - abs(car_tilt_degrees - next_direction))
+
+        return abs_num_of_degrees
