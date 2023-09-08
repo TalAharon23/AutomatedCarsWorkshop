@@ -61,15 +61,19 @@ def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):
         if w * h > 10000 and w * h < 36000:
             rects.append((x, y, w, h))
             rect = cv2.minAreaRect(cnt)
-            deg = rect[2]
+            angle = rect[2]
             parking_slots.save_slot_contours(cnt)
             parking_slots.save_slot(Data_Structures.Cell(x + int(round((w/2))) + x_parking_delta, y + int(round(h/2)) + y_parking_delta))
             cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
-            print(f"parking: {deg}")
-            print(f"parking: {deg}")
-            print(f"parking: {deg}")
-            print(f"parking: {deg}")
-            print(f"parking: {deg}")
+            if w > h:
+                angle += 90
+            else:
+                angle += 180
+            print(f"parking: {angle}")
+            print(f"parking: {angle}")
+            print(f"parking: {angle}")
+            print(f"parking: {angle}")
+            print(f"parking: {angle}")
 
 
 

@@ -125,10 +125,10 @@ class Movement_Handler():
         if self.parking_slot_dest is not None and self.robot.get_position() is not None and self.robot.get_position().X():
             if abs(self.robot.get_position().X() - self.parking_slot_dest.X()) < 10 and abs(self.robot.get_position().Y() - self.parking_slot_dest.Y()) < 10:
                 while self.robot.get_direction_degrees() < 180 or self.robot.get_direction_degrees() > 190:
-                    self.update_car_angle(185)
+                    self.update_car_angle(182)
 
                 move(MOVE_COMMANDS.Parking)
-                self.update_car_angle(185)
+                self.update_car_angle(182)
                 print("Parking successful!")
                 print("Parking successful!")
                 print("Parking successful!")
