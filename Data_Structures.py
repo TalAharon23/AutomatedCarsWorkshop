@@ -88,10 +88,17 @@ class Parking_Slots(metaclass=Singleton):
     def __init__(self, position=None, direction=None):
         self.parking_slots = []
         self.parking_slots_contours = []
+        self.parking_angles = []
 
     def get_parking_slots(self):
         ds_mutex.acquire()
         temp = self.parking_slots.copy()
+        ds_mutex.release()
+        return temp
+
+    def get_parking_angles(self):
+        ds_mutex.acquire()
+        temp = self.parking_angles.copy()
         ds_mutex.release()
         return temp
 
@@ -116,9 +123,10 @@ class Parking_Slots(metaclass=Singleton):
         self.parking_slots.remove(slot)
         ds_mutex.release()
 
-    def save_slot(self, slot):
+    def save_slot(self, slot, angle):
         ds_mutex.acquire()
         self.parking_slots.append(slot)
+        self.parking_angles.append(angle)
         ds_mutex.release()
 
     def save_slot_contours(self, slot):

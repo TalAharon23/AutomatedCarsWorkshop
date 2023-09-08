@@ -597,8 +597,6 @@ void parking()
     Forward();
     Forward();
     Forward();
-    Forward();
-    Forward();
 }
 void WheelAct(int nLf, int nLb, int nRf, int nRb)
 {

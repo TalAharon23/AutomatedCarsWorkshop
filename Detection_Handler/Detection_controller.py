@@ -36,7 +36,7 @@ class Singleton(type):
 
 
 matrix  = np.zeros(frameSize)
-videoIsLive = True
+# videoIsLive = True
 processed_frame = None
 DS_lock = threading.Lock()
 box = None
@@ -55,9 +55,9 @@ class Detection_controller(metaclass=Singleton):
         self.frame_array                            = []
         self.flag                                   = True
         self.framenum                               = 0
-        # self.parking_slots                          = Data_Structures.Parking_Slots()
 
     def scan_video(self, car, parking_slots):
+        global videoIsLive
         while (self.src_video.isOpened()):
             DS_lock.acquire()
             videoIsLive = True
