@@ -329,6 +329,7 @@ class Movement_Handler:
                 current_cell = self.path[index + 2]
                 previous_cell = self.path[index + 1]
 
+
                 # Determine directions for current and previous cells
                 current_direction = Movement_Handler.get_next_direction(previous_cell, current_cell)
                 previous_direction = Movement_Handler.get_next_direction(self.path[index], previous_cell)

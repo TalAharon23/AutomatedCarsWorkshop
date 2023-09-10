@@ -3,6 +3,7 @@ import numpy as np
 
 import Data_Structures
 
+
 x_parking_delta = 65
 y_parking_delta = 150
 
