@@ -66,6 +66,12 @@ class Movement_Handler:
         self.counter = 0
         self.path_index = 0
 
+
+    def reset_matrix_and_data(self):
+        Detection_controller.reset_Matrix()
+        test = self.parking_slots.get_parking_slots_description()[0]
+        Detection_controller.insert_parking_slot_to_matrix(self.parking_slots.get_parking_slots_description()[0])
+
     # @staticmethod
     def start_car_parking_session(self):
         """
@@ -251,6 +257,8 @@ class Movement_Handler:
                 self.check_if_arrived()
                 self.reset_robot_data()
                 self.path_index = self.path_index + 1
+            else:
+                self.reset_matrix_and_data()
 
     def print_BFS_in_matrix(self):
         origin_matrix = Detection_controller.get_matrix()
@@ -290,6 +298,9 @@ class Movement_Handler:
 
             if direction != MOVE_COMMANDS.Forward:
                 move(direction)
+
+            if not self.in_process:
+                self.reset_matrix_and_data()
 
             car_tilt_degrees = self.robot.get_direction_degrees()
             abs_num_of_degrees = min(abs(car_tilt_degrees - next_direction),

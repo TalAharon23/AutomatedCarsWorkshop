@@ -64,6 +64,8 @@ def Find_Parking_Slots(frame, matrix, parking_slots):
             cv2.drawContours(frame, [box], 0, Data_Structures.blue, 2)
             print(f"parking angle is: {angle}")
 
+            parking_slots.save_slots_description((x, y, w, h))
+
             for i in range(x, x + w):
                 for j in range(y, y + h):
                     matrix[j][i] = Data_Structures.Val_dict.PARKING_SLOT
