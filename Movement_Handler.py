@@ -8,7 +8,7 @@ from Data_Structures import *
 import BFS_Logic
 
 RIGHT_LEFT_DEGREE = 3
-delta_tilt_degrees = 6
+delta_tilt_degrees = 5
 
 
 class MOVE_COMMANDS:
@@ -106,19 +106,28 @@ class Movement_Handler:
     def check_if_arrived(self):
         if self.parking_slot_dest is not None and self.robot.get_position() is not None and self.robot.get_position().X():
             if abs(self.robot.get_position().X() - self.parking_slot_dest.X()) < 12 and abs(
-                    self.robot.get_position().Y() - self.parking_slot_dest.Y()) < 12:
+                    self.robot.get_position().Y() - self.parking_slot_dest.Y()) < 14:
                 while (self.robot.get_direction_degrees() < self.parking_slot_dest_angle - 5 or
                        self.robot.get_direction_degrees() > self.parking_slot_dest_angle + 5):
                     self.update_car_angle(self.parking_slot_dest_angle)
 
-                move(MOVE_COMMANDS.Back)
                 move(MOVE_COMMANDS.Parking)
                 self.update_car_angle(self.parking_slot_dest_angle)
+                self.centerlize_car_inside_parking_slot()
                 print("Parking successful!")
                 print("Parking successful!")
                 print("Parking successful!")
                 print("Parking successful!")
                 self.in_process = False
+
+    def centerlize_car_inside_parking_slot(self):
+        parking_slot_y_origin = self.parking_slot_dest.Y() - y_parking_delta
+
+        while abs(self.robot.get_position().Y() - parking_slot_y_origin) > 5:
+            if self.robot.get_position().Y() > parking_slot_y_origin:
+                move(MOVE_COMMANDS.Back)
+            else:
+                move(MOVE_COMMANDS.Forward)
 
     def check_validation(self):
         time.sleep(0.2)
@@ -328,7 +337,6 @@ class Movement_Handler:
             for index in range(0, min(len(self.path), 21)):
                 current_cell = self.path[index + 2]
                 previous_cell = self.path[index + 1]
-
 
                 # Determine directions for current and previous cells
                 current_direction = Movement_Handler.get_next_direction(previous_cell, current_cell)
