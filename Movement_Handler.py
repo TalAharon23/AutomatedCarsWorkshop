@@ -8,7 +8,8 @@ from Data_Structures import *
 import BFS_Logic
 
 RIGHT_LEFT_DEGREE = 3
-delta_tilt_degrees = 6
+delta_tilt_degrees = 5
+
 
 
 class MOVE_COMMANDS:
@@ -66,6 +67,13 @@ class Movement_Handler:
         self.counter = 0
         self.path_index = 0
 
+        
+    def reset_matrix_and_data(self):
+        Detection_controller.reset_Matrix()
+        test = self.parking_slots.get_parking_slots_description()[0]
+        Detection_controller.insert_parking_slot_to_matrix(self.parking_slots.get_parking_slots_description()[0])
+        
+
     # @staticmethod
     def start_car_parking_session(self):
         """
@@ -105,21 +113,34 @@ class Movement_Handler:
 
     def check_if_arrived(self):
         if self.parking_slot_dest is not None and self.robot.get_position() is not None and self.robot.get_position().X():
-            if abs(self.robot.get_position().X() - self.parking_slot_dest.X()) < 12 and abs(
-                    self.robot.get_position().Y() - self.parking_slot_dest.Y()) < 12:
+
+            if abs(self.robot.get_position().X() - self.parking_slot_dest.X()) < 6 and abs(
+                    self.robot.get_position().Y() - self.parking_slot_dest.Y()) < 20:
+    
                 while (self.robot.get_direction_degrees() < self.parking_slot_dest_angle - 5 or
                        self.robot.get_direction_degrees() > self.parking_slot_dest_angle + 5):
                     self.update_car_angle(self.parking_slot_dest_angle)
 
-                move(MOVE_COMMANDS.Back)
                 move(MOVE_COMMANDS.Parking)
                 self.update_car_angle(self.parking_slot_dest_angle)
+                self.centerlize_car_inside_parking_slot()
                 print("Parking successful!")
                 print("Parking successful!")
                 print("Parking successful!")
                 print("Parking successful!")
                 self.in_process = False
 
+
+    def centerlize_car_inside_parking_slot(self):
+        parking_slot_y_origin = self.parking_slot_dest.Y() - y_parking_delta
+
+        while abs(self.robot.get_position().Y() - parking_slot_y_origin) > 5:
+            if self.robot.get_position().Y() > parking_slot_y_origin:
+                move(MOVE_COMMANDS.Back)
+            else:
+                move(MOVE_COMMANDS.Forward)
+
+                
     def check_validation(self):
         time.sleep(0.2)
         curr_position = self.robot.position
@@ -242,7 +263,10 @@ class Movement_Handler:
                 self.check_if_arrived()
                 self.reset_robot_data()
                 self.path_index = self.path_index + 1
+            else:
+                self.reset_matrix_and_data()
 
+                
     def print_BFS_in_matrix(self):
         origin_matrix = Detection_controller.get_matrix()
         for cell in self.path:
@@ -281,6 +305,9 @@ class Movement_Handler:
 
             if direction != MOVE_COMMANDS.Forward:
                 move(direction)
+
+            if not self.in_process:
+                self.reset_matrix_and_data()
 
             car_tilt_degrees = self.robot.get_direction_degrees()
             abs_num_of_degrees = min(abs(car_tilt_degrees - next_direction),
@@ -328,7 +355,6 @@ class Movement_Handler:
             for index in range(0, min(len(self.path), 21)):
                 current_cell = self.path[index + 2]
                 previous_cell = self.path[index + 1]
-
 
                 # Determine directions for current and previous cells
                 current_direction = Movement_Handler.get_next_direction(previous_cell, current_cell)
