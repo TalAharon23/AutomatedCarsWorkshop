@@ -116,8 +116,7 @@ class Detection_controller(metaclass=Singleton):
         # processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_line, val_dict)[1q]  # Find path
         # processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border, val_dict)[1]  # Find borders
         if len(parking_slots.get_parking_slots()) < 2:
-            box, matrix = park_h.Find_Parking_Slots(frame, matrix, frameSize, val_dict,
-                                                                parking_slots)  # Find parking spot
+            box, matrix = park_h.Find_Parking_Slots(frame, matrix, parking_slots)  # Find parking spot
         else:
             for cnt in parking_slots.get_parking_slots_contours():
                 # epsilon = 0.01 * cv2.arcLength(cnt, True)
@@ -132,7 +131,7 @@ class Detection_controller(metaclass=Singleton):
                 # box = np.array(box, dtype="int")
                 box = np.int0(box)
 
-        processed_frame = car_h.Find_Car(frame, matrix, frameSize, car)[1]
+        processed_frame = car_h.Find_Car(frame, matrix, car)[1]
         cv2.putText(processed_frame, "{:}".format(f"{int(parking_slots.get_parking_angles()[0])} d"),
                     (parking_slots.get_parking_slots()[0].X() - 78, parking_slots.get_parking_slots()[0].Y() - 220), cv2.FONT_HERSHEY_SIMPLEX,
                     0.45,

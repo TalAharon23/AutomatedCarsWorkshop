@@ -1,12 +1,12 @@
-# VAL_DICT = {
-#     "Empty": 0,
-#     "Border": 1,
-#     "Path": 2,
-#     "Parking_slot": 3,
-#     "Robot": 4
-# }
 
 import threading
+
+white = (255, 255, 255)
+red = (255, 0, 0)
+green = (0, 255, 0)
+black = (0, 0, 0)
+blue = (0, 0, 255)
+
 
 DIRECTION_DICT = {
     "NORTH": 0,
