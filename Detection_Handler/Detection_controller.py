@@ -50,8 +50,8 @@ class Detection_controller(metaclass=Singleton):
         self.counter                                = 0
         self.src_video                              = cv2.VideoCapture(url)
         self.out_video                              = cv2.VideoWriter('Resources/Amir_Test/output_video.avi',
-                                                                      cv2.VideoWriter_fourcc(*'DIVX'), 12,frameSize)
-        self.matrix                                 = np.zeros(frameSize)
+                                                                      cv2.VideoWriter_fourcc(*'DIVX'), 12, frameSize)
+        self.matrix                                 = np.zeros((frameSize[0] + 20, frameSize[1] + 20))
         self.frame_array                            = []
         self.flag                                   = True
         self.framenum                               = 0
