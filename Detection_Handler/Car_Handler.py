@@ -92,9 +92,9 @@ def Find_Car(frame, matrix, car):
                     'color_name'] and calculate_distance(contours_list[i]['contour'], contours_list[j]['contour']) < 90:
                     cv2.drawContours(frame, contours_list[i]['box'], 0, contours_list[i]['color'], 2)
                     cv2.drawContours(frame, contours_list[j]['box'], 0, contours_list[j]['color'], 2)
-                    print(calculate_actual_angle_difference([contours_list[i], contours_list[j]],
-                                                            calculate_curr_angle_before_optimization(contours_list[i]['contour'],
-                                                                                 contours_list[j]['contour'])))
+                    # print(calculate_actual_angle_difference([contours_list[i], contours_list[j]],
+                    #                                         calculate_curr_angle_before_optimization(contours_list[i]['contour'],
+                    #                                                              contours_list[j]['contour'])))
                     car.set_direction_degrees(calculate_actual_angle_difference([contours_list[i],
                                                                                  contours_list[j]],
                                                                                 calculate_curr_angle_before_optimization(

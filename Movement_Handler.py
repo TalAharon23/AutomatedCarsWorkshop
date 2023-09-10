@@ -111,8 +111,8 @@ class Movement_Handler:
 
     def check_if_arrived(self):
         if self.parking_slot_dest is not None and self.robot.get_position() is not None and self.robot.get_position().X():
-            if abs(self.robot.get_position().X() - self.parking_slot_dest.X()) < 12 and abs(
-                    self.robot.get_position().Y() - self.parking_slot_dest.Y()) < 14:
+            if abs(self.robot.get_position().X() - self.parking_slot_dest.X()) < 6 and abs(
+                    self.robot.get_position().Y() - self.parking_slot_dest.Y()) < 20:
                 while (self.robot.get_direction_degrees() < self.parking_slot_dest_angle - 5 or
                        self.robot.get_direction_degrees() > self.parking_slot_dest_angle + 5):
                     self.update_car_angle(self.parking_slot_dest_angle)
