@@ -59,7 +59,7 @@ def Find_Parking_Slots(frame, matrix, parking_slots):
                 angle += 180
             parking_slots.save_slot_contours(cnt)
             parking_slots.save_slot(
-                Data_Structures.Cell(x + int(round((w / 2))) + Data_Structures.x_parking_delta, y + int(round(h / 2))
+            Data_Structures.Cell(x + int(round((w / 2))) + Data_Structures.x_parking_delta, y + int(round(h / 2))
                                      + Data_Structures.y_parking_delta), int(angle))
             cv2.drawContours(frame, [box], 0, Data_Structures.blue, 2)
             print(f"parking angle is: {angle}")

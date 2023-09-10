@@ -10,6 +10,7 @@ x_parking_delta = 70
 y_parking_delta = 150
 
 
+
 DIRECTION_DICT = {
     "NORTH": 0,
     "NORTH_EAST": 1,
