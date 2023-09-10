@@ -56,7 +56,7 @@ def Find_Parking_Slots(frame, matrix, parking_slots):
             if w > h:
                 angle += 90
             else:
-                angle += 180
+                angle += 90
             parking_slots.save_slot_contours(cnt)
             parking_slots.save_slot(
             Data_Structures.Cell(x + int(round((w / 2))) + Data_Structures.x_parking_delta, y + int(round(h / 2))
