@@ -1,12 +1,15 @@
-# VAL_DICT = {
-#     "Empty": 0,
-#     "Border": 1,
-#     "Path": 2,
-#     "Parking_slot": 3,
-#     "Robot": 4
-# }
 
 import threading
+
+white = (255, 255, 255)
+red = (255, 0, 0)
+green = (0, 255, 0)
+black = (0, 0, 0)
+blue = (0, 0, 255)
+x_parking_delta = 70
+y_parking_delta = 150
+
+
 
 DIRECTION_DICT = {
     "NORTH": 0,
@@ -89,6 +92,7 @@ class Parking_Slots(metaclass=Singleton):
         self.parking_slots = []
         self.parking_slots_contours = []
         self.parking_angles = []
+        self.parking_slots_description = []
 
     def get_parking_slots(self):
         ds_mutex.acquire()
@@ -105,6 +109,12 @@ class Parking_Slots(metaclass=Singleton):
     def get_parking_slots_contours(self):
         ds_mutex.acquire()
         temp = self.parking_slots_contours.copy()
+        ds_mutex.release()
+        return temp
+
+    def get_parking_slots_description(self):
+        ds_mutex.acquire()
+        temp = self.parking_slots_description.copy()
         ds_mutex.release()
         return temp
 
@@ -132,6 +142,11 @@ class Parking_Slots(metaclass=Singleton):
     def save_slot_contours(self, slot):
         ds_mutex.acquire()
         self.parking_slots_contours.append(slot)
+        ds_mutex.release()
+
+    def save_slots_description(self, slot):
+        ds_mutex.acquire()
+        self.parking_slots_description.append(slot)
         ds_mutex.release()
 
 

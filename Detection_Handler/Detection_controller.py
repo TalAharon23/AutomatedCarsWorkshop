@@ -103,8 +103,6 @@ class Detection_controller(metaclass=Singleton):
             print()"""
         np.set_printoptions(threshold=np.inf)
 
-        # print the matrix
-        # print(matrix)
         matrix_scaled = cv2.normalize(matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
         cv2.imwrite("matrix_image" + str(self.framenum) + ".jpg", matrix_scaled)
 
@@ -113,29 +111,26 @@ class Detection_controller(metaclass=Singleton):
 
         frame = cv2.resize(frame, frameSize, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
         origin_frame = frame.copy()
-        # processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_line, val_dict)[1q]  # Find path
-        # processed_frame = ln_h.Find_Lines(frame, matrix, frameSize, mask_border, val_dict)[1]  # Find borders
         if len(parking_slots.get_parking_slots()) < 2:
-            box, matrix = park_h.Find_Parking_Slots(frame, matrix, frameSize, val_dict,
-                                                                parking_slots)  # Find parking spot
+            box, matrix = park_h.Find_Parking_Slots(frame, matrix, parking_slots)  # Find parking spot
         else:
             for cnt in parking_slots.get_parking_slots_contours():
-                # epsilon = 0.01 * cv2.arcLength(cnt, True)
-
                 perimeter = cv2.arcLength(cnt, True)
-                # perimeter = cv2.arcLength(contour, False)
                 approx = cv2.approxPolyDP(cnt, perimeter, 3, True)
-                # approx = cv2.approxPolyDP(cnt, epsilon, True)
 
                 box = cv2.minAreaRect(cnt)
                 box = cv2.boxPoints(box)
-                # box = np.array(box, dtype="int")
                 box = np.int0(box)
 
-        processed_frame = car_h.Find_Car(frame, matrix, frameSize, car)[1]
+
+        processed_frame = car_h.Find_Car(frame, matrix, car)[1]
+        cv2.putText(processed_frame, "{:}".format(f"{int(parking_slots.get_parking_angles()[0])} d"),
+                    (parking_slots.get_parking_slots()[0].X() - 78, parking_slots.get_parking_slots()[0].Y() - 220), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.45,
+                    (0, 255, 0), 1, cv2.LINE_AA)
 
         if box is not None:
-            cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
+            cv2.drawContours(frame, [box], 0, Data_Structures.blue, 2)
 
 
         matrix_scaled = cv2.normalize(matrix, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
@@ -181,10 +176,19 @@ class Detection_controller(metaclass=Singleton):
         DS_lock.release()
 
     @staticmethod
-    def reset_Matrix(self):
+    def reset_Matrix():
         global matrix
         DS_lock.acquire()
         matrix = np.zeros(frameSize)
+        DS_lock.release()
+
+    @staticmethod
+    def insert_parking_slot_to_matrix(test):
+        global matrix
+        DS_lock.acquire()
+        for i in range(test[0], test[0] + test[2]):
+            for j in range(test[1], test[1] + test[3]):
+                matrix[j][i] = Data_Structures.Val_dict.PARKING_SLOT
         DS_lock.release()
 
     @staticmethod
