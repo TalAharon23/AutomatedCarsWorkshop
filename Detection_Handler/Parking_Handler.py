@@ -4,7 +4,7 @@ import numpy as np
 import Data_Structures
 
 
-x_parking_delta = 85
+x_parking_delta = 65
 y_parking_delta = 150
 
 def Find_Parking_Slots(frame, matrix, frameSize, val_dict, parking_slots):

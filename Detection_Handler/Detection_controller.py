@@ -133,6 +133,10 @@ class Detection_controller(metaclass=Singleton):
                 box = np.int0(box)
 
         processed_frame = car_h.Find_Car(frame, matrix, frameSize, car)[1]
+        cv2.putText(processed_frame, "{:}".format(f"{int(parking_slots.get_parking_angles()[0])} d"),
+                    (parking_slots.get_parking_slots()[0].X() - 78, parking_slots.get_parking_slots()[0].Y() - 220), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.45,
+                    (0, 255, 0), 1, cv2.LINE_AA)
 
         if box is not None:
             cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
