@@ -59,10 +59,6 @@ def Find_Lines(frame, matrix, frameSize, mask, val_dict):
             # Draw the line on the matrix
             cv2.line(matrix, (x1, y1), (x2, y2), (255), 1)
 
-            # for iter_x in range(big_X - small_x):
-            #    for iter_y in range(big_y - small_y):
-            #        matrix[small_x + iter_x, small_y + iter_y] = 1
-
             # Draw the lines joing the points
             # On the original image
             cv2.line(image, (x1, y1), (x2, y2), line_color, 2)
