@@ -130,10 +130,11 @@ class Movement_Handler():
 
     def check_if_arrived(self):
         if self.parking_slot_dest is not None and self.robot.get_position() is not None and self.robot.get_position().X():
-            if abs(self.robot.get_position().X() - self.parking_slot_dest.X()) < 10 and abs(self.robot.get_position().Y() - self.parking_slot_dest.Y()) < 10:
-                while self.robot.get_direction_degrees() < 180 or self.robot.get_direction_degrees() > 190:
+            if abs(self.robot.get_position().X() - self.parking_slot_dest.X()) < 12 and abs(self.robot.get_position().Y() - self.parking_slot_dest.Y()) < 12:
+                while self.robot.get_direction_degrees() < self.parking_slot_dest_angle - 5 or self.robot.get_direction_degrees() > self.parking_slot_dest_angle + 5:
                     self.update_car_angle(self.parking_slot_dest_angle)
 
+                move(MOVE_COMMANDS.Back)
                 move(MOVE_COMMANDS.Parking)
                 self.update_car_angle(self.parking_slot_dest_angle)
                 print("Parking successful!")
@@ -343,7 +344,8 @@ class Movement_Handler():
                 num_of_steps = (int)((num_of_degrees) / RIGHT_LEFT_DEGREE)
                 direction = MOVE_COMMANDS.Left
 
-            move(direction)
+            if direction != MOVE_COMMANDS.Forward:
+                move(direction)
 
             car_tilt_degrees = self.robot.get_direction_degrees()
             abs_num_of_degrees = min(abs(car_tilt_degrees - next_direction),
@@ -391,6 +393,7 @@ class Movement_Handler():
             for index in range(0, min(len(self.path), 21)):
                 current_cell = self.path[index + 2]
                 previous_cell = self.path[index + 1]
+
 
                 # Determine directions for current and previous cells
                 current_direction = self.get_next_direction(previous_cell, current_cell)
