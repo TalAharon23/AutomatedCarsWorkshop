@@ -6,7 +6,7 @@ red = (255, 0, 0)
 green = (0, 255, 0)
 black = (0, 0, 0)
 blue = (0, 0, 255)
-x_parking_delta = 62
+x_parking_delta = 70
 y_parking_delta = 150
 
 

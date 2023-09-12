@@ -11,7 +11,6 @@ RIGHT_LEFT_DEGREE = 3
 delta_tilt_degrees = 4
 
 
-
 class MOVE_COMMANDS:
     Forward = "go"
     Left = "left"
@@ -67,12 +66,10 @@ class Movement_Handler:
         self.counter = 0
         self.path_index = 0
 
-        
     def reset_matrix_and_data(self):
         Detection_controller.reset_Matrix()
         test = self.parking_slots.get_parking_slots_description()[0]
         Detection_controller.insert_parking_slot_to_matrix(self.parking_slots.get_parking_slots_description()[0])
-        
 
     # @staticmethod
     def start_car_parking_session(self):
@@ -116,9 +113,9 @@ class Movement_Handler:
 
             if abs(self.robot.get_position().X() - self.parking_slot_dest.X()) < 6 and abs(
                     self.robot.get_position().Y() - self.parking_slot_dest.Y()) < 20:
-    
+
                 while (self.robot.get_direction_degrees() < self.parking_slot_dest_angle - 5 or
-                       self.robot.get_direction_degrees() > self.parking_slot_dest_angle + 5):
+                       self.robot.get_direction_degrees() > self.parking_slot_dest_angle + 5) and self.in_process:
                     self.update_car_angle(self.parking_slot_dest_angle)
 
                 move(MOVE_COMMANDS.Parking)
@@ -130,17 +127,15 @@ class Movement_Handler:
                 print("Parking successful!")
                 self.in_process = False
 
-
     def centerlize_car_inside_parking_slot(self):
         parking_slot_y_origin = self.parking_slot_dest.Y() - y_parking_delta
 
-        while abs(self.robot.get_position().Y() - parking_slot_y_origin) > 5:
+        while abs(self.robot.get_position().Y() - parking_slot_y_origin) > 5 and self.in_process:
             if self.robot.get_position().Y() > parking_slot_y_origin:
                 move(MOVE_COMMANDS.Back)
             else:
                 move(MOVE_COMMANDS.Forward)
 
-                
     def check_validation(self):
         time.sleep(0.2)
         curr_position = self.robot.position
@@ -266,7 +261,6 @@ class Movement_Handler:
             else:
                 self.reset_matrix_and_data()
 
-                
     def print_BFS_in_matrix(self):
         origin_matrix = Detection_controller.get_matrix()
         for cell in self.path:
