@@ -8,7 +8,7 @@ from Data_Structures import *
 import BFS_Logic
 
 RIGHT_LEFT_DEGREE = 3
-delta_tilt_degrees = 5
+delta_tilt_degrees = 4
 
 
 
